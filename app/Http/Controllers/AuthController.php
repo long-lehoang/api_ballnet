@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\LoginRequest as LoginApiRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest as ChangePasswordApiRequest;
 use App\Http\Requests\Auth\EditEmployeeRequest;
-use App\Repository\User\IUserRepo;
+use App\Http\Requests\Auth\SignupRequest;
+use App\Repository\UserRepo;
 use Illuminate\Http\Request;
 
 abstract class AUTHENTICATION
@@ -20,15 +21,25 @@ abstract class AUTHENTICATION
         'FAILED' => '',
         'INCORRECT' => 'Username or password is incorrect'
     ];
+    const SIGNUP = [
+        'SUCCESS' => 'Register is successful',
+        'FAILED' => 'Signup is failure'
+    ];
 }
-class AuthController extends BaseApiController
+class AuthController extends Controller
 {
     protected $repo;
-    
-    public function __construct(IUserRepo $repo)
+
+    public function __construct(UserRepo $repo)
     {
         $this->repo = $repo;
     }
+
+    /**
+     * Login function
+     * 
+     * @return [json] data
+     */
     public function login(LoginApiRequest $request){
         $credentials = $request->only('username','password');
         $result = $this->repo->isValidUser($credentials);
@@ -68,7 +79,7 @@ class AuthController extends BaseApiController
         }else{
             return $this -> sendError(null,AUTHENTICATION::UPDATE_PASSWORD['WRONG_CURRENT_PASSWORD']);
         }
-   }
+    }
 
     /**
      * Get Profile
@@ -84,7 +95,7 @@ class AuthController extends BaseApiController
         }
     }
 
-     /**
+    /**
      * Logout user (Revoke the token)
      *
      * @return [string] message
@@ -96,5 +107,22 @@ class AuthController extends BaseApiController
         }else{
             return $this -> sendError(null,"Failed");
         }
+    }
+
+    /**
+     * Signup user 
+     * 
+     * @return [json] data
+     */
+    public function signup(SignupRequest $request){
+        $user = $request->except('c_password');
+        
+        $result = $this->repo->create($user);
+        if ($result) {
+            return $this->sendResponse(null,AUTHENTICATION::SIGNUP['SUCCESS']);
+        }else {
+            return $this->sendError(null,AUTHENTICATION::SIGNUP['FAILED']);
+        }
+
     }
 }

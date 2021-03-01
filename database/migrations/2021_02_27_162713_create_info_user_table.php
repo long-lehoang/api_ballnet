@@ -18,7 +18,6 @@ class CreateInfoUserTable extends Migration
             $table->foreign('id_user')->references('id')->on('users');
             $table->primary('id_user');
             
-            $table->string('name');
             $table->date('birthday')->nullable();
             $table->string('sex');
             $table->binary('avatar')->nullable();

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests\API\Auth;
+namespace App\Http\Requests\Auth;
 
-use App\Http\Requests\API\BaseRequest;
+use App\Http\Requests\BaseRequest;
 
 class EditEmployeeRequest extends BaseRequest
 {

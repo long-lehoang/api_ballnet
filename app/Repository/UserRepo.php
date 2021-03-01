@@ -1,33 +1,49 @@
 <?php
-namespace App\Repository\Employee;
+namespace App\Repository;
 
-use App\Repository\Base\BaseRepository;
+use App\Repository\BaseRepository;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
-class EmployeeRepo extends BaseRepository implements IEmployeeRepo{
-    public function setModel()
+class UserRepo extends BaseRepository{
+    /**
+     * Get Model
+     * @return classname
+     */
+    public function getModel()
     {
-        return \App\Models\Employee::class;
+        return \App\Models\User::class;
     }
+
+    /**
+     * Get current user
+     * @return [json] user
+     */
     public function getCurrentUser(){
         try{
-            return $this->sendSuccess(Auth::guard('employees-api')->user());
+            return $this->sendSuccess(Auth::guard('api')->user());
         }catch(Exception $e){
             return $this->sendFailed();
         }
     }
+
+    /**
+     * Check Login Valid
+     * 
+     * @param [json] [username,password]
+     * @return [json] [user,access_token,token_type,expires_at]
+     */
     public function isValidUser($credentials){
-        if(Auth::guard('employees')->attempt($credentials)){
-            $user = Auth::guard('employees')->user();
+        if(Auth::guard('web')->attempt($credentials)){
+            $user = Auth::guard('web')->user();
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             $token->save();
             $responseData = [
-                'user' => $user
-                ,'access_token' => $tokenResult->accessToken,
+                'user' => $user,
+                'access_token' => $tokenResult->accessToken,
                 'token_type' => 'Bearer',
                 'expires_at' => Carbon::parse(
                     $tokenResult->token->expires_at
@@ -37,17 +53,29 @@ class EmployeeRepo extends BaseRepository implements IEmployeeRepo{
             return $this->sendFailed();
         }
     }
+
+    /**
+     * Revoke Token
+     * 
+     * @return bool
+     */
     public function revokeToken(){
         try{
-            $user = Auth::guard('employees-api')->user();
+            $user = Auth::guard('api')->user();
             $user->token()->revoke();
             return true;
         }catch(Exception $e){
             return false;
         }
     }
+
+    /**
+     * Update Password
+     * @param string new_password
+     * 
+     */
     public function updatePassword($request){
-        $user = Auth::guard('employees-api')->user();
+        $user = Auth::guard('api')->user();
         $user->password = bcrypt($request->new_password);
         $user->token()->revoke();
         $token = $user->createToken('Personal Access Token')->accessToken;
@@ -57,11 +85,23 @@ class EmployeeRepo extends BaseRepository implements IEmployeeRepo{
             return $this->sendFailed($token);
         }
     }
+
+    /**
+     * Check By Password
+     * 
+     * @return bool
+     */
     public function authByPassword($password){
-        return Hash::check($password,Auth::guard('employees-api')->user()->password);
+        return Hash::check($password,Auth::guard('api')->user()->password);
     }
+
+    /**
+     * Update Profile
+     * 
+     * @return [json] message
+     */
     public function updateProfile($request){
-        $user = Auth::guard('employees-api')->user();
+        $user = Auth::guard('api')->user();
         if(!empty($request->first_name)) $user->first_name = $request->first_name;
         if(!empty($request->last_name)) $user->last_name = $request->last_name;
         if(!empty($request->tel)) $user->tel = $request->tel;
