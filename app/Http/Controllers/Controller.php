@@ -8,6 +8,13 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Response;
 
+/**
+ * @OA\Info(
+ *    title="Your super  ApplicationAPI",
+ *    version="1.0.0",
+ * )
+ */
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;

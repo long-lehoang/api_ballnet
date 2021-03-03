@@ -8,6 +8,7 @@ use App\Http\Requests\Auth\EditEmployeeRequest;
 use App\Http\Requests\Auth\SignupRequest;
 use App\Repository\UserRepo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 abstract class AUTHENTICATION
 {
@@ -26,6 +27,34 @@ abstract class AUTHENTICATION
         'FAILED' => 'Signup is failure'
     ];
 }
+
+/**
+ * @OA\Post(
+ * path="/login",
+ * summary="Sign in",
+ * description="Login by email, password",
+ * operationId="authLogin",
+ * tags={"auth"},
+ * @OA\RequestBody(
+ *    required=true,
+ *    description="Pass user credentials",
+ *    @OA\JsonContent(
+ *       required={"email","password"},
+ *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
+ *       @OA\Property(property="password", type="string", format="password", example="PassWord12345"),
+ *       @OA\Property(property="persistent", type="boolean", example="true"),
+ *    ),
+ * ),
+ * @OA\Response(
+ *    response=422,
+ *    description="Wrong credentials response",
+ *    @OA\JsonContent(
+ *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+ *        )
+ *     )
+ * )
+ */
+
 class AuthController extends Controller
 {
     protected $repo;
@@ -116,6 +145,7 @@ class AuthController extends Controller
      */
     public function signup(SignupRequest $request){
         $user = $request->except('c_password');
+        $user['password'] = Hash::make($user['password']);
         
         $result = $this->repo->create($user);
         if ($result) {
