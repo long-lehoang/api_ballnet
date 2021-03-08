@@ -113,4 +113,29 @@ class UserRepo extends BaseRepository{
             return $this->sendFailed();
         }
     }
+
+    /**
+     * Get profile
+     * 
+     * @param id
+     * @return [json] profile
+     */
+    public function getProfile($id)
+    {
+        $id = $id == null ? Auth::guard('api')->user()->id : $id ;
+
+        $user = $this->find($id);
+
+        if($user == null)
+            return $this->sendFailed("Account Was Not Found ");
+
+        $info = $user->info();
+
+        dd($info);
+        if($info == null){
+            return $this->sendFailed("No Info");
+        }else{
+            return $this->sendSuccess($info);
+        }
+    }
 }

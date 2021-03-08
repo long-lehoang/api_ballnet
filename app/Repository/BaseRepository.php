@@ -51,7 +51,7 @@ abstract class BaseRepository
     public function update($id, $params){
         $result = $this->find($id);
         if ($result) {
-            $result->update($attributes);
+            $result->update($params);
             return $result;
         }
 
@@ -84,8 +84,8 @@ abstract class BaseRepository
         return $this->_model->find($id);
     }
     
-    public function findByCondition($with = null){
-        return $this->_model::where($with);
+    public function findByCondition($param , $value ,  $operator = '='){
+        return $this->_model::where($param, $operator, $value);
     }
 
     protected function sendSuccess($data=null){

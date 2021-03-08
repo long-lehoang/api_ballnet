@@ -15,9 +15,9 @@ class CreateMatchJoiningTable extends Migration
     {
         Schema::create('match_joining', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_match')->constrained('match');
-            $table->foreignId('id_player')->constrained('users');
-            $table->foreignId('id_team')->constrained('team')->nullable();
+            $table->foreignId('match_id')->constrained('matchs');
+            $table->foreignId('palyer_id')->constrained('users');
+            $table->foreignId('team_id')->constrained('teams')->nullable();
             $table->foreignId('invited_by')->constrained('users')->nullable();
             $table->tinyInteger('status');
             $table->timestamps();

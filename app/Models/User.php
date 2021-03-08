@@ -42,4 +42,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get info of user
+     */
+    public function info()
+    {
+        return $this->hasOne(InfoUser::class);
+    }
 }

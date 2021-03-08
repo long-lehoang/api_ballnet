@@ -14,9 +14,9 @@ class CreateMemberTeamTable extends Migration
     public function up()
     {
         Schema::create('member_team', function (Blueprint $table) {
-            $table->foreignID('id_team')->constrained('team');
-            $table->foreignId('id_member')->constrained('users');
-            $table->primary(['id_team','id_member']);
+            $table->foreignID('team_id')->constrained('teams');
+            $table->foreignId('member_id')->constrained('users');
+            $table->primary(['team_id','member_id']);
             $table->foreignId('invited_by')->constrained('users')->nullable();
             $table->string('status');
             $table->unsignedInteger('num_match');

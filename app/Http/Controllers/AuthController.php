@@ -9,6 +9,7 @@ use App\Http\Requests\Auth\SignupRequest;
 use App\Repository\UserRepo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 abstract class AUTHENTICATION
 {
@@ -107,20 +108,6 @@ class AuthController extends Controller
             return $this -> sendError();
         }else{
             return $this -> sendError(null,AUTHENTICATION::UPDATE_PASSWORD['WRONG_CURRENT_PASSWORD']);
-        }
-    }
-
-    /**
-     * Get Profile
-     *
-     * @return [json] message
-     */
-    function getProfile(Request $request) {
-        $result = $this->repo->getCurrentUser();
-        if($result['success']){
-            return $this->sendResponse($result['data']);
-        }else{
-            return $this->sendError();
         }
     }
 

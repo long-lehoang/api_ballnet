@@ -14,10 +14,10 @@ class CreateSportInfoTable extends Migration
     public function up()
     {
         Schema::create('sport_info', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id')->on('users');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->string('sport');
-            $table->primary(['id_user','sport']);
+            $table->primary(['user_id','sport']);
             $table->float('rating')->nullable();
             $table->unsignedInteger('num_match')->nullable();
             $table->timestamps();

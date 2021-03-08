@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\InfoController;
+use App\Http\Controllers\ImageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,8 +20,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', 'App\Http\Controllers\AuthController@login');
-Route::post('/signup', 'App\Http\Controllers\AuthController@signup');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/signup', [AuthController::class, 'signup']);
 Route::group(['middleware' => 'auth:api'], function() {
-    Route::get('/logout', 'App\Http\Controllers\AuthController@logout');
+    Route::get('/logout', [AuthController::class, 'logout']);
+
+    Route::apiResource('profiles', InfoController::class);
+    Route::get('/images/{path}', [ImageController::class, 'show']);
 });

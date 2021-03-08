@@ -14,18 +14,18 @@ class CreateInfoUserTable extends Migration
     public function up()
     {
         Schema::create('info_user', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id')->on('users');
-            $table->primary('id_user');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->primary('user_id');
             
             $table->date('birthday')->nullable();
             $table->string('sex');
-            $table->binary('avatar')->nullable();
+            $table->string('avatar')->nullable();
             $table->string('address')->nullable();
             $table->string('phone');
             $table->string('status')->nullable();
             $table->text('overview')->nullable();
-            $table->binary('cover')->nullable();
+            $table->string('cover')->nullable();
             $table->timestamps();
         });
     }

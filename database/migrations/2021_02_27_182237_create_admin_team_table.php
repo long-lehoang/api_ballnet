@@ -14,9 +14,9 @@ class CreateAdminTeamTable extends Migration
     public function up()
     {
         Schema::create('admin_team', function (Blueprint $table) {
-            $table->foreignID('id_team')->constrained('team');
-            $table->foreignId('id_admin')->constrained('users');
-            $table->primary(['id_team','id_admin']);
+            $table->foreignID('team_id')->constrained('teams');
+            $table->foreignId('admin_id')->constrained('users');
+            $table->primary(['team_id','admin_id']);
             $table->timestamps();
         });
     }
