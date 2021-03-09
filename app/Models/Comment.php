@@ -18,7 +18,7 @@ class Comment extends Model
         'comment',
         'post_id',
         'user_id'
-    ]
+    ];
 
     /**
      * Get the post that owns the comment.

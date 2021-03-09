@@ -17,7 +17,7 @@ class Like extends Model
     protected $fillable = [
         'post_id',
         'user_id'
-    ]
+    ];
 
     /**
      * Get the post that owns the like.

@@ -14,11 +14,10 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
         'private',
         'content',
         'location'
-    ]
+    ];
 
     /**
      * Get the user that owns the post.

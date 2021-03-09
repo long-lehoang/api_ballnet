@@ -14,10 +14,10 @@ class CreatePriceStadiumTable extends Migration
     public function up()
     {
         Schema::create('price_stadium', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('id_owner');
             $table->foreign('id_owner')->references('id')->on('users');
             $table->datetime('time')->unique();
-            $table->primary(['id_owner','time']);
             $table->unsignedBigInteger('price');
             $table->timestamps();
         });

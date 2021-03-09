@@ -3,9 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repository\PostRepo;
 
 class PostController extends Controller
 {
+    protected $repo;
+
+    public function __construct(PostRepo $repo)
+    {
+        $this->repo = $repo;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +20,14 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        // $this->authorize('viewAny');
+
+        $result = $this->repo->getPosts();
+        if($result['success']){
+            return $this->sendResponse($result);
+        }else{
+            return $this->sendError();
+        }
     }
 
     /**

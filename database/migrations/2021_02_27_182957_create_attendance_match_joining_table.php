@@ -14,6 +14,7 @@ class CreateAttendanceMatchJoiningTable extends Migration
     public function up()
     {
         Schema::create('attendance_match_joining', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('id_match_joining')->constrained('match_joining');
             $table->foreignId('user_id')->constrained('users');
             $table->unsignedTinyInteger('rating')->nullable();

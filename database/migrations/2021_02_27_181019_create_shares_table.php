@@ -14,9 +14,9 @@ class CreateSharesTable extends Migration
     public function up()
     {
         Schema::create('shares', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('post_id')->constrained('posts');
             $table->foreignId('user_id')->constrained('users');
-            $table->primary(['post_id','user_id']);
             $table->timestamps();
         });
     }

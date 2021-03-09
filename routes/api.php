@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InfoController;
-use App\Http\Controllers\ImageController;
+use App\Http\Controllers\PostController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,5 +26,5 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/logout', [AuthController::class, 'logout']);
 
     Route::apiResource('profiles', InfoController::class);
-    Route::get('/images/{path}', [ImageController::class, 'show']);
+    Route::apiResource('posts', PostController::class);
 });

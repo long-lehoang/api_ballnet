@@ -31,8 +31,24 @@ class PostPolicy
      */
     public function view(User $user, Post $post)
     {
-        //
-        return true;
+        $private = $post->private
+        if($private == 'Public'){
+            return true;
+        }else if($private == 'Friends'){
+            $friends = $user->friends();
+            $owner = $post->user();
+            foreach($friends as $friend){
+                if($friend->id_friend == $owner->id)
+                return true;
+            }
+            return false;
+        }else{
+            if($post->user() === $user){
+                return true;
+            }else{
+                return false;
+            }
+        }
     }
 
     /**
@@ -58,8 +74,11 @@ class PostPolicy
     public function update(User $user, Post $post)
     {
         //
-        return true;
-
+        if($user->id === $post->user_id){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
@@ -72,8 +91,11 @@ class PostPolicy
     public function delete(User $user, Post $post)
     {
         //
-        return true;
-
+        if($user->id === $post->user_id){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**

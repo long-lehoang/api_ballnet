@@ -14,9 +14,9 @@ class CreateTagsTable extends Migration
     public function up()
     {
         Schema::create('tags', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('post_id')->constrained('posts');
             $table->foreignId('tag_id')->constrained('users');
-            $table->primary(['post_id','tag_id']);
             $table->timestamps();
         });
     }

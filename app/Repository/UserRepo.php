@@ -131,7 +131,6 @@ class UserRepo extends BaseRepository{
 
         $info = $user->info();
 
-        dd($info);
         if($info == null){
             return $this->sendFailed("No Info");
         }else{

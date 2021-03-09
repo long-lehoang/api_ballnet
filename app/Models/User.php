@@ -50,4 +50,20 @@ class User extends Authenticatable
     {
         return $this->hasOne(InfoUser::class);
     }
+
+    /**
+     * Get posts of user
+     * 
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+    /**
+     * Get list friends
+     */
+    public function friends()
+    {
+        return $this->hasMany(Friend::class);
+    }
 }
