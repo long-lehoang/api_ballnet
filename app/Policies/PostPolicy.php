@@ -31,7 +31,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post)
     {
-        $private = $post->private
+        $private = $post->private;
         if($private == 'Public'){
             return true;
         }else if($private == 'Friends'){

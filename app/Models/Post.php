@@ -16,7 +16,8 @@ class Post extends Model
     protected $fillable = [
         'private',
         'content',
-        'location'
+        'location',
+        'user_id'
     ];
 
     /**
@@ -57,5 +58,13 @@ class Post extends Model
     public function tags()
     {
         return $this->hasMany(Tag::class);
+    }
+
+    /**
+     * Get image of post
+     */
+    public function images()
+    {
+        return $this->hasMany(ImagePost::class);
     }
 }

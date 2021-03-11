@@ -35,4 +35,8 @@ class PostRepo extends BaseRepository{
             return $this->sendFailed();
         }
     }
+
+    /**
+     * 
+     */
 }

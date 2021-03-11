@@ -4,14 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repository\PostRepo;
+use App\Repository\ImagePostRepo;
+use App\Repository\TagRepo;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Post;
+use App\Http\Requests\CreatePostRequest;
 
 class PostController extends Controller
 {
-    protected $repo;
+    protected $postRepo;
+    protected $tagRepo;
+    protected $imageRepo;
 
-    public function __construct(PostRepo $repo)
+
+    public function __construct(PostRepo $postRepo, TagRepo $tagRepo, ImagePostRepo $imageRepo)
     {
-        $this->repo = $repo;
+        $this->postRepo = $postRepo;
+        $this->tagRepo = $tagRepo;
+        $this->imageRepo = $imageRepo;
+
+        $this->authorizeResource(Post::class);
+
     }
     /**
      * Display a listing of the resource.
@@ -22,7 +36,7 @@ class PostController extends Controller
     {
         // $this->authorize('viewAny');
 
-        $result = $this->repo->getPosts();
+        $result = $this->postRepo->getPosts();
         if($result['success']){
             return $this->sendResponse($result);
         }else{
@@ -36,9 +50,32 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreatePostRequest $request)
     {
-        //
+        try{
+            //create post
+            $postInput = $request->only('content','location','private');
+            $postInput['user_id'] = Auth::guard('api')->user()->id;
+            $post = $this->postRepo->create($postInput);
+            $post_id = $post->id;
+
+            //create tags
+            $tagInputs = $request->only('tags');
+            foreach($tagInputs as $tag){
+                $tagInput['tag_id'] = $tag;
+                $tagInput['post_id'] = $post_id;
+                $this->tagRepo->create($tagInput);
+            }
+
+            //create image
+
+            return $this->sendSuccess();
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+        
+        
+
     }
 
     /**
