@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Repository\BaseRepository;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class PostRepo extends BaseRepository{

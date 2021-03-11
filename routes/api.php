@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\FriendController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,7 +26,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/logout', [AuthController::class, 'logout']);
-
+    Route::get('/friends', [FriendController::class, 'index']);
     Route::apiResource('profiles', InfoController::class);
     Route::apiResource('posts', PostController::class);
 });
