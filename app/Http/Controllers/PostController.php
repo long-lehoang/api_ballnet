@@ -9,7 +9,9 @@ use App\Repository\TagRepo;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Post;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreatePostRequest;
+use Image;
 
 class PostController extends Controller
 {
@@ -24,7 +26,7 @@ class PostController extends Controller
         $this->tagRepo = $tagRepo;
         $this->imageRepo = $imageRepo;
 
-        $this->authorizeResource(Post::class);
+        // $this->authorizeResource(Post::class,'post');
 
     }
     /**
@@ -53,23 +55,34 @@ class PostController extends Controller
     public function store(CreatePostRequest $request)
     {
         try{
-            //create post
+            // create post
             $postInput = $request->only('content','location','private');
             $postInput['user_id'] = Auth::guard('api')->user()->id;
             $post = $this->postRepo->create($postInput);
             $post_id = $post->id;
 
             //create tags
-            $tagInputs = $request->only('tags');
-            foreach($tagInputs as $tag){
+            $tagInputs = $request->tags;
+            foreach((array)$tagInputs as $tag){
                 $tagInput['tag_id'] = $tag;
                 $tagInput['post_id'] = $post_id;
                 $this->tagRepo->create($tagInput);
             }
 
-            //create image
+            if($request->hasFile('images')){
+                $fileInputs = $request->file('images');
+                foreach($fileInputs as $file)
+                {
+                    $fileName = uniqid().time(). '.' .$file->getClientOriginalExtension();  //Provide the file name with extension 
+                    $file->move(public_path().'/uploads/images/', $fileName);  
+                    $this->imageRepo->create([
+                        "image" => '/uploads/images/'.$fileName,
+                        "post_id" => $post_id
+                    ]);
+                }
+            }
 
-            return $this->sendSuccess();
+            return $this->sendResponse();
         }catch(Exception $e){
             return $this->sendError();
         }
@@ -86,7 +99,14 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        // $this->authorize('view');
+        //count like
+        //count comment
+        //count share
+
+        //get info author
+        
+        return $this->sendResponse();
     }
 
     /**

@@ -17,7 +17,7 @@ class CreatePostRequest extends BaseRequest
             //
             'content' => 'required',
             'private' => 'required',
-            'images' => 'image'
+            // 'images' => 'image'
         ];
     }
 }

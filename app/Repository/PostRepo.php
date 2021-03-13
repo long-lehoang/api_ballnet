@@ -28,9 +28,12 @@ class PostRepo extends BaseRepository{
         try{
             $friends = $user->friends;
             foreach($friends as $friend){
-                array_push($posts, $friend->friend->posts);
+                $post = $friend->friend->posts;
+                
+                array_push($posts, $post);
             }
-            array_push($posts, $user->posts);
+            $post = $user->posts;
+            array_push($posts, $post);
             return $this->sendSuccess($posts);
         }catch(Exception $e){
             return $this->sendFailed();

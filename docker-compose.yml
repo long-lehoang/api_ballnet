@@ -9,12 +9,18 @@ services:
     volumes:
       - .:/application
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+
 
   php:
     build: ./docker/php/
     volumes:
       - .:/application
       - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./docker/php/php.ini-development:/usr/local/etc/php/php.ini-development
+      - ./docker/php/php.ini-production:/usr/local/etc/php/php.ini-production
+      - ./docker/php/php.ini-production:/usr/local/etc/php/php.ini
+
     depends_on:
       - db
       - redis

@@ -31,24 +31,25 @@ class PostPolicy
      */
     public function view(User $user, Post $post)
     {
-        $private = $post->private;
-        if($private == 'Public'){
-            return true;
-        }else if($private == 'Friends'){
-            $friends = $user->friends();
-            $owner = $post->user();
-            foreach($friends as $friend){
-                if($friend->id_friend == $owner->id)
-                return true;
-            }
-            return false;
-        }else{
-            if($post->user() === $user){
-                return true;
-            }else{
-                return false;
-            }
-        }
+        // $private = $post->private;
+        // if($private == 'Public'){
+        //     return true;
+        // }else if($private == 'Friends'){
+        //     $friends = $user->friends();
+        //     $owner = $post->user();
+        //     foreach($friends as $friend){
+        //         if($friend->id_friend == $owner->id)
+        //         return true;
+        //     }
+        //     return false;
+        // }else{
+        //     if($post->user() === $user){
+        //         return true;
+        //     }else{
+        //         return false;
+        //     }
+        // }
+        return true;
     }
 
     /**

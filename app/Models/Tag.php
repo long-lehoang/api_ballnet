@@ -16,7 +16,7 @@ class Tag extends Model
      */
     protected $fillable = [
         'post_id',
-        'user_id'
+        'tag_id'
     ];
 
     /**
