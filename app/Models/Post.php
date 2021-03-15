@@ -65,6 +65,6 @@ class Post extends Model
      */
     public function images()
     {
-        return $this->hasMany(ImagePost::class)->all();
+        return $this->hasMany(ImagePost::class);
     }
 }

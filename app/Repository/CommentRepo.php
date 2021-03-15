@@ -2,16 +2,16 @@
 namespace App\Repository;
 
 use App\Repository\BaseRepository;
+use Exception;
 
-class InfoUserRepo extends BaseRepository{
+class CommentRepo extends BaseRepository{
     /**
      * Get Model
      * @return classname
      */
     public function getModel()
     {
-        return \App\Models\InfoUser::class;
+        return \App\Models\ImagePost::class;
     }
-    
-    
+
 }

@@ -25,8 +25,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::group(['middleware' => 'auth:api'], function() {
-    Route::get('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/friends', [FriendController::class, 'index']);
     Route::apiResource('profiles', InfoController::class);
+
     Route::apiResource('posts', PostController::class);
+    Route::group(['prefix' => '/posts'], function() {
+        Route::post('/{id}/like', [PostController::class, 'like']);
+        Route::delete('/{id}/like', [PostController::class, 'unLike']);
+        Route::post('/{id}/comment', [PostController::class, 'share']);
+        Route::delete('/{id}/comment', [PostController::class, 'unComment']);
+        Route::post('/{id}/share', [PostController::class, 'share']);
+        Route::delete('/{id}/share', [PostController::class, 'unShare']);
+    });
 });

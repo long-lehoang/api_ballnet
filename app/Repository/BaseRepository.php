@@ -39,7 +39,7 @@ abstract class BaseRepository
      */
     public function create($params)
     {
-        return $this->_model->create($params);
+        return $this->_model->firstOrCreate($params);
     }
 
     /**
@@ -81,7 +81,7 @@ abstract class BaseRepository
      * @return mixed
      */
     public function find($id){
-        return $this->_model->find($id);
+        return $this->_model->findOrFail($id);
     }
     
     public function findByCondition($param , $value ,  $operator = '='){

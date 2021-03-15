@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Repository\PostRepo;
 use App\Repository\ImagePostRepo;
 use App\Repository\TagRepo;
+use App\Repository\LikeRepo;
+use App\Repository\CommentRepo;
+use App\Repository\ShareRepo;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Post;
@@ -18,13 +21,19 @@ class PostController extends Controller
     protected $postRepo;
     protected $tagRepo;
     protected $imageRepo;
+    protected $likeRepo;
+    protected $commentRepo;
+    protected $shareRepo;
 
 
-    public function __construct(PostRepo $postRepo, TagRepo $tagRepo, ImagePostRepo $imageRepo)
+    public function __construct(PostRepo $postRepo, TagRepo $tagRepo, ImagePostRepo $imageRepo, LikeRepo $likeRepo, CommentRepo $commentRepo, ShareRepo $shareRepo)
     {
         $this->postRepo = $postRepo;
         $this->tagRepo = $tagRepo;
         $this->imageRepo = $imageRepo;
+        $this->likeRepo = $likeRepo;
+        $this->commentRepo = $commentRepo;
+        $this->shareRepo = $shareRepo;
 
         // $this->authorizeResource(Post::class,'post');
 
@@ -86,9 +95,6 @@ class PostController extends Controller
         }catch(Exception $e){
             return $this->sendError();
         }
-        
-        
-
     }
 
     /**
@@ -100,13 +106,45 @@ class PostController extends Controller
     public function show($id)
     {
         // $this->authorize('view');
-        //count like
-        //count comment
-        //count share
 
         //get info author
+        $author = $this->postRepo->getAuthor($id);
+        if(!$author['success'])
+            return $this->sendError($author['message']);
+        //count like
+        $like = $this->postRepo->countLike($id);
+        if(!$like['success'])
+            return $this->sendError($like['message']);
+        //count comment
+        $comment = $this->postRepo->countComment($id);
+        if(!$comment['success'])
+            return $this->sendError($comment['message']);
+        //count share
         
-        return $this->sendResponse();
+        $share = $this->postRepo->countShare($id);
+        if(!$share['success'])
+        return $this->sendError($share['message']);
+
+        //get image
+        $image = $this->postRepo->getImage($id);
+        if(!$image['success'])
+        return $this->sendError($image['message']);
+
+        //get tag
+        $tag = $this->postRepo->getTag($id);
+        if(!$tag['success'])
+        return $this->sendError($tag['message']);
+        //return result
+        $result = [
+            'author' => $author['data'], 
+            'like' => $like['data'], 
+            'comment' => $comment['data'], 
+            'share' => $share['data'], 
+            'images' => $image['data'],
+            'tags' => $tag['data']
+        ];
+        
+        return $this->sendResponse($result);
     }
 
     /**
@@ -118,7 +156,8 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        
     }
 
     /**
@@ -129,6 +168,110 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = $this->postRepo->delete($id);
+        if($result['success'])
+            return $this->sendResponse();
+        else
+            return $this->sendError();
+    }
+
+    /**
+     * Like a post
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function like($id)
+    {
+        try{
+            $user = Auth::guard('api')->user();
+            $this->likeRepo->create([
+                "post_id" => $id,
+                "user_id" => $user->id
+            ]);
+
+            return $this->sendResponse();
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+    }
+
+    /**
+     * Dislike a post
+     * @param int post_id
+     * @return \Illuminate\Http\Response
+     * 
+     */
+    public function unLike($id)
+    {
+        $user = Auth::guard('api')->user();
+        $result = $this->likeRepo->unLike($id,$user->id);
+        if($result['success']){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
+    }
+
+    /**
+     * Comment a post
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function comment(Request $request, $id)
+    {
+        
+    }
+
+    /**
+     * Comment a post
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function unComment($id)
+    {
+        
+    }
+
+    /**
+     * Share a post
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function share($id)
+    {
+        try{
+            $user = Auth::guard('api')->user();
+            $this->shareRepo->create([
+                "post_id" => $id,
+                "user_id" => $user->id
+            ]);
+
+            return $this->sendResponse();
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+    }
+
+    /**
+     * UnShare a post
+     * 
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function unShare($id)
+    {
+        $user = Auth::guard('api')->user();
+        $result = $this->shareRepo->unShare($id,$user->id);
+        if($result['success']){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
     }
 }

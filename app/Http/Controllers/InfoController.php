@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repository\InfoUserRepo;
+use App\Repository\InfoRepo;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +11,7 @@ class InfoController extends Controller
 {
     protected $repo;
 
-    public function __construct(InfoUserRepo $repo)
+    public function __construct(InfoRepo $repo)
     {
         $this->repo = $repo;
     }
