@@ -12,9 +12,10 @@ use App\Repository\ShareRepo;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Post;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\CommentRequest;
 use Image;
+use Exception;
 
 class PostController extends Controller
 {
@@ -78,17 +79,12 @@ class PostController extends Controller
                 $this->tagRepo->create($tagInput);
             }
 
+            //create image
             if($request->hasFile('images')){
                 $fileInputs = $request->file('images');
-                foreach($fileInputs as $file)
-                {
-                    $fileName = uniqid().time(). '.' .$file->getClientOriginalExtension();  //Provide the file name with extension 
-                    $file->move(public_path().'/uploads/images/', $fileName);  
-                    $this->imageRepo->create([
-                        "image" => '/uploads/images/'.$fileName,
-                        "post_id" => $post_id
-                    ]);
-                }
+                $image = $this->imageRepo->upload($fileInputs);
+                if(!$image)
+                return $this->sendError();
             }
 
             return $this->sendResponse();
@@ -134,6 +130,11 @@ class PostController extends Controller
         $tag = $this->postRepo->getTag($id);
         if(!$tag['success'])
         return $this->sendError($tag['message']);
+
+        $isLike = $this->likeRepo->isLike($id);
+        $isComment = $this->commentRepo->isComment($id);
+        $isShare = $this->shareRepo->isShare($id);
+
         //return result
         $result = [
             'author' => $author['data'], 
@@ -141,7 +142,10 @@ class PostController extends Controller
             'comment' => $comment['data'], 
             'share' => $share['data'], 
             'images' => $image['data'],
-            'tags' => $tag['data']
+            'tags' => $tag['data'],
+            'isLike' => $isLike['success'],
+            'isComment' => $isComment['success'],
+            'isShare' => $isShare['success']
         ];
         
         return $this->sendResponse($result);
@@ -154,10 +158,48 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CreatePostRequest $request, $id)
     {
+
         $data = $request->all();
-        
+        //update
+        $update = $this->postRepo->update($id,[
+            "private" => $data->private,
+            "content" => $data->content,
+            "location" => $data->location
+        ]);
+
+        if(!$update){
+            return $this->sendError();
+        }
+
+        //update tags
+        try{
+            $this->postRepo->find($id)->tags->delete();
+            foreach($data->tags as $tag){
+                $result = $this->tagRepo->create([
+                    "post_id" => $id,
+                    "tag_id" => $tag
+                ]);
+            }
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+
+        //update image
+        try{
+            $this->postRepo->find($id)->images->delete();
+            if($request->hasFile('images')){
+                $fileInputs = $request->file('images');
+                $image = $this->imageRepo->upload($fileInputs);
+                if(!$image)
+                return $this->sendError();
+            }
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+
+        return $this->sendResponse();
     }
 
     /**
@@ -169,7 +211,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $result = $this->postRepo->delete($id);
-        if($result['success'])
+        if($result)
             return $this->sendResponse();
         else
             return $this->sendError();
@@ -220,9 +262,19 @@ class PostController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function comment(Request $request, $id)
+    public function comment(CommentRequest $request, $id)
     {
-        
+        $user = Auth::guard('api')->user();
+        try{
+            $this->commentRepo->create([
+                "post_id" => $id,
+                "user_id" => $user->id,                
+                "comment" => $request->comment
+            ]);
+            return $this->sendResponse();
+        }catch(Exception $e){
+            return $this->sendError();
+        }
     }
 
     /**
@@ -234,7 +286,12 @@ class PostController extends Controller
      */
     public function unComment($id)
     {
-        
+        $delete = $this->commentRepo->delete($id);
+        if($delete){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
     }
 
     /**

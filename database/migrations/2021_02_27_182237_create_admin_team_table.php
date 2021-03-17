@@ -15,7 +15,7 @@ class CreateAdminTeamTable extends Migration
     {
         Schema::create('admin_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignID('team_id')->constrained('teams');
+            $table->foreignID('team_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('admin_id')->constrained('users');
             $table->timestamps();
         });

@@ -15,7 +15,7 @@ class CreateImageStadiumTable extends Migration
     {
         Schema::create('image_stadium', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('stadium_id')->constrained('stadiums');
+            $table->foreignId('stadium_id')->constrained('stadiums')->onDelete('cascade');
             $table->string('image');
             $table->timestamps();
         });

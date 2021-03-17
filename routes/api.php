@@ -33,7 +33,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::group(['prefix' => '/posts'], function() {
         Route::post('/{id}/like', [PostController::class, 'like']);
         Route::delete('/{id}/like', [PostController::class, 'unLike']);
-        Route::post('/{id}/comment', [PostController::class, 'share']);
+        Route::post('/{id}/comment', [PostController::class, 'comment']);
         Route::delete('/{id}/comment', [PostController::class, 'unComment']);
         Route::post('/{id}/share', [PostController::class, 'share']);
         Route::delete('/{id}/share', [PostController::class, 'unShare']);

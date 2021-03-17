@@ -17,4 +17,27 @@ class ImagePostRepo extends BaseRepository{
         return \App\Models\ImagePost::class;
     }
 
+    /**
+     * Upload image
+     * @param file $files
+     * @param int $post_id
+     * @return 
+     */
+    public function upload($post_id,$files){
+        try{
+
+            foreach($files as $file)
+            {
+                $fileName = uniqid().time(). '.' .$file->getClientOriginalExtension();  //Provide the file name with extension 
+                $file->move(public_path().'/uploads/images/', $fileName);  
+                $this->imageRepo->create([
+                    "image" => '/uploads/images/'.$fileName,
+                    "post_id" => $post_id
+                ]);
+            }
+            return $this->sendSuccess();
+        }catch(Exception $e){
+            return $this->sendFailed();
+        }
+    }
 }

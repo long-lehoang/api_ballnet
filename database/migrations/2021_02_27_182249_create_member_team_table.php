@@ -15,9 +15,9 @@ class CreateMemberTeamTable extends Migration
     {
         Schema::create('member_team', function (Blueprint $table) {
             $table->id();
-            $table->foreignID('team_id')->constrained('teams');
-            $table->foreignId('member_id')->constrained('users');
-            $table->foreignId('invited_by')->constrained('users')->nullable();
+            $table->foreignID('team_id')->constrained('teams')->onDelete('cascade');
+            $table->foreignId('member_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('invited_by')->constrained('users')->nullable()->onDelete('cascade');
             $table->string('status');
             $table->unsignedInteger('num_match');
             $table->timestamps();

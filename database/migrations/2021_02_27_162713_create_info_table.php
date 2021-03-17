@@ -15,7 +15,7 @@ class CreateInfoTable extends Migration
     {
         Schema::create('infos', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->primary('user_id');
             
             $table->date('birthday')->nullable();

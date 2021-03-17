@@ -81,6 +81,7 @@ class PostRepo extends BaseRepository{
         }
     }
 
+    
     /**
      * Count comment of post
      * @param $id
@@ -114,7 +115,7 @@ class PostRepo extends BaseRepository{
             return $this->sendFailed($e);
         }
     }
-
+    
     /**
      * Get images of post
      * 
