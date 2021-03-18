@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Post;
 use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\CommentRequest;
+use Illuminate\Support\Facades\Log;
 use Image;
 use Exception;
 
@@ -73,7 +75,10 @@ class PostController extends Controller
 
             //create tags
             $tagInputs = $request->tags;
-            foreach((array)$tagInputs as $tag){
+            $tags = explode(",",$tagInputs);
+            foreach($tags as $tag){
+                if($tag=="")
+                continue;
                 $tagInput['tag_id'] = $tag;
                 $tagInput['post_id'] = $post_id;
                 $this->tagRepo->create($tagInput);
@@ -158,25 +163,28 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CreatePostRequest $request, $id)
+    public function update(EditPostRequest $request, $id)
     {
 
         $data = $request->all();
         //update
         $update = $this->postRepo->update($id,[
-            "private" => $data->private,
-            "content" => $data->content,
-            "location" => $data->location
+            "private" => $request->private,
+            "content" => $request->content,
+            "location" => $request->location
         ]);
-
         if(!$update){
             return $this->sendError();
         }
 
         //update tags
         try{
-            $this->postRepo->find($id)->tags->delete();
-            foreach($data->tags as $tag){
+            $post = $this->postRepo->find($id)->tags()->delete();
+            $tagInputs = $request->tags;
+            $tags = explode(",",$tagInputs);
+            foreach($tags as $tag){
+                if($tag == "")
+                continue;
                 $result = $this->tagRepo->create([
                     "post_id" => $id,
                     "tag_id" => $tag
@@ -185,10 +193,9 @@ class PostController extends Controller
         }catch(Exception $e){
             return $this->sendError();
         }
-
         //update image
         try{
-            $this->postRepo->find($id)->images->delete();
+            $this->postRepo->find($id)->images()->delete();
             if($request->hasFile('images')){
                 $fileInputs = $request->file('images');
                 $image = $this->imageRepo->upload($fileInputs);
@@ -277,6 +284,20 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * Get list comment
+     * @param int id
+     * @return \Illuminate\Http\Response
+     */
+    public function getComments($post_id)
+    {
+        $result = $this->postRepo->getComments($post_id);
+        if($result['success']){
+            return $this->sendResponse($result);
+        }else{
+            return $this->sendError();
+        }
+    }
     /**
      * Comment a post
      * 

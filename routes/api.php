@@ -37,5 +37,8 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::delete('/{id}/comment', [PostController::class, 'unComment']);
         Route::post('/{id}/share', [PostController::class, 'share']);
         Route::delete('/{id}/share', [PostController::class, 'unShare']);
+
+        Route::post('/{id}', [PostController::class, 'update']);
+        Route::get('/{id}/comment', [PostController::class, 'getComments']);
     });
 });

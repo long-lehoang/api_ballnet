@@ -152,6 +152,7 @@ class PostRepo extends BaseRepository{
 
             $result = [];
             foreach($tags as $tag){
+                $user = new \stdClass();
                 $user->id = $tag->user->id;
                 $user->name = $tag->user->name;
                 $user->username = $tag->user->username;
@@ -162,6 +163,36 @@ class PostRepo extends BaseRepository{
             return $this->sendSuccess($result);
         }catch(Exception $e){
             return $this->sendFailed($e);
+        }
+    }
+
+    /**
+     * Get comments of post
+     * @param int id 
+     * @return array
+     * 
+     */
+    public function getComments($post_id){
+        try{
+            $post = $this->find($post_id);
+            $comments = $post->comments;
+
+            $result = [];
+            foreach($comments as $cmt)
+            {
+                if($cmt == null)
+                continue;
+                $cmt_tmp = new \stdClass();
+                $cmt_tmp->username = $cmt->username;
+                $cmt_tmp->name = $cmt->user->name;
+                $cmt_tmp->avatar = $cmt->user->profile->avatar;
+                $cmt_tmp->comment = $cmt->comment;
+                array_push($result,$cmt_tmp);
+            }
+
+            return $this->sendSuccess($result);
+        }catch(Exception $e){
+            return $this->sendFailed();
         }
     }
 }
