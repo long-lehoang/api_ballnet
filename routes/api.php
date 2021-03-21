@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\FollowController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,12 +28,18 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::group(['middleware' => 'auth:api'], function() {
     //user
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/friends', [FriendController::class, 'index']);
     Route::get('profiles/{id}', [AuthController::class, 'getProfile']);
     Route::post('/delete', [AuthController::class, 'delete']);
     Route::post('/password', [AuthController::class, 'changePassword']);
     Route::post('profiles/{id}', [AuthController::class, 'updateProfile']);
-
+    
+    //friend
+    Route::get('/friends', [FriendController::class, 'index']);
+    Route::get('/friends/{id}/count', [FriendController::class, 'count']);
+    
+    //follow
+    Route::get('/follows/{id}/count', [FollowController::class, 'count']);
+    
     //post
     Route::apiResource('posts', PostController::class);
     Route::group(['prefix' => '/posts'], function() {

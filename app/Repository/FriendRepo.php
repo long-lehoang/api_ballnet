@@ -42,4 +42,19 @@ class FriendRepo extends BaseRepository
             return $this->sendFailed();
         }
     }
+
+    /**
+     * Count friends of user
+     * 
+     * @param int user_id
+     * @return int 
+     */
+    public function count($user_id){
+        try{
+            $count = $this->_model::where("user_id",$user_id)->count();
+            return $this->sendSuccess($count);
+        }catch(Exception $e){
+            return $this->sendFailed();
+        }
+    }
 }
