@@ -176,16 +176,15 @@ class PostRepo extends BaseRepository{
         try{
             $post = $this->find($post_id);
             $comments = $post->comments;
-
             $result = [];
             foreach($comments as $cmt)
             {
                 if($cmt == null)
                 continue;
                 $cmt_tmp = new \stdClass();
-                $cmt_tmp->username = $cmt->username;
+                $cmt_tmp->username = $cmt->user->username;
                 $cmt_tmp->name = $cmt->user->name;
-                $cmt_tmp->avatar = $cmt->user->profile->avatar;
+                $cmt_tmp->avatar = $cmt->user->info == null ? null : $cmt->user->info->avatar;
                 $cmt_tmp->comment = $cmt->comment;
                 array_push($result,$cmt_tmp);
             }

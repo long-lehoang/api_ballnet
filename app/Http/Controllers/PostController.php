@@ -52,7 +52,7 @@ class PostController extends Controller
 
         $result = $this->postRepo->getPosts();
         if($result['success']){
-            return $this->sendResponse($result);
+            return $this->sendResponse($result['data']);
         }else{
             return $this->sendError();
         }
@@ -87,8 +87,8 @@ class PostController extends Controller
             //create image
             if($request->hasFile('images')){
                 $fileInputs = $request->file('images');
-                $image = $this->imageRepo->upload($fileInputs);
-                if(!$image)
+                $image = $this->imageRepo->upload($post_id, $fileInputs);
+                if(!$image['success'])
                 return $this->sendError();
             }
 
@@ -273,7 +273,7 @@ class PostController extends Controller
     {
         $user = Auth::guard('api')->user();
         try{
-            $this->commentRepo->create([
+            $this->commentRepo->forceCreate([
                 "post_id" => $id,
                 "user_id" => $user->id,                
                 "comment" => $request->comment
@@ -293,7 +293,7 @@ class PostController extends Controller
     {
         $result = $this->postRepo->getComments($post_id);
         if($result['success']){
-            return $this->sendResponse($result);
+            return $this->sendResponse($result['data']);
         }else{
             return $this->sendError();
         }

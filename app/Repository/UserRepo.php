@@ -102,13 +102,13 @@ class UserRepo extends BaseRepository{
      */
     public function updateProfile($request){
         $user = Auth::guard('api')->user();
-        if(!empty($request->first_name)) $user->first_name = $request->first_name;
-        if(!empty($request->last_name)) $user->last_name = $request->last_name;
-        if(!empty($request->tel)) $user->tel = $request->tel;
-        if(!empty($request->address)) $user->address = $request->address;
-        if(!empty($request->email)) $user->email = $request->email;
+        if(!empty($request->name)) $user->name = $request->name;
+        if(!empty($request->username)) $user->username = $request->username;
+        // if(!empty($request->tel)) $user->tel = $request->tel;
+        // if(!empty($request->address)) $user->address = $request->address;
+        // if(!empty($request->email)) $user->email = $request->email;
         if($user->save()){
-            return $this->sendSuccess();
+            return $this->sendSuccess($user);
         }else{
             return $this->sendFailed();
         }
@@ -135,6 +135,50 @@ class UserRepo extends BaseRepository{
             return $this->sendFailed("No Info");
         }else{
             return $this->sendSuccess($info);
+        }
+    }
+
+    public function deleteUser()
+    {
+        try{
+            $user = Auth::guard('api')->user();
+
+            $user->token()->revoke();
+            $user->info()->delete();
+            $user->delete();
+            return $this->sendSuccess();
+        }catch(Exception $e){
+            return $this->sendFailed();
+        }
+    }
+
+    /**
+     * Check username
+     * 
+     * @param string username
+     * @return bool
+     */
+    public function checkUsername($username){
+        try{
+            $this->_model::where("username",$username)->firstOrFail();
+            return $this->sendSuccess();
+        }catch(Exception $e){   
+            return $this->sendFailed();
+        }
+    }
+
+    /**
+     * Check email exists
+     * 
+     * @param string email
+     * @return bool
+     */
+    public function checkEmail($email){
+        try{
+            $this->_model::where("email",$email)->firstOrFail();
+            return $this->sendSuccess();
+        }catch(Exception $e){
+            return $this->sendFailed();
         }
     }
 }

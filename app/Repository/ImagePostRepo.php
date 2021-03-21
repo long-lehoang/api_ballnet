@@ -30,7 +30,7 @@ class ImagePostRepo extends BaseRepository{
             {
                 $fileName = uniqid().time(). '.' .$file->getClientOriginalExtension();  //Provide the file name with extension 
                 $file->move(public_path().'/uploads/images/', $fileName);  
-                $this->imageRepo->create([
+                $this->create([
                     "image" => '/uploads/images/'.$fileName,
                     "post_id" => $post_id
                 ]);

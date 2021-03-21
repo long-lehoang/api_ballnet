@@ -43,6 +43,16 @@ abstract class BaseRepository
     }
 
     /**
+     * Create
+     * @param array $attributes
+     * @return mixed
+     */
+    public function forceCreate($params)
+    {
+        return $this->_model->Create($params);
+    }
+
+    /**
      * Update
      * @param $id
      * @param array $attributes

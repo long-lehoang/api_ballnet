@@ -23,7 +23,7 @@ class FriendController extends Controller
     {
         $result = $this->repo->getFriends();
         if($result['success']){
-            return $this->sendResponse($result);
+            return $this->sendResponse($result['data']);
         }else{
             return $this->sendError();
         }

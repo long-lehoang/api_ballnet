@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest as LoginApiRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest as ChangePasswordApiRequest;
-use App\Http\Requests\Auth\EditEmployeeRequest;
+use App\Http\Requests\Auth\EditProfileRequest;
 use App\Http\Requests\Auth\SignupRequest;
+use App\Http\Requests\Auth\DeleteRequest;
 use App\Repository\UserRepo;
+use App\Repository\InfoRepo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +28,9 @@ abstract class AUTHENTICATION
     const SIGNUP = [
         'SUCCESS' => 'Register is successful',
         'FAILED' => 'Signup is failure'
+    ];
+    const DELETE = [
+        'FAILED' => 'Password or email is incorrect'
     ];
 }
 
@@ -59,10 +64,12 @@ abstract class AUTHENTICATION
 class AuthController extends Controller
 {
     protected $repo;
+    protected $infoRepo;
 
-    public function __construct(UserRepo $repo)
+    public function __construct(UserRepo $repo, InfoRepo $infoRepo)
     {
         $this->repo = $repo;
+        $this->infoRepo = $infoRepo;
     }
 
     /**
@@ -82,14 +89,14 @@ class AuthController extends Controller
     }
 
     /**
-     * Update Employee Profile
+     * Update User Profile
      *
      * @return [json] message
      */
-    function updateProfile(EditEmployeeRequest $request) {
+    function updateProfile(EditProfileRequest $request) {
         $result = $this->repo->updateProfile($request);
         if($result['success']){
-            return $this->sendResponse();
+            return $this->sendResponse($result['data']);
         }
         return $this -> sendError();
     }
@@ -135,11 +142,68 @@ class AuthController extends Controller
         $user['password'] = Hash::make($user['password']);
         
         $result = $this->repo->create($user);
+
+        $info = $this->infoRepo->create([
+            "user_id"=>$result->id,
+            'sex' => "male",
+            'phone' => "",
+        ]);
+
         if ($result) {
             return $this->sendResponse(null,AUTHENTICATION::SIGNUP['SUCCESS']);
         }else {
             return $this->sendError(null,AUTHENTICATION::SIGNUP['FAILED']);
         }
 
+    }
+
+    /**
+     * Delete account
+     * 
+     * @return [json] message
+     */
+    public function delete(DeleteRequest $request){
+        if(Auth::guard('api')->user()->email != $request->email){
+            return $this->sendError(null,AUTHENTICATION::DELETE['FAILED']);
+        }
+        if($this->repo->authByPassword($request->password)){
+            $result = $this->repo->deleteUser();
+            if($result['success']){
+                $this->sendResponse();
+            }else{
+                $this->sendError();
+            }
+        }else{
+            return $this->sendError(null,AUTHENTICATION::DELETE['FAILED']);
+        }
+    }
+
+    /**
+     * Get profile
+     * 
+     * @return [json]
+     */
+    public function getProfile($id){
+        $user = $this->repo->find($id);
+        $profile = $user->info;
+        if($profile){
+            return $this->sendResponse($profile);
+        }else{
+            return $this->sendError();
+        }
+    }
+
+    /**
+     * Check username
+     * 
+     * @return [json]
+     */
+    public function checkUsername($username){
+        $result = $this->repo->checkUsername($username);
+        if(!$result['success']){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
     }
 }
