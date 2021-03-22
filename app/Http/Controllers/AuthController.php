@@ -143,12 +143,16 @@ class AuthController extends Controller
         
         $result = $this->repo->create($user);
 
-        $info = $this->infoRepo->create([
-            "user_id"=>$result->id,
-            'sex' => "male",
-            'phone' => "",
-        ]);
-
+        try{
+            $info = $this->infoRepo->create([
+                "user_id"=>$result->id,
+                "sex" => "male",
+                "phone" => ""
+            ]);
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+        
         if ($result) {
             return $this->sendResponse(null,AUTHENTICATION::SIGNUP['SUCCESS']);
         }else {

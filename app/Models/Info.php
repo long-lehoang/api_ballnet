@@ -30,9 +30,17 @@ class Info extends Model
         'phone',
         'status',
         'overview',
-        'cover'
+        'cover',
+        'points'
     ];
-
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'points' => 0,
+    ];
     /**
      * Get the user that owns the info.
      */
