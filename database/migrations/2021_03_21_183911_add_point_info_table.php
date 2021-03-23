@@ -14,7 +14,7 @@ class AddPointInfoTable extends Migration
     public function up()
     {
         Schema::table('infos', function (Blueprint $table) {
-            $table->float('points')->defalt(0);
+            $table->float('points')->default(0);
         });
     }
 
