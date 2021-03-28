@@ -96,45 +96,18 @@ class UserRepo extends BaseRepository{
     }
 
     /**
-     * Update Profile
-     * 
-     * @return [json] message
-     */
-    public function updateProfile($request){
-        $user = Auth::guard('api')->user();
-        if(!empty($request->name)) $user->name = $request->name;
-        if(!empty($request->username)) $user->username = $request->username;
-        // if(!empty($request->tel)) $user->tel = $request->tel;
-        // if(!empty($request->address)) $user->address = $request->address;
-        // if(!empty($request->email)) $user->email = $request->email;
-        if($user->save()){
-            return $this->sendSuccess($user);
-        }else{
-            return $this->sendFailed();
-        }
-    }
-
-    /**
      * Get profile
      * 
-     * @param id
+     * @param string username
      * @return [json] profile
      */
-    public function getProfile($id)
+    public function findUser($username)
     {
-        $id = $id == null ? Auth::guard('api')->user()->id : $id ;
-
-        $user = $this->find($id);
-
-        if($user == null)
-            return $this->sendFailed("Account Was Not Found ");
-
-        $info = $user->info();
-
-        if($info == null){
-            return $this->sendFailed("No Info");
-        }else{
-            return $this->sendSuccess($info);
+        try{
+            $user = $this->_model::where("username", $username)->firstOrFail();
+            $this->sendSuccess($user);
+        }catch(Exception $e){
+            return $this->sendError();
         }
     }
 

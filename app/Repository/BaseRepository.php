@@ -62,7 +62,7 @@ abstract class BaseRepository
         $result = $this->find($id);
         if ($result) {
             $result->update($params);
-            return $result;
+            return $result->fresh();
         }
 
         return false;

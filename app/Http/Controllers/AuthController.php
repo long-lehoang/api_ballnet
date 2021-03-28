@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\LoginRequest as LoginApiRequest;
 use App\Http\Requests\Auth\ChangePasswordRequest as ChangePasswordApiRequest;
-use App\Http\Requests\Auth\EditProfileRequest;
 use App\Http\Requests\Auth\SignupRequest;
 use App\Http\Requests\Auth\DeleteRequest;
 use App\Repository\UserRepo;
@@ -88,19 +87,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Update User Profile
-     *
-     * @return [json] message
-     */
-    function updateProfile(EditProfileRequest $request) {
-        $result = $this->repo->updateProfile($request);
-        if($result['success']){
-            return $this->sendResponse($result['data']);
-        }
-        return $this -> sendError();
-    }
-
      /**
      * Change Password
      *
@@ -179,21 +165,6 @@ class AuthController extends Controller
             }
         }else{
             return $this->sendError(null,AUTHENTICATION::DELETE['FAILED']);
-        }
-    }
-
-    /**
-     * Get profile
-     * 
-     * @return [json]
-     */
-    public function getProfile($id){
-        $user = $this->repo->find($id);
-        $profile = $user->info;
-        if($profile){
-            return $this->sendResponse($profile);
-        }else{
-            return $this->sendError();
         }
     }
 

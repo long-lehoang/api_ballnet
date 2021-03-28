@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\FollowController;
@@ -19,19 +20,26 @@ use App\Http\Controllers\FollowController;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::group(['middleware' => 'auth:api'], function() {
     //user
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('profiles/{id}', [AuthController::class, 'getProfile']);
     Route::post('/delete', [AuthController::class, 'delete']);
     Route::post('/password', [AuthController::class, 'changePassword']);
-    Route::post('profiles/{id}', [AuthController::class, 'updateProfile']);
+    
+    //profile
+    Route::group(['prefix' => '/profiles'], function(){
+        Route::get('/{username}', [ProfileController::class, 'show']);
+        Route::post('/name', [ProfileController::class, 'updateName']);
+        Route::post('/username', [ProfileController::class, 'updateUsername']);
+        Route::post('/address', [ProfileController::class, 'updateAddress']);
+        Route::post('/overview', [ProfileController::class, 'updateOverview']);
+        Route::post('/email', [ProfileController::class, 'updateEmail']);
+        Route::post('/phone', [ProfileController::class, 'updatePhone']);
+        Route::post('/birthday', [ProfileController::class, 'updateBirthday']);
+
+    });
     
     //friend
     Route::get('/friends', [FriendController::class, 'index']);
