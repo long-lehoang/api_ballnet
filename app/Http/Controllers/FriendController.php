@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repository\FriendRepo;
+use App\Repository\UserRepo;
 
 class FriendController extends Controller
 {
     //
     protected $repo;
-
-    public function __construct(FriendRepo $repo)
+    protected $user;
+    
+    public function __construct(FriendRepo $repo, UserRepo $user)
     {
+        $this->user = $user;
         $this->repo = $repo;
     }
 
@@ -34,10 +37,11 @@ class FriendController extends Controller
      * 
      * @return [json]
      */
-    public function count($id){
-        $result = $this->repo->count($id);
-        if($result['success']){
-            return $this->sendResponse($result['data']);
+    public function count($username){
+        $user = $this->user->findUser($username);
+        if($user['success']){
+            $friends = $user['data']->friends()->count();
+            return $this->sendResponse($friends);
         }
         else{
             return $this->sendError();

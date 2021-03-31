@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cookie;
 
 class UserRepo extends BaseRepository{
     /**
@@ -47,7 +48,11 @@ class UserRepo extends BaseRepository{
                 'token_type' => 'Bearer',
                 'expires_at' => Carbon::parse(
                     $tokenResult->token->expires_at
-                )->toDateTimeString()];
+                )->toDateTimeString()
+            ];
+            $expire_at = $tokenResult->token->expires_at;
+            $minutes = $expire_at->diffInMinutes(Carbon::now());
+            // setcookie('access_token',$tokenResult->accessToken,$minutes);
             return $this->sendSuccess($responseData);
         }else{
             return $this->sendFailed();
@@ -105,7 +110,7 @@ class UserRepo extends BaseRepository{
     {
         try{
             $user = $this->_model::where("username", $username)->firstOrFail();
-            $this->sendSuccess($user);
+            return $this->sendSuccess($user);
         }catch(Exception $e){
             return $this->sendError();
         }

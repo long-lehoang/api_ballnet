@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\SportController;
 
 
 /*
@@ -27,7 +28,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/delete', [AuthController::class, 'delete']);
     Route::post('/password', [AuthController::class, 'changePassword']);
-    
+    Route::get('/user/{username}', [AuthController::class, 'show']);
     //profile
     Route::group(['prefix' => '/profiles'], function(){
         Route::get('/{username}', [ProfileController::class, 'show']);
@@ -43,10 +44,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     
     //friend
     Route::get('/friends', [FriendController::class, 'index']);
-    Route::get('/friends/{id}/count', [FriendController::class, 'count']);
+    Route::get('/friends/{username}/count', [FriendController::class, 'count']);
     
     //follow
-    Route::get('/follows/{id}/count', [FollowController::class, 'count']);
+    Route::get('/follows/{username}/count', [FollowController::class, 'count']);
     
     //post
     Route::apiResource('posts', PostController::class);
@@ -61,6 +62,13 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/{id}', [PostController::class, 'update']);
         Route::get('/{id}/comment', [PostController::class, 'getComments']);
     });
+    
+    //sport
+    Route::group(['prefix' => '/sports'], function() {
+        Route::get('/{username}', [SportController::class, 'show']);
+        Route::get('/{username}/main', [SportController::class, 'getMainSport']);
+    });
+    
 });
 
 Route::get('/username/{username}', [AuthController::class, 'checkUsername']);

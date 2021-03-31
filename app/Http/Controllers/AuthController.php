@@ -11,6 +11,7 @@ use App\Repository\InfoRepo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 
 abstract class AUTHENTICATION
 {
@@ -72,6 +73,20 @@ class AuthController extends Controller
     }
 
     /**
+     * Show
+     * 
+     */
+    public function show($username)
+    {
+        $user = $this->repo->findUser($username);
+        if($user['success']){
+            return $this->sendResponse($user['data']);
+        }else{
+            return $this->sendError();
+        }
+    }
+    
+    /**
      * Login function
      * 
      * @return [json] data
@@ -112,6 +127,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         if($this->repo->revokeToken()){
+            Cookie::queue(Cookie::forget('access_token'));
             return $this -> sendResponse(null,'Success');
         }else{
             return $this -> sendError(null,"Failed");

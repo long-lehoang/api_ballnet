@@ -33,9 +33,8 @@ class ProfileController extends Controller
      */
     public function show($username){
         $user = $this->repo->findUser($username);
-        $profile = $user->info;
-        if($profile){
-            return $this->sendResponse($profile);
+        if($user['success']){
+            return $this->sendResponse($user['data']->info);
         }else{
             return $this->sendError();
         }

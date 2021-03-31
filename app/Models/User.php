@@ -66,4 +66,24 @@ class User extends Authenticatable
     {
         return $this->hasMany(Friend::class);
     }
+    
+    /**
+     * Get list friends
+     */
+    public function following()
+    {
+        return $this->hasMany(Follow::class, 'user_id');
+    }
+
+    /**
+     * Get list friends
+     */
+    public function follower()
+    {
+        return $this->hasMany(Follow::class, 'id_follow');
+    }
+    
+    public function sports(){
+        return $this->hasMany(Sport::class);
+    }
 }
