@@ -39,7 +39,8 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/email', [ProfileController::class, 'updateEmail']);
         Route::post('/phone', [ProfileController::class, 'updatePhone']);
         Route::post('/birthday', [ProfileController::class, 'updateBirthday']);
-
+        Route::post('/avatar', [ProfileController::class, 'updateAvatar']);
+        Route::post('/cover', [ProfileController::class, 'updateCover']);
     });
     
     //friend

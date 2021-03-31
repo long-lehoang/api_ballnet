@@ -13,17 +13,19 @@ use App\Http\Requests\Profile\OverviewRequest;
 use App\Http\Requests\Profile\NameRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Profile\UsernameRequest;
+use App\Contracts\Image;
 use Exception;
 
 class ProfileController extends Controller
 {
-    protected $repo;
+    protected $userRepo;
     protected $infoRepo;
-
-    public function __construct(UserRepo $repo, InfoRepo $infoRepo)
+    protected $imageService;
+    public function __construct(UserRepo $userRepo, InfoRepo $infoRepo, Image $imageService)
     {
-        $this->repo = $repo;
+        $this->userRepo = $userRepo;
         $this->infoRepo = $infoRepo;
+        $this->imageService = $imageService;
     }
     
     /**
@@ -32,7 +34,7 @@ class ProfileController extends Controller
      * @return [json]
      */
     public function show($username){
-        $user = $this->repo->findUser($username);
+        $user = $this->userRepo->findUser($username);
         if($user['success']){
             return $this->sendResponse($user['data']->info);
         }else{
@@ -49,7 +51,7 @@ class ProfileController extends Controller
     {
         $user = Auth::guard('api')->user();
         try{
-            $result = $this->repo->update($user->id, $param);
+            $result = $this->userRepo->update($user->id, $param);
         }catch(Exception $e){
             return $this->sendError();
         }
@@ -156,4 +158,70 @@ class ProfileController extends Controller
     {
         return $this->updateProfile($request->all());
     }
+
+    /**
+     * Update avatar
+     * 
+     */
+    public function updateAvatar(Request $request)
+    {
+        if($request->hasFile('image')){
+            try{
+                $user = Auth::guard('api')->user();
+                $profile = $user->info;
+                //upload image
+                $img = $request->file('image');
+                $result = $this->imageService->upload($img);
+                if(!$result['success']){
+                    return $this->sendError(null, "Can't upload image");
+                }
+                //delete image
+                $url = $profile->avatar;
+                if(!empty($url)){
+                    $this->imageService->delete($url);
+                }
+                //update DB
+                $profile->avatar = $result['url'];
+                $profile->save();
+                return $this->sendResponse($profile);
+            }catch(Exception $e){
+                return $this->sendError(null, "Server Error", 500);
+            }
+        }
+        return $this->sendError(null, "Image Not Found");
+    }
+
+    /**
+     * Update cover
+     * 
+     * 
+     */
+    public function updateCover(Request $request)
+    {                
+        if($request->hasFile('image')){
+            try{
+                $user = Auth::guard('api')->user();
+                $profile = $user->info;
+                // upload image
+                $img = $request->file('image');
+                $result = $this->imageService->upload($img);
+                if(!$result['success']){
+                    return $this->sendError(null, "Can't upload image");
+                }
+                //delete image
+                $url = $profile->cover;
+                if(!empty($url)){
+                    $this->imageService->delete($url);
+                }
+                //update DB
+                $profile->cover = $result['url'];
+                $profile->save();
+                return $this->sendResponse($profile);
+            }catch(Exception $e){
+                return $this->sendError(null, "Server Error", 500);
+            }
+        }
+        return $this->sendError(null, "Image Not Found");
+    }
+    
 }

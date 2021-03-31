@@ -112,7 +112,7 @@ class UserRepo extends BaseRepository{
             $user = $this->_model::where("username", $username)->firstOrFail();
             return $this->sendSuccess($user);
         }catch(Exception $e){
-            return $this->sendError();
+            return $this->sendFailed();
         }
     }
 
