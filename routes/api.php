@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
         Route::post('/{id}', [PostController::class, 'update']);
         Route::get('/{id}/comment', [PostController::class, 'getComments']);
+        Route::get('/self/{username}', [PostController::class, 'getPostByUser']);
     });
     
     //sport

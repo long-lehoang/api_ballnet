@@ -27,7 +27,7 @@ class PostRepo extends BaseRepository{
         $posts = [] ;
 
         try{
-            $friends = $user->friends;
+            $friends = !empty($user->friends) ? $user->friends : [];
             foreach($friends as $friend){
                 $post = $friend->friend->posts;
                 
@@ -40,7 +40,7 @@ class PostRepo extends BaseRepository{
             return $this->sendFailed();
         }
     }
-
+    
     /**
      * Get author of post
      * @param $id

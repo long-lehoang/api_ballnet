@@ -16,6 +16,8 @@ use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Log;
+use App\Contracts\Post as PostService;
+
 use Image;
 use Exception;
 
@@ -27,9 +29,9 @@ class PostController extends Controller
     protected $likeRepo;
     protected $commentRepo;
     protected $shareRepo;
+    protected $postService;
 
-
-    public function __construct(PostRepo $postRepo, TagRepo $tagRepo, ImagePostRepo $imageRepo, LikeRepo $likeRepo, CommentRepo $commentRepo, ShareRepo $shareRepo)
+    public function __construct(PostService $post, PostRepo $postRepo, TagRepo $tagRepo, ImagePostRepo $imageRepo, LikeRepo $likeRepo, CommentRepo $commentRepo, ShareRepo $shareRepo)
     {
         $this->postRepo = $postRepo;
         $this->tagRepo = $tagRepo;
@@ -37,7 +39,7 @@ class PostController extends Controller
         $this->likeRepo = $likeRepo;
         $this->commentRepo = $commentRepo;
         $this->shareRepo = $shareRepo;
-
+        $this->postService = $post;
         // $this->authorizeResource(Post::class,'post');
 
     }
@@ -348,6 +350,22 @@ class PostController extends Controller
         $result = $this->shareRepo->unShare($id,$user->id);
         if($result['success']){
             return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
+    }
+
+    /**
+     * Get Posts by username
+     * 
+     * @param string username
+     * @return
+     */
+    public function getPostByUser($username)
+    {
+        $result = $this->postService->getPostByUser($username);
+        if($result['success']){
+            return $this->sendResponse($result['data']);
         }else{
             return $this->sendError();
         }
