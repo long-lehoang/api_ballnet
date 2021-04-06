@@ -42,47 +42,72 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    
     /**
-     * Get info of user
+     * info
+     *
+     * @return void
      */
     public function info()
     {
         return $this->hasOne(Info::class);
     }
-
+    
     /**
-     * Get posts of user
-     * 
+     * posts
+     *
+     * @return void
      */
     public function posts()
     {
         return $this->hasMany(Post::class);
     }
+    
     /**
-     * Get list friends
+     * friends
+     *
+     * @return void
      */
     public function friends()
     {
         return $this->hasMany(Friend::class);
     }
+        
+    /**
+     * friendRequests
+     *
+     * @return void
+     */
+    public function friendRequests()
+    {
+        return $this->hasMany(FriendRequest::class);
+    }
     
     /**
-     * Get list friends
+     * following
+     *
+     * @return void
      */
     public function following()
     {
         return $this->hasMany(Follow::class, 'user_id');
     }
-
+    
     /**
-     * Get list friends
+     * follower
+     *
+     * @return void
      */
     public function follower()
     {
         return $this->hasMany(Follow::class, 'id_follow');
     }
-    
+        
+    /**
+     * sports
+     *
+     * @return void
+     */
     public function sports(){
         return $this->hasMany(Sport::class);
     }

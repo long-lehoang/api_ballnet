@@ -177,6 +177,7 @@ return [
         App\Providers\ImageServiceProvider::class,
         App\Providers\PostServiceProvider::class,
         App\Providers\PeopleServiceProvider::class,
+        App\Providers\FriendServiceProvider::class,
     ],
 
     /*

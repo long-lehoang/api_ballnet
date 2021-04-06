@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\FriendRequestController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\SportController;
 use App\Http\Controllers\NotificationController;
@@ -49,7 +50,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::group(['prefix' => '/friends'], function(){
         Route::get('/', [FriendController::class, 'index']);
         Route::get('/{username}/count', [FriendController::class, 'count']);
+    });
 
+    //friend_request
+    Route::group(['prefix' => '/friend_requests'], function(){
+        Route::get('/', [FriendRequestController::class, 'index']);
+        Route::post('/', [FriendRequestController::class, 'store']);
+        Route::delete('/{id}', [FriendRequestController::class, 'delete']);
+        Route::post('/{id}/accept', [FriendRequestController::class, 'acceptRequest']);
     });
 
     Route::get('/people', [PeopleController::class, 'index']);

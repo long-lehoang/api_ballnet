@@ -12,9 +12,9 @@ use App\Repository\ShareRepo;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Post;
-use App\Http\Requests\CreatePostRequest;
-use App\Http\Requests\EditPostRequest;
-use App\Http\Requests\CommentRequest;
+use App\Http\Requests\Post\CreatePostRequest;
+use App\Http\Requests\Post\EditPostRequest;
+use App\Http\Requests\Post\CommentRequest;
 use Illuminate\Support\Facades\Log;
 use App\Contracts\Post as PostService;
 

@@ -2,6 +2,7 @@
 namespace App\Repository;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 
 abstract class BaseRepository
 {
@@ -59,13 +60,13 @@ abstract class BaseRepository
      * @return bool|mixed
      */
     public function update($id, $params){
-        $result = $this->find($id);
-        if ($result) {
+        try{
+            $result = $this->find($id);
             $result->update($params);
             return $result->fresh();
+        }catch(Exception $e){
+            return false;
         }
-
-        return false;
     }
 
     /**
@@ -75,14 +76,13 @@ abstract class BaseRepository
      * @return bool
      */
     public function delete($id){
-        $result = $this->find($id);
-        if ($result) {
+        try{
+            $result = $this->find($id);
             $result->delete();
-
             return true;
+        }catch(Exception $e){
+            return false;
         }
-
-        return false;
     }
 
     /**

@@ -61,7 +61,7 @@ class ShareRepo extends BaseRepository{
     {
         try{
             $result = $this->_model::withTrashed()->where($data)->first();
-            if($result){
+            if(!is_null($result)){
                 $result->restore();
             }else{
                 $this->_model::updateOrCreate($data);

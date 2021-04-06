@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\FriendRequest;
 
 use App\Http\Requests\BaseRequest;
 
-class CommentRequest extends BaseRequest
+class AddFriendRequest extends BaseRequest
 {
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,8 +14,7 @@ class CommentRequest extends BaseRequest
     public function rules()
     {
         return [
-            //
-            "comment" => "required"
+            "username" => "required"
         ];
     }
 }

@@ -8,10 +8,19 @@ use App\Repository\UserRepo;
 
 class FriendController extends Controller
 {
-    //
-    protected $repo;
-    protected $user;
+
     
+    /**
+     * __construct
+     *
+     * @param  mixed $repo
+     * @param  mixed $user
+     * @param  mixed $friendService
+     * @return void
+     */
+    protected $repo;    
+    protected $user;
+
     public function __construct(FriendRepo $repo, UserRepo $user)
     {
         $this->user = $user;
@@ -31,11 +40,12 @@ class FriendController extends Controller
             return $this->sendError();
         }
     }
-
+    
     /**
-     * Count friends
-     * 
-     * @return [json]
+     * count
+     *
+     * @param  mixed $username
+     * @return void
      */
     public function count($username){
         $user = $this->user->findUser($username);
