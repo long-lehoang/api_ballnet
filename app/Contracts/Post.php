@@ -2,6 +2,12 @@
 
 namespace App\Contracts;
 
-interface Post{
+interface Post{    
+    /**
+     * getPostByUser
+     *
+     * @param  mixed $username
+     * @return void
+     */
     public function getPostByUser($username);
 }

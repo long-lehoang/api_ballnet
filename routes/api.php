@@ -8,6 +8,8 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\SportController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PeopleController;
 
 
 /*
@@ -44,8 +46,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     });
     
     //friend
-    Route::get('/friends', [FriendController::class, 'index']);
-    Route::get('/friends/{username}/count', [FriendController::class, 'count']);
+    Route::group(['prefix' => '/friends'], function(){
+        Route::get('/', [FriendController::class, 'index']);
+        Route::get('/{username}/count', [FriendController::class, 'count']);
+
+    });
+
+    Route::get('/people', [PeopleController::class, 'index']);
     
     //follow
     Route::get('/follows/{username}/count', [FollowController::class, 'count']);
@@ -71,6 +78,9 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/{username}/main', [SportController::class, 'getMainSport']);
     });
     
+    //notification
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read', [NotificationController::class, 'readAll']);
 });
 
 Route::get('/username/{username}', [AuthController::class, 'checkUsername']);

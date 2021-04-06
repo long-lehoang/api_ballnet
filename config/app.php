@@ -176,6 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ImageServiceProvider::class,
         App\Providers\PostServiceProvider::class,
+        App\Providers\PeopleServiceProvider::class,
     ],
 
     /*

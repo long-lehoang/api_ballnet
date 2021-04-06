@@ -109,7 +109,12 @@ class PostController extends Controller
     public function show($id)
     {
         // $this->authorize('view');
-
+        //get post
+        try{
+            $post = $this->postRepo->find($id);
+        }catch(Exception $e){
+            return $this->response404();
+        }
         //get info author
         $author = $this->postRepo->getAuthor($id);
         if(!$author['success'])
@@ -144,6 +149,7 @@ class PostController extends Controller
 
         //return result
         $result = [
+            'post' => $post,
             'author' => $author['data'], 
             'like' => $like['data'], 
             'comment' => $comment['data'], 
@@ -236,7 +242,7 @@ class PostController extends Controller
     {
         try{
             $user = Auth::guard('api')->user();
-            $this->likeRepo->create([
+            $this->likeRepo->updateOrCreate([
                 "post_id" => $id,
                 "user_id" => $user->id
             ]);
@@ -327,7 +333,7 @@ class PostController extends Controller
     {
         try{
             $user = Auth::guard('api')->user();
-            $this->shareRepo->create([
+            $this->shareRepo->updateOrCreate([
                 "post_id" => $id,
                 "user_id" => $user->id
             ]);

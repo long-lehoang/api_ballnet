@@ -56,4 +56,18 @@ class LikeRepo extends BaseRepository{
             return $this->sendFailed($e);
         }
     }
+
+    public function updateOrCreate($data)
+    {
+        try{
+            $result = $this->_model::withTrashed()->where($data)->first();
+            if($result){
+                $result->restore();
+            }else{
+                $this->_model::updateOrCreate($data);
+            }
+        }catch(Exception $e){
+            return $this->sendFailed();
+        }
+    }
 }
