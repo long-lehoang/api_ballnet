@@ -47,9 +47,9 @@ class FriendRequest extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'user_id' => $this->user->id,
             'avatar' => $this->user->info->avatar,
             'username' => $this->user->username,
+            'name' => $this->user->name,
             'friend_request' => $this->friendRequest->id,
         ];
     }
