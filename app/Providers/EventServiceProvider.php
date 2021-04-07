@@ -10,6 +10,8 @@ use App\Observers\LikeObserver;
 use App\Models\Like;
 use App\Observers\FriendRequestObserver;
 use App\Models\FriendRequest;
+use App\Observers\FriendObserver;
+use App\Models\Friend;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -33,5 +35,6 @@ class EventServiceProvider extends ServiceProvider
     {
         Like::observe(LikeObserver::class);
         FriendRequest::observe(FriendRequestObserver::class);
+        Friend::observe(FriendObserver::class);
     }
 }
