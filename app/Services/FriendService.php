@@ -57,7 +57,7 @@ class FriendService implements Friend{
         }
 
         //check duplicate friend
-        $friendship = $this->fRepo->checkFriend($friend['data']->id);
+        $friendship = $this->fRepo->friendship($friend['data']->id);
         if(isset($friendship['error'])){
             return [
                 'success' => false,
@@ -81,7 +81,8 @@ class FriendService implements Friend{
             return [
                 'success' => true,
                 'message' => 'success',
-                'code' => 200
+                'code' => 200,
+                'data' => $result['data']
             ];
         }else{
             return [

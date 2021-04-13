@@ -63,7 +63,7 @@ class FriendRepo extends BaseRepository
             $user = Auth::guard('api')->user();
             $friend = $user->friends()->where('id_friend',$id)->first();
             
-            return is_null($friend);
+            return !is_null($friend);
         }catch(Exception $e){
             return [
                 "error" => true,

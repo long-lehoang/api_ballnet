@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Friend;
+use App\Notifications\NewFriend;
 
 class FriendObserver
 {

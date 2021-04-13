@@ -8,6 +8,10 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use App\Observers\LikeObserver;
 use App\Models\Like;
+use App\Observers\CommentObserver;
+use App\Models\Comment;
+use App\Observers\ShareObserver;
+use App\Models\Share;
 use App\Observers\FriendRequestObserver;
 use App\Models\FriendRequest;
 use App\Observers\FriendObserver;
@@ -34,6 +38,8 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Like::observe(LikeObserver::class);
+        Comment::observe(CommentObserver::class);
+        Share::observe(ShareObserver::class);
         FriendRequest::observe(FriendRequestObserver::class);
         Friend::observe(FriendObserver::class);
     }

@@ -89,6 +89,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     //notification
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/read', [NotificationController::class, 'readAll']);
-});
+    Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
+}); 
 
 Route::get('/username/{username}', [AuthController::class, 'checkUsername']);

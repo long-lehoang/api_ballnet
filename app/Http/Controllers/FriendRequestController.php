@@ -46,7 +46,7 @@ class FriendRequestController extends Controller
         $result = $this->friendService->addFriend($username);
         
         if($result['success']){
-            return $this->sendResponse(null,$result['message'],$result['code']);
+            return $this->sendResponse($result['data'],$result['message'],$result['code']);
         }else{
             return $this->sendError(null,$result['message'],$result['code']);
         }

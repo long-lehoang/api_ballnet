@@ -34,4 +34,15 @@ class NotificationController extends Controller
             return $this->sendError();
         }
     }
+
+    public function delete($id)
+    {
+        try{
+            $user = Auth::guard('api')->user();
+            $user->notifications()->findOrFail($id)->delete();
+            return $this->sendResponse();
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+    }
 }

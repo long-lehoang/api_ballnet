@@ -51,6 +51,7 @@ class FriendRequest extends Notification implements ShouldQueue
             'username' => $this->user->username,
             'name' => $this->user->name,
             'friend_request' => $this->friendRequest->id,
+            'notification_id' => $this->id,
         ];
     }
 }
