@@ -56,5 +56,23 @@ class Handler extends ExceptionHandler
                 'data' => null
             ], 404);
         });
+
+        $this->renderable(function (AuthenticationException $exception, $request){
+            return response()->json([
+                'success' => false,
+                'code' => 401,
+                'message' => $exception->getMessage(),
+                'data' => null
+            ], 401);
+        });
+        $this->renderable(function (Exception $e, $request){
+            return response()->json([
+                'success' => false,
+                'code' => 500,
+                'message' => "Internal Error Server",
+                'data' => null
+            ], 500);
+        });
+
     }
 }

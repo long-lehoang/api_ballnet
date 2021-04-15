@@ -62,12 +62,24 @@ class FriendRepo extends BaseRepository
         try{
             $user = Auth::guard('api')->user();
             $friend = $user->friends()->where('id_friend',$id)->first();
-            
+
             return !is_null($friend);
         }catch(Exception $e){
             return [
                 "error" => true,
             ];
+        }
+        
+    }
+
+    public function unfriend($id){
+        $user = Auth::guard('api')->user();
+        try{
+            $friend = $this->_model::where([['id_friend',$user->id],['user_id',$id]])->orWhere([['id_friend',$id],['user_id',$user->id]])->get();
+            $friend->map->delete();
+            return $this->sendSuccess();
+        }catch(Exception $e){
+            return $this->sendFailed();
         }
         
     }

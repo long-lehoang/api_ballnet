@@ -8,6 +8,7 @@ use App\Repository\FriendRequestRepo;
 use App\Repository\FriendRepo;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\UserRepo;
+use DB;
 
 class FriendService implements Friend{    
     /**
@@ -159,6 +160,87 @@ class FriendService implements Friend{
                 'message' => 'Server Error',
                 'code' => 500
             ];
+        }
+    }
+
+    /**
+     * getFriendOfUser
+     *
+     * @param  mixed $username
+     * @return void
+     */
+    public function getFriendOfUser($username)
+    {
+        //find user
+        $user = $this->user->findUser($username);
+        if(!$user['success']){
+            //case not found username
+            return [
+                "success" => false,
+                "message" => "Not Found User",
+                "code" => 404
+            ];
+        }
+        $user = $user['data'];
+        //get current user
+        $curUser = Auth::guard('api')->user();
+        try{
+            $friends = $user->friends->map(function ($friend){
+                $user = $friend->friend;
+                $user_id = $user->id;
+                $name = $user->name;
+                $username = $user->username;
+                $avatar = $user->info->avatar;
+                $point = $user->info->points;
+                $mutualFriend = $this->countMutualFriend(Auth::guard('api')->user()->id, $user_id);
+                $isFriend = $this->fRepo->friendship($user_id);
+                return [
+                    "user_id" => $user_id,
+                    "name" => $name,
+                    "username" => $username,
+                    "avatar" => $avatar,
+                    "point" => $point,
+                    "mutual_friends" => $mutualFriend,
+                    "is_friend" => $isFriend,
+                    "created_at" => $friend->created_at,
+                ];
+            });
+            //case success
+
+            return [
+                "success" => true,
+                "data" => $friends
+            ];
+        }catch(Exception $e){
+            //case exception
+            return [
+                "success" => false,
+                "message" => "Server Error",
+                "code" => 500
+            ];
+        }
+    }
+    
+    /**
+     * countMutualFriend
+     *
+     * @param  mixed $username1
+     * @param  mixed $username2
+     * @return void
+     */
+    public function countMutualFriend($id1, $id2)
+    {
+        $count = DB::select("
+            SELECT COUNT(a.id) as num
+            FROM friends as a, friends as b 
+            WHERE a.id_friend = b.id_friend AND  a.user_id = $id1 AND b.user_id = $id2
+            GROUP BY a.user_id
+        ");
+        if (empty($count))
+        {
+            return 0;
+        }else{
+            return $count[0]->num;
         }
     }
 }

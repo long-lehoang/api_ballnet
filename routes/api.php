@@ -50,6 +50,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::group(['prefix' => '/friends'], function(){
         Route::get('/', [FriendController::class, 'index']);
         Route::get('/{username}/count', [FriendController::class, 'count']);
+        Route::get('/{username}', [FriendController::class, 'getFriendOfUser']);
+        Route::delete('/{username}', [FriendController::class, 'delete']);
     });
 
     //friend_request

@@ -41,7 +41,10 @@ class FriendRequestObserver
      */
     public function deleted(FriendRequest $friendRequest)
     {
-        //
+        $ntf = $friendRequest->user->notifications()
+        ->where('data','LIKE','%"friend_request":'.$friendRequest->id.'%')
+        ->get();
+        $ntf->map->delete();
     }
 
     /**
