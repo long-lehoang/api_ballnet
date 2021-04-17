@@ -3,21 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Requests\Team\CreateTeamRequest;
-use App\Requests\Team\UpdateTeamRequest;
+use App\Http\Requests\Team\CreateTeamRequest;
+use App\Http\Requests\Team\UpdateTeamRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
+use App\Contracts\Team;
 
 class TeamController extends Controller
 {
     protected $team;    
+    protected $teamService;
     /**
      * __construct
      *
      * @param  mixed $team
      * @return void
      */
-    function __construct(TeamRepo $team)
+    function __construct(TeamRepo $team, Team $teamService)
     {
+        $this->teamService = $teamService;
         $this->team = $team;
     }
 
@@ -100,5 +104,12 @@ class TeamController extends Controller
         $team->delete();
 
         return $this->sendResponse();
+    }
+
+    public function myTeams()
+    {
+        $team = $this->teamService->getMyTeam();
+
+        return $this->sendResponse($team);
     }
 }

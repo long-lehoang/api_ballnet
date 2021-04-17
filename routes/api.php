@@ -12,6 +12,7 @@ use App\Http\Controllers\SportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\SportCategoryController;
 
 
 /*
@@ -97,9 +98,11 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     //team
     Route::apiResource('teams', TeamController::class);
-    // Route::group(['prefix' => '/teams'], function(){
-        
-    // });
+    Route::get('/myteam', [TeamController::class, 'myTeams']); 
+
+
+    //sport category
+    Route::get('/sport_category', [SportCategoryController::class, 'index']);
 }); 
 
 Route::get('/username/{username}', [AuthController::class, 'checkUsername']);

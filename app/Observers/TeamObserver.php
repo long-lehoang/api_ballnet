@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Team;
+use App\Notifications\NewTeam;
 
 class TeamObserver
 {
@@ -14,7 +15,8 @@ class TeamObserver
      */
     public function created(Team $team)
     {
-        //
+        $user = $team->captain;
+        $user->notify(new NewTeam($team));
     }
 
     /**
