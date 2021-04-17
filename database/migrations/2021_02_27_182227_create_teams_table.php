@@ -18,10 +18,10 @@ class CreateTeamsTable extends Migration
             $table->string('name');
             $table->string('location');
             $table->string('sport');
-            $table->float('rating');
-            $table->unsignedInteger('num_match');
-            $table->string('avatar');
-            $table->string('cover');
+            $table->float('rating')->default(0);
+            $table->unsignedInteger('num_match')->default(0);
+            $table->string('avatar')->nullable();
+            $table->string('cover')->nullable();
             $table->text('overview')->nullable();
             $table->foreignId('id_captain')->constrained('users');
             $table->timestamps();

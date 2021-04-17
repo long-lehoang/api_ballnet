@@ -11,6 +11,7 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\SportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PeopleController;
+use App\Http\Controllers\TeamController;
 
 
 /*
@@ -32,6 +33,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('/delete', [AuthController::class, 'delete']);
     Route::post('/password', [AuthController::class, 'changePassword']);
     Route::get('/user/{username}', [AuthController::class, 'show']);
+
     //profile
     Route::group(['prefix' => '/profiles'], function(){
         Route::get('/{username}', [ProfileController::class, 'show']);
@@ -92,6 +94,12 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::post('/notifications/read', [NotificationController::class, 'readAll']);
     Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
+
+    //team
+    Route::apiResource('teams', TeamController::class);
+    // Route::group(['prefix' => '/teams'], function(){
+        
+    // });
 }); 
 
 Route::get('/username/{username}', [AuthController::class, 'checkUsername']);
