@@ -10,4 +10,12 @@ interface Team{
      * @return void
      */
     public function getMyTeam();
+
+    /**
+     * leave
+     *
+     * @param  mixed $teamId
+     * @return void
+     */
+    public function leave($teamId);
 }

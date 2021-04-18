@@ -17,9 +17,9 @@ class CreateMemberTeamTable extends Migration
             $table->id();
             $table->foreignID('team_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('member_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('invited_by')->constrained('users')->nullable()->onDelete('cascade');
+            $table->foreignId('invited_by')->constrained('users')->nullable()->onDelete('set null');
             $table->string('status');
-            $table->unsignedInteger('num_match');
+            $table->unsignedInteger('num_match')->default(0);
             $table->timestamps();
         });
     }

@@ -111,15 +111,30 @@ class User extends Authenticatable
     public function sports(){
         return $this->hasMany(Sport::class);
     }
-
+    
+    /**
+     * teams
+     *
+     * @return void
+     */
     public function teams(){
         return $this->hasMany(MemberTeam::class, 'member_id');
     }
-
-    public function captainTeam(){
-        return $this->hasOne(Team::class, 'id_captain');
+    
+    /**
+     * captainTeams
+     *
+     * @return void
+     */
+    public function captainTeams(){
+        return $this->hasMany(Team::class, 'id_captain');
     }
-
+    
+    /**
+     * adminTeams
+     *
+     * @return void
+     */
     public function adminTeams(){
         return $this->hasMany(AdminTeam::class, 'admin_id');
     }

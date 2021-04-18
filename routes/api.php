@@ -12,6 +12,7 @@ use App\Http\Controllers\SportController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TeamRequestController;
 use App\Http\Controllers\SportCategoryController;
 
 
@@ -98,8 +99,20 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     //team
     Route::apiResource('teams', TeamController::class);
-    Route::get('/myteam', [TeamController::class, 'myTeams']); 
+    Route::get('/myteam', [TeamController::class, 'myTeams']);
+    Route::group(['prefix' => '/teams'], function(){
+        Route::delete('/{id}/leave', [TeamController::class, 'leave']);
+    });
 
+    Route::group(['prefix' => '/team_request'], function(){
+        Route::get('/{teamId}', [TeamRequestController::class, 'requestJoinTeam']);
+        Route::get('/', [TeamRequestController::class, 'myInvitation']);
+        Route::post('/', [TeamRequestController::class, 'join']);
+        Route::post('/invite', [TeamRequestController::class, 'invite']);
+        Route::delete('/{id}', [TeamRequestController::class, 'cancel']);
+        Route::post('/{id}/approve', [TeamRequestController::class, 'approve']);
+    });
+    
 
     //sport category
     Route::get('/sport_category', [SportCategoryController::class, 'index']);

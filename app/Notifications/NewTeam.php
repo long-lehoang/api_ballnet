@@ -44,7 +44,7 @@ class NewTeam extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'id' => $this->team->id,
+            'team_id' => $this->team->id,
             'avatar' => $this->team->avatar,
             'name' => $this->team->name,
         ];

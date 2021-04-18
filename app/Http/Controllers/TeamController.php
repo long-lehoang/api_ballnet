@@ -8,6 +8,7 @@ use App\Http\Requests\Team\UpdateTeamRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
 use App\Contracts\Team;
+use App\Models\MemberTeam;
 
 class TeamController extends Controller
 {
@@ -53,8 +54,12 @@ class TeamController extends Controller
         $input["id_captain"] = $user->id;
 
         //store
-        $this->team->forceCreate($input);
-
+        $team = $this->team->forceCreate($input);
+        MemberTeam::create([
+            'team_id' => $team->id,
+            'member_id' => $user->id,
+            'status' => 'active'
+        ]);
         //response
         return $this->sendResponse();
     }
@@ -111,5 +116,16 @@ class TeamController extends Controller
         $team = $this->teamService->getMyTeam();
 
         return $this->sendResponse($team);
+    }
+
+    public function leave($id)
+    {
+        $result = $this->teamService->leave($id);
+
+        if($result['success']){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
     }
 }
