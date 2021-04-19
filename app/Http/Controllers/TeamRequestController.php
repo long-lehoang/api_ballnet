@@ -58,7 +58,14 @@ class TeamRequestController extends Controller
      */
     public function join(JoinRequest $request)
     {
-        //TODO
+        $teamId = $request->input('team_id');
+
+        $result = $this->teamRepo->join($teamId);
+        if($result['success']){
+            return $this->sendResponse($result['data']);
+        }else{
+            return $this->sendError();
+        }
     }
 
     /**
@@ -69,7 +76,16 @@ class TeamRequestController extends Controller
      */
     public function invite(InviteRequest $request)
     {
-        //TODO
+        $userId = $request->input('user_id');
+        $teamId = $request->input('team_id');
+
+        $result = $this->teamRepo->invite($userId, $teamId);
+
+        if($result['success']){
+            return $this->sendResponse($result['data']);
+        }else{
+            return $this->sendError();
+        }
     }
 
     
@@ -81,7 +97,12 @@ class TeamRequestController extends Controller
      */
     public function cancel($id)
     {
-        //TODO
+        $result = $this->teamRepo->delete($id);
+        if($result){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
     }
     
     /**
@@ -92,6 +113,11 @@ class TeamRequestController extends Controller
      */
     public function approve($id)
     {
-        //TODO
+        $result = $this->teamRepo->approve($id);
+        if($result['success']){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
     }
 }

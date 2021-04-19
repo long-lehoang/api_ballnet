@@ -3,6 +3,7 @@ namespace App\Repository;
 
 use Exception;
 use App\Repository\BaseRepository;
+use Illuminate\Support\Facades\Auth;
 
 class TeamRepo extends BaseRepository{
     /**
@@ -197,7 +198,13 @@ class TeamRepo extends BaseRepository{
             return $this->sendFailed();
         }
     }
-
+    
+    /**
+     * requestJoinTeam
+     *
+     * @param  mixed $teamId
+     * @return void
+     */
     public function requestJoinTeam($teamId)
     {
         try{
@@ -217,7 +224,12 @@ class TeamRepo extends BaseRepository{
             return $this->sendFailed();
         }
     }
-
+    
+    /**
+     * myInvitation
+     *
+     * @return void
+     */
     public function myInvitation()
     {
         $user = Auth::guard('api')->user();
@@ -235,6 +247,53 @@ class TeamRepo extends BaseRepository{
             return $this->sendSuccess($requests);
         }catch(Exception $e){
             return $this->sendError();
+        }
+    }
+    
+    /**
+     * join
+     *
+     * @param  mixed $teamId
+     * @return void
+     */
+    public function join($teamId)
+    {
+        $user = Auth::guard('api')->user();
+        try{
+            $result = $this->forceCreate([
+                'team_id' => $teamId,
+                'member_id' => $user->id,
+                'invited_by' => null,
+                'status' => 'waiting',
+            ]);
+
+            return $this->sendSuccess($result->id);
+        }catch(Exception $e){
+            return $this->sendFailed();
+        }
+    }
+    
+    /**
+     * invite
+     *
+     * @param  mixed $userId
+     * @param  mixed $teamId
+     * @return void
+     */
+    public function invite($userId, $teamId)
+    {
+        $user = Auth::guard('api')->user();
+        try{
+            $result = $this->forceCreate([
+                'team_id' => $teamId,
+                'member_id' => $user->id,
+                'invited_by' => $user->id,
+                'status' => 'waiting'
+            ]);
+
+            return $this->sendSuccess($result->id);
+        }catch(Exception $e){
+            return $this->sendFailed();
         }
     }
 }
