@@ -76,6 +76,8 @@ class TeamRequestController extends Controller
      */
     public function invite(InviteRequest $request)
     {
+        //TODO: Check permission
+
         $userId = $request->input('user_id');
         $teamId = $request->input('team_id');
 
@@ -97,6 +99,7 @@ class TeamRequestController extends Controller
      */
     public function cancel($id)
     {
+        //TODO: Check permission
         $result = $this->teamRepo->delete($id);
         if($result){
             return $this->sendResponse();
@@ -113,6 +116,7 @@ class TeamRequestController extends Controller
      */
     public function approve($id)
     {
+        //TODO: Check permission
         $result = $this->teamRepo->approve($id);
         if($result['success']){
             return $this->sendResponse();

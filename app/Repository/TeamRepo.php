@@ -260,12 +260,18 @@ class TeamRepo extends BaseRepository{
     {
         $user = Auth::guard('api')->user();
         try{
-            $result = $this->forceCreate([
-                'team_id' => $teamId,
-                'member_id' => $user->id,
-                'invited_by' => null,
-                'status' => 'waiting',
-            ]);
+            $result = $this->_model::firstOrCreate(
+                [
+                    'team_id' => $teamId,
+                    'member_id' => $user->id,
+                ],
+                [
+                    'team_id' => $teamId,
+                    'member_id' => $user->id,
+                    'invited_by' => null,
+                    'status' => 'waiting',
+                ]
+            );
 
             return $this->sendSuccess($result->id);
         }catch(Exception $e){
@@ -284,14 +290,38 @@ class TeamRepo extends BaseRepository{
     {
         $user = Auth::guard('api')->user();
         try{
-            $result = $this->forceCreate([
-                'team_id' => $teamId,
-                'member_id' => $user->id,
-                'invited_by' => $user->id,
-                'status' => 'waiting'
-            ]);
+            $result = $this->_model::firstOrCreate(
+                [
+                    'team_id' => $teamId,
+                    'member_id' => $userId,
+                ],
+                [
+                    'team_id' => $teamId,
+                    'member_id' => $userId,
+                    'invited_by' => $user->id,
+                    'status' => 'waiting'
+                ]
+            );
 
             return $this->sendSuccess($result->id);
+        }catch(Exception $e){
+            return $this->sendFailed();
+        }
+    }
+    
+    /**
+     * approve
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function approve($id)
+    {
+        try{
+            $request = $this->find($id);
+            $request->status = 'active';
+            $request->save();
+            return $this->sendSuccess();
         }catch(Exception $e){
             return $this->sendFailed();
         }
