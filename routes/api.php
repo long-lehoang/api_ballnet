@@ -104,7 +104,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::delete('/{id}/leave', [TeamController::class, 'leave']);
     });
 
-    Route::group(['prefix' => '/team_request'], function(){
+    Route::group(['prefix' => '/team_requests'], function(){
         Route::get('/{teamId}', [TeamRequestController::class, 'requestJoinTeam']);
         Route::get('/', [TeamRequestController::class, 'myInvitation']);
         Route::post('/', [TeamRequestController::class, 'join']);

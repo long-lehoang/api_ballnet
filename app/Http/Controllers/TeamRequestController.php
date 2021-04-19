@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Repository\TeamRepo;
+use App\Repository\MemberTeamRepo;
 use App\Http\Requests\TeamRequest\JoinRequest;
 use App\Http\Requests\TeamRequest\InviteRequest;
+use App\Models\Team;
 
 class TeamRequestController extends Controller
 {
     protected $teamRepo;
+    protected $memberTeamRepo;
     
     /**
      * __construct
@@ -16,9 +19,10 @@ class TeamRequestController extends Controller
      * @param  mixed $teamRepo
      * @return void
      */
-    function __construct(TeamRepo $teamRepo)
+    function __construct(TeamRepo $teamRepo, MemberTeamRepo $memberTeamRepo)
     {
         $this->teamRepo = $teamRepo;
+        $this->memberTeamRepo = $memberTeamRepo;
     }
     /**
      * Display a listing of the resource.
@@ -60,7 +64,7 @@ class TeamRequestController extends Controller
     {
         $teamId = $request->input('team_id');
 
-        $result = $this->teamRepo->join($teamId);
+        $result = $this->memberTeamRepo->join($teamId);
         if($result['success']){
             return $this->sendResponse($result['data']);
         }else{
@@ -76,12 +80,13 @@ class TeamRequestController extends Controller
      */
     public function invite(InviteRequest $request)
     {
-        //TODO: Check permission
-
         $userId = $request->input('user_id');
         $teamId = $request->input('team_id');
+        $team = $this->teamRepo->find($teamId);
 
-        $result = $this->teamRepo->invite($userId, $teamId);
+        $this->authorize('invite', $team);
+
+        $result = $this->memberTeamRepo->invite($userId, $teamId);
 
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -99,13 +104,15 @@ class TeamRequestController extends Controller
      */
     public function cancel($id)
     {
-        //TODO: Check permission
-        $result = $this->teamRepo->delete($id);
-        if($result){
-            return $this->sendResponse();
-        }else{
+        try{
+            $request = $this->memberTeamRepo->find($id);
+        }catch(Exception $e){
             return $this->sendError();
         }
+        $this->authorize('cancel', $request);
+
+        $request->delete();
+        return $this->sendResponse();
     }
     
     /**
@@ -116,7 +123,13 @@ class TeamRequestController extends Controller
      */
     public function approve($id)
     {
-        //TODO: Check permission
+        try{
+            $request = $this->memberTeamRepo->find($id);
+        }catch(Exception $e){
+            return $this->sendError();
+        }
+        $this->authorize('approve', $request);
+
         $result = $this->teamRepo->approve($id);
         if($result['success']){
             return $this->sendResponse();

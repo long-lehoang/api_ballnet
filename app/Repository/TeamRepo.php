@@ -305,6 +305,7 @@ class TeamRepo extends BaseRepository{
 
             return $this->sendSuccess($result->id);
         }catch(Exception $e){
+            dd($e->getMessage());
             return $this->sendFailed();
         }
     }
