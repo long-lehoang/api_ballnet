@@ -15,7 +15,11 @@ class MemberTeamRepo extends BaseRepository{
         return \App\Models\MemberTeam::class;
     }
         
-    
+    public function findRequest($userId, $teamId)
+    {
+        $request = $this->_model::where([['member_id', $userId],['team_id', $teamId],['status', 'waiting']])->first();
+        return $request;
+    }
     /**
      * join
      *

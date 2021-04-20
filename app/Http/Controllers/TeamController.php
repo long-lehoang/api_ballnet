@@ -33,7 +33,7 @@ class TeamController extends Controller
      */
     public function index()
     {
-        $data = $this->team->all();
+        $data = $this->teamService->getTeams();
 
         return $this->sendResponse($data);
     }
