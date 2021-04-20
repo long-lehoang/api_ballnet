@@ -5,19 +5,22 @@ namespace App\Services;
 use App\Contracts\Team;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
+use App\Repository\MemberTeamRepo;
 
 class TeamService implements Team{
     
     protected $teamRepo;    
+    protected $mbTeamRepo;    
     /**
      * __construct
      *
      * @param  mixed $teamRepo
      * @return void
      */
-    function __construct(TeamRepo $teamRepo)
+    function __construct(TeamRepo $teamRepo, MemberTeamRepo $mbTeamRepo)
     {
         $this->teamRepo = $teamRepo;
+        $this->mbTeamRepo = $mbTeamRepo;
     }
     /**
      * getMyTeam
@@ -37,7 +40,22 @@ class TeamService implements Team{
 
         return $team;
     }
-    
+    public function getTeams()
+    {
+        $teams = $this->teamRepo->all();
+        $teams->map(function($team){
+            $user = Auth::guard('api')->user();
+            $team->isMember = $this->teamRepo->isMember($user->id, $team->id)['success'];
+            $team->isWaitingForApprove = $this->teamRepo->isWaitingForApprove($user->id, $team->id)['success'];
+            $team->isInvitedBy = $this->teamRepo->isInvitedBy($user->id, $team->id)['success'];
+            if($team->isInvitedBy){
+                $team->requestId = $this->mbTeamRepo->findRequest($user->id, $team->id);
+            }
+            return $team;
+        });
+
+        return $teams;
+    }
     /**
      * leave
      *

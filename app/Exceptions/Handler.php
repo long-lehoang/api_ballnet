@@ -6,6 +6,8 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,6 +31,19 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof AuthorizationException) {
+            return response()->json([
+                'success' => false,
+                'code' => 403,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 403);
+        }
+
+        return parent::render($request, $e);
+    }
     /**
      * Register the exception handling callbacks for the application.
      *
