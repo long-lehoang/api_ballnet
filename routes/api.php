@@ -102,6 +102,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/myteam', [TeamController::class, 'myTeams']);
     Route::group(['prefix' => '/teams'], function(){
         Route::delete('/{id}/leave', [TeamController::class, 'leave']);
+        Route::group(['prefix' => '/{id}'], function(){
+            Route::get('/feed', [PostController::class, 'getPostByTeam']);
+            Route::get('/permission', [TeamController::class, 'getPermission']);
+            Route::get('/admin', [TeamController::class, 'getAdmin']);
+            Route::post('/location', [TeamController::class, 'setLocation']);
+            Route::post('/admin', [TeamController::class, 'setAdmin']);
+            Route::post('/overview', [TeamController::class, 'setOverview']);
+        });
     });
 
     Route::group(['prefix' => '/team_requests'], function(){
@@ -109,7 +117,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/', [TeamRequestController::class, 'myInvitation']);
         Route::post('/', [TeamRequestController::class, 'join']);
         Route::post('/invite', [TeamRequestController::class, 'invite']);
-        Route::delete('/{id}', [TeamRequestController::class, 'cancel']);
+        Route::post('/{id}/deny', [TeamRequestController::class, 'cancel']);
         Route::post('/{id}/approve', [TeamRequestController::class, 'approve']);
     });
     

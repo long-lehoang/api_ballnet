@@ -130,7 +130,7 @@ class TeamRequestController extends Controller
         }
         $this->authorize('approve', $request);
 
-        $result = $this->teamRepo->approve($id);
+        $result = $this->memberTeamRepo->approve($id);
         if($result['success']){
             return $this->sendResponse();
         }else{

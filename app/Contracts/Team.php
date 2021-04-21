@@ -18,4 +18,12 @@ interface Team{
      * @return void
      */
     public function leave($teamId);
+    
+    /**
+     * getPermission
+     *
+     * @param  mixed $teamId
+     * @return void
+     */
+    public function getPermission($teamId);
 }

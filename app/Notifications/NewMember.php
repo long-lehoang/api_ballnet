@@ -6,9 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\User;
+use App\Models\Team;
 
-class NewFriend extends Notification implements ShouldQueue
+class NewMember extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -17,11 +17,11 @@ class NewFriend extends Notification implements ShouldQueue
      *
      * @return void
      */
-    protected $friend;
+    protected $team;
 
-    public function __construct(User $friend)
+    public function __construct(Team $team)
     {
-        $this->friend = $friend;
+        $this->team = $team;
     }
 
     /**
@@ -44,9 +44,9 @@ class NewFriend extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'username' => $this->friend->username,
-            'avatar' => $this->friend->info->avatar,
-            'name' => $this->friend->name,
+            'team_avatar' => $this->team->avatar,
+            'team_name' => $this->team->name,
+            'team_id' => $this->team->id,
         ];
     }
 }

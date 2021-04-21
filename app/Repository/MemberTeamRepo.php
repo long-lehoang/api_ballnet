@@ -4,6 +4,7 @@ namespace App\Repository;
 use Exception;
 use App\Repository\BaseRepository;
 use Illuminate\Support\Facades\Auth;
+use Log;
 
 class MemberTeamRepo extends BaseRepository{
     /**
@@ -75,7 +76,7 @@ class MemberTeamRepo extends BaseRepository{
 
             return $this->sendSuccess($result->id);
         }catch(Exception $e){
-            dd($e->getMessage());
+            Log::error($e->getMessage());
             return $this->sendFailed();
         }
     }
@@ -94,6 +95,7 @@ class MemberTeamRepo extends BaseRepository{
             $request->save();
             return $this->sendSuccess();
         }catch(Exception $e){
+            Log::error($e->getMessage());
             return $this->sendFailed();
         }
     }

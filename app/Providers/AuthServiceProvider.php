@@ -7,6 +7,8 @@ use App\Policies\PostPolicy;
 use App\Models\Team;
 use App\Policies\TeamPolicy;
 use App\Models\MemberTeam;
+use App\Policies\FriendPolicy;
+use App\Models\FriendRequest;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
@@ -22,6 +24,7 @@ class AuthServiceProvider extends ServiceProvider
         Post::class => PostPolicy::class,
         Team::class => TeamPolicy::class,
         MemberTeam::class => TeamPolicy::class,
+        FriendRequest::class => FriendPolicy::class,
     ];
 
     /**

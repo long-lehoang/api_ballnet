@@ -31,7 +31,8 @@ class FriendRequestController extends Controller
     public function index()
     {
         $user = Auth::guard('api')->user();
-        return $this->sendResponse($user->request);
+        //TODO: fix request response to get more info
+        return $this->sendResponse($user->friendRequests);
     }
         
     /**
@@ -60,6 +61,9 @@ class FriendRequestController extends Controller
      */
     public function delete($id)
     {
+        $request = $this->fRRepo->find($id);
+        $this->authorize('cancelRequest', $request);
+
         $result = $this->fRRepo->delete($id);
         if($result){
             return $this->sendResponse();
@@ -76,6 +80,8 @@ class FriendRequestController extends Controller
      */
     public function acceptRequest($id)
     {
+        $request = $this->fRRepo->find($id);
+        $this->authorize('acceptRequest', $request);
         //call accept request
         $result = $this->friendService->acceptRequest($id);
         //response

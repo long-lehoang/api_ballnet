@@ -4,6 +4,7 @@ namespace App\Repository;
 use Exception;
 use App\Repository\BaseRepository;
 use Illuminate\Support\Facades\Auth;
+use Log;
 
 class TeamRepo extends BaseRepository{
     /**
@@ -30,12 +31,14 @@ class TeamRepo extends BaseRepository{
             $members = $team->members;
 
             foreach ($members as $key => $member) {
+                Log::info(__CLASS__.__FUNCTION__.__LINE__.$member);
                 if($member->member_id === $memberId && $member->status === 'active') 
                     return $this->sendSuccess($member);
             }
-
+            Log::error('Not found member at function findMember');
             return $this->sendFailed();
         }catch(Exception $e){
+            Log::error($e->getMessage());
             return $this->sendFailed();
         }
     }
@@ -67,6 +70,26 @@ class TeamRepo extends BaseRepository{
         }
     }
     
+    public function isAdmin($memberId, $teamId)
+    {
+        try{
+            $team = $this->find($teamId);
+
+            if($team->id_captain === $memberId)
+                return $this->sendSuccess();
+
+            $admins = $team->admins;
+
+            foreach ($admins as $key => $admin) {
+                if($admin->admin_id === $memberId) 
+                    return $this->sendSuccess();
+            }
+
+            return $this->sendFailed();
+        }catch(Exception $e){
+            return $this->sendFailed();
+        }
+    }
     /**
      * isWaitingForApprove
      *
@@ -82,7 +105,7 @@ class TeamRepo extends BaseRepository{
             $members = $team->members;
 
             foreach ($members as $key => $member) {
-                if($member->member_id === $memberId && $member->status === 'waiting' && $member->invited_by === null) 
+                if($member->member_id === $userId && $member->status === 'waiting' && $member->invited_by === null) 
                     return $this->sendSuccess();
             }
 
@@ -127,7 +150,13 @@ class TeamRepo extends BaseRepository{
     {
         try{
             $team = $this->find($teamId);
+            $captain = $team->captain;
             $members = $team->members;
+            foreach ($members as $key => $member) {
+                if ($member->member_id === $captain->id) {
+                    unset($members[$key]);
+                }
+            }
             $member = $members->where('status','active')->sortByDesc("num_match")->first();
 
             return $this->sendSuccess($member);
@@ -194,7 +223,9 @@ class TeamRepo extends BaseRepository{
         $member = $this->findMember($memberId, $teamId);
         if($member['success']){
             $member['data']->delete();
+            return $this->sendSuccess();
         }else{
+            Log::error('Not found member');
             return $this->sendFailed();
         }
     }
@@ -234,19 +265,30 @@ class TeamRepo extends BaseRepository{
     {
         $user = Auth::guard('api')->user();
         try{
-
             $requests = $user->teams;
-            $requests = $requests->map(function($request){
+            foreach ($requests as $key => $request) {
                 if($request->status === 'waiting' && $request->invited_by !== null){
                     $team = $request->team;
                     $team->requestId = $request->id;
-                    return $team;
                 }
-            });
+                unset($requests[$key]);
+            }
     
             return $this->sendSuccess($requests);
         }catch(Exception $e){
-            return $this->sendError();
+            return $this->sendFailed();
+        }
+    }
+
+    public function countMember($teamId)
+    {
+        try{
+            $team = $this->find($teamId);
+            $members = $team->members;
+            return $this->sendSuccess(count($members));
+        }catch(Exception $e){
+            Log::error(__CLASS__.' -> '.__FUNCTION__.' -> '.__LINE__.': '.$e->getMessage());
+            return $this->sendFailed();
         }
     }
 }

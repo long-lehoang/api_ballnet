@@ -376,4 +376,9 @@ class PostController extends Controller
             return $this->sendError();
         }
     }
+
+    public function getPostByTeam($id)
+    {
+        return $this->sendResponse([]);
+    }
 }

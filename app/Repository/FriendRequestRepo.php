@@ -54,4 +54,26 @@ class FriendRequestRepo extends BaseRepository
             Log::error(__CLASS__.' :: '.__FUNCTION__.' : '.$e);
         }
     }
+
+    public function isRequest($id)
+    {
+        $user = Auth::guard('api')->user();
+        $request = $this->_model::where([
+            ['user_id', $user->id],
+            ['from_id', $id]
+        ])->first();
+
+        return $request;
+    }
+
+    public function isWaiting($id)
+    {
+        $user = Auth::guard('api')->user();
+        
+        $request = $this->_model::where([
+            ['user_id', $id],
+            ['from_id', $user->id]
+        ])->first();
+        return $request;
+    }
 }

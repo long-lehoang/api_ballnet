@@ -57,6 +57,13 @@ class TeamPolicy
     public function approve(User $user, MemberTeam $member)
     {
         if($member->invited_by !== null){
+            if($user->id === $member->member_id){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }else{
             $team = $member->team;
 
             if($team->id_captain === $user->id){
@@ -71,14 +78,6 @@ class TeamPolicy
                 }
             }
             return false;
-        }else{
-            if($user->id === $member->member_id){
-                return true;
-            }
-            else {
-                return false;
-            }
         }
-        return false;
     }
 }

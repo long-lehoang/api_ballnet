@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\Team\CreateTeamRequest;
 use App\Http\Requests\Team\UpdateTeamRequest;
+use App\Http\Requests\Team\LocationRequest;
+use App\Http\Requests\Team\OverviewRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
 use App\Contracts\Team;
@@ -110,14 +112,25 @@ class TeamController extends Controller
 
         return $this->sendResponse();
     }
-
+    
+    /**
+     * myTeams
+     *
+     * @return void
+     */
     public function myTeams()
     {
         $team = $this->teamService->getMyTeam();
 
         return $this->sendResponse($team);
     }
-
+    
+    /**
+     * leave
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function leave($id)
     {
         $result = $this->teamService->leave($id);
@@ -126,6 +139,43 @@ class TeamController extends Controller
             return $this->sendResponse();
         }else{
             return $this->sendError();
+        }
+    }
+    
+    /**
+     * getPermission
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getPermission($id)
+    {
+        $result = $this->teamService->getPermission($id);
+        return $this->sendResponse($result);
+    }
+    
+    public function getAdmin($id)
+    {
+        return $this->sendResponse();
+    }
+
+    public function setOverview(OverviewRequest $request, $id)
+    {
+        $result = $this->teamRepo->update($id,$request->all());
+        if($result === false){
+            return $this->sendError();
+        }else{
+            return $this->sendResponse();
+        }
+    }
+
+    public function setLocation(LocationRequest $request, $id)
+    {
+        $result = $this->teamRepo->update($id,$request->all());
+        if($result === false){
+            return $this->sendError();
+        }else{
+            return $this->sendResponse();
         }
     }
 }

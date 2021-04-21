@@ -17,7 +17,7 @@ class FriendObserver
     {
         $user = $friend->user;
         $fr = $friend->friend;
-        $user->notify(new NewFriend($user, $fr));
+        $user->notify(new NewFriend($fr));
     }
 
     /**

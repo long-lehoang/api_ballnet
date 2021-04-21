@@ -18,6 +18,8 @@ use App\Observers\FriendObserver;
 use App\Models\Friend;
 use App\Observers\TeamObserver;
 use App\Models\Team;
+use App\Observers\MemberTeamObserver;
+use App\Models\MemberTeam;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -45,5 +47,6 @@ class EventServiceProvider extends ServiceProvider
         FriendRequest::observe(FriendRequestObserver::class);
         Friend::observe(FriendObserver::class);
         Team::observe(TeamObserver::class);
+        MemberTeam::observe(MemberTeamObserver::class);
     }
 }
