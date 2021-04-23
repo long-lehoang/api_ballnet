@@ -31,6 +31,9 @@ class TeamRequestController extends Controller
      */
     public function requestJoinTeam($teamId)
     {
+        $team = $this->teamRepo->find($teamId);
+        $this->authorize('member', $team);
+        
         $result = $this->teamRepo->requestJoinTeam($teamId);
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -104,11 +107,7 @@ class TeamRequestController extends Controller
      */
     public function cancel($id)
     {
-        try{
-            $request = $this->memberTeamRepo->find($id);
-        }catch(Exception $e){
-            return $this->sendError();
-        }
+        $request = $this->memberTeamRepo->find($id);
         $this->authorize('cancel', $request);
 
         $request->delete();
@@ -123,11 +122,7 @@ class TeamRequestController extends Controller
      */
     public function approve($id)
     {
-        try{
-            $request = $this->memberTeamRepo->find($id);
-        }catch(Exception $e){
-            return $this->sendError();
-        }
+        $request = $this->memberTeamRepo->find($id);
         $this->authorize('approve', $request);
 
         $result = $this->memberTeamRepo->approve($id);

@@ -17,7 +17,8 @@ class Post extends Model
         'private',
         'content',
         'location',
-        'user_id'
+        'user_id',
+        'team_id'
     ];
 
     /**
@@ -28,6 +29,13 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the team that owns the post.
+     */
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
     /**
      * Get the likes for the blog post
      */

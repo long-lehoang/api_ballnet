@@ -5,12 +5,14 @@ namespace App\Services;
 use App\Contracts\Team;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
+use App\Repository\AdminTeamRepo;
 use App\Repository\MemberTeamRepo;
 use Log;
 
 class TeamService implements Team{
     
     protected $teamRepo;    
+    protected $adTeamRepo;    
     protected $mbTeamRepo;    
     /**
      * __construct
@@ -18,9 +20,10 @@ class TeamService implements Team{
      * @param  mixed $teamRepo
      * @return void
      */
-    function __construct(TeamRepo $teamRepo, MemberTeamRepo $mbTeamRepo)
+    function __construct(TeamRepo $teamRepo, MemberTeamRepo $mbTeamRepo, AdminTeamRepo $adTeamRepo)
     {
         $this->teamRepo = $teamRepo;
+        $this->adTeamRepo = $adTeamRepo;
         $this->mbTeamRepo = $mbTeamRepo;
     }
     /**
@@ -35,6 +38,7 @@ class TeamService implements Team{
         //teams attended
         $team = $user->teams->map(function($team){
             if($team->status === 'active'){
+                $team->members = $this->teamRepo->countMember($team->id);
                 return $team->team;
             }
         });
@@ -49,6 +53,7 @@ class TeamService implements Team{
             $team->isMember = $this->teamRepo->isMember($user->id, $team->id)['success'];
             $team->isWaitingForApprove = $this->teamRepo->isWaitingForApprove($user->id, $team->id)['success'];
             $team->isInvitedBy = $this->teamRepo->isInvitedBy($user->id, $team->id)['success'];
+            $team->members = $this->teamRepo->countMember($team->id);
             if($team->isInvitedBy || $team->isWaitingForApprove){
                 $team->idRequest = $this->mbTeamRepo->findRequest($user->id, $team->id)->id;
             }
@@ -177,4 +182,27 @@ class TeamService implements Team{
             'isAdmin' => $this->teamRepo->isAdmin($user->id, $team->id)['success']
         ];
     }
+    
+    /**
+     * setAdmin
+     *
+     * @param  mixed $teamId
+     * @param  mixed $admins
+     * @return void
+     */
+    public function setAdmin($teamId, $admins)
+    {
+        if(is_array($admin)){
+            foreach ($admins as $key => $value) {
+                $this->adTeamRepo->create([
+                    "team_id" => $teamId,
+                    "admin_id" => $value
+                ]);
+            }
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
 }

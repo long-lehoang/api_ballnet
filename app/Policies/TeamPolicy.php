@@ -81,7 +81,7 @@ class TeamPolicy
         }
     }
 
-    public function getAdmin(User $user, Team $team)
+    public function member(User $user, Team $team)
     {
 
         $members = $team->members;
@@ -93,4 +93,10 @@ class TeamPolicy
 
         return false;
     }
+
+    public function captain(User $user, Team $team)
+    {
+        return $team->id_captain === $user->id;
+    }
+
 }

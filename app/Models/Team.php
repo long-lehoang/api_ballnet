@@ -35,4 +35,8 @@ class Team extends Model
     public function admins(){
         return $this->hasMany(AdminTeam::class, 'team_id');
     }
+
+    public function posts(){
+        return $this->hasMany(Post::class, 'team_id');
+    }
 }

@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Repository\BaseRepository;
 
-class FollowRepo extends BaseRepository
+class AdminTeamRepo extends BaseRepository
 {
     /**
      * Get Model
@@ -12,7 +12,7 @@ class FollowRepo extends BaseRepository
      */
     public function getModel()
     {
-        return \App\Models\Follow::class;
+        return \App\Models\AdminTeam::class;
     }
 
 }

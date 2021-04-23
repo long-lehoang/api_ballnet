@@ -108,7 +108,6 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        // $this->authorize('view');
         //get post
         try{
             $post = $this->postRepo->find($id);

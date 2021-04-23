@@ -7,6 +7,7 @@ use App\Http\Requests\Team\CreateTeamRequest;
 use App\Http\Requests\Team\UpdateTeamRequest;
 use App\Http\Requests\Team\LocationRequest;
 use App\Http\Requests\Team\OverviewRequest;
+use App\Http\Requests\Team\AdminRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
 use App\Contracts\Team;
@@ -65,7 +66,7 @@ class TeamController extends Controller
         //response
         return $this->sendResponse();
     }
- 
+
     /**
      * Display the specified resource.
      *
@@ -75,7 +76,8 @@ class TeamController extends Controller
     public function show($id)
     {
         $team = $this->team->find($id);
-
+        $this->authorize('member', $team);
+        $team->members = $this->team->countMember($id);
         return $this->sendResponse($team);
     }
 
@@ -93,6 +95,8 @@ class TeamController extends Controller
 
         $team = $this->team->find($id);
 
+        $this->authorize('captain', $team);
+
         $team->update($input);
 
         return $this->sendResponse();
@@ -107,7 +111,7 @@ class TeamController extends Controller
     public function destroy($id)
     {
         $team = $this->team->find($id);
-
+        $this->authorize('captain',$team);
         $team->delete();
 
         return $this->sendResponse();
@@ -153,17 +157,33 @@ class TeamController extends Controller
         $result = $this->teamService->getPermission($id);
         return $this->sendResponse($result);
     }
-    
+        
+    /**
+     * getAdmin
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function getAdmin($id)
     {
         $team = $this->team->find($id);
-        $this->authorize('getAdmin',$team);
+        $this->authorize('member',$team);
         $admin = $this->team->getAdmin($id);
         return $this->sendResponse($admin);
     }
-
+    
+    /**
+     * setOverview
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
     public function setOverview(OverviewRequest $request, $id)
     {
+        $team = $this->team->find($id);
+        $this->authorize('captain',$team);
+
         $result = $this->team->update($id,$request->all());
         if($result === false){
             return $this->sendError();
@@ -171,9 +191,19 @@ class TeamController extends Controller
             return $this->sendResponse();
         }
     }
-
+    
+    /**
+     * setLocation
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
     public function setLocation(LocationRequest $request, $id)
     {
+        $team = $this->team->find($id);
+        $this->authorize('captain',$team);
+
         $result = $this->team->update($id,$request->all());
         if($result === false){
             return $this->sendError();
@@ -181,12 +211,48 @@ class TeamController extends Controller
             return $this->sendResponse();
         }
     }
-
+    
+    /**
+     * getMember
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function getMember($id)
     {
         $team = $this->team->find($id);
-        $this->authorize('getAdmin',$team);
+        $this->authorize('member',$team);
         $members = $this->team->getMembers($id);
         return $this->sendResponse($members);
+    }
+    
+    /**
+     * setAdmin
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
+    public function setAdmin(AdminRequest $request, $id)
+    {
+        $team = $this->team->find($id);
+        $this->authorize('captain', $team);
+
+        $admins = $request->admins;
+        $result = $this->teamService->setAdmin($id, $admins);
+        
+        if($result){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
+    }
+
+    public function getPosts($id)
+    {
+        $team = $this->team->find($id);
+        $this->authorize('member', $team);
+        $posts = $team->posts;
+        return $this->sendResponse($posts);
     }
 }

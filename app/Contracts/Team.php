@@ -26,4 +26,13 @@ interface Team{
      * @return void
      */
     public function getPermission($teamId);
+    
+    /**
+     * setAdmin
+     *
+     * @param  mixed $teamId
+     * @param  mixed $admins
+     * @return void
+     */
+    public function setAdmin($teamId, $admins);
 }
