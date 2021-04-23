@@ -4,7 +4,7 @@ namespace App\Http\Requests\Team;
 
 use App\Http\Requests\BaseRequest;
 
-class OverviewRequest extends BaseRequest
+class LocationRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,7 @@ class OverviewRequest extends BaseRequest
     public function rules()
     {
         return [
-            'overview' => 'string',
+            'location' => 'string',
         ];
     }
 }

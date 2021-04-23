@@ -243,4 +243,33 @@ class FriendService implements Friend{
             return $count[0]->num;
         }
     }
+    
+    /**
+     * getFriendRequests
+     *
+     * @return void
+     */
+    public function getFriendRequests()
+    {
+        $user = Auth::guard('api')->user();
+
+        $friendRequests = $user->friendRequests;
+        $friendRequests = $friendRequests->map(function($fR){
+            $obj = new \stdClass;
+            
+            $user = $fR->request;
+            $info = $user->info;
+            
+            $obj->idRequest = $fR->id;
+            $obj->name = $user->name;
+            $obj->username = $user->username;
+            $obj->avatar = $info->avatar;
+            $obj->address = $info->address;
+            $obj->points = $info->points;
+            $obj->sport = $user->sports->pluck('sport');
+            
+            return $obj;
+        });
+        return $friendRequests;
+    }
 }

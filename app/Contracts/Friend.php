@@ -35,4 +35,11 @@ interface Friend{
      * @return void
      */
     public function countMutualFriend($username1, $username2);
+    
+    /**
+     * getFriendRequests
+     *
+     * @return void
+     */
+    public function getFriendRequests();
 }

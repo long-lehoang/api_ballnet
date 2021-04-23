@@ -30,9 +30,8 @@ class FriendRequestController extends Controller
      */
     public function index()
     {
-        $user = Auth::guard('api')->user();
-        //TODO: fix request response to get more info
-        return $this->sendResponse($user->friendRequests);
+        $request = $this->friendService->getFriendRequests();
+        return $this->sendResponse($request);
     }
         
     /**

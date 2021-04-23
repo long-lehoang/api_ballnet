@@ -156,12 +156,15 @@ class TeamController extends Controller
     
     public function getAdmin($id)
     {
-        return $this->sendResponse();
+        $team = $this->team->find($id);
+        $this->authorize('getAdmin',$team);
+        $admin = $this->team->getAdmin($id);
+        return $this->sendResponse($admin);
     }
 
     public function setOverview(OverviewRequest $request, $id)
     {
-        $result = $this->teamRepo->update($id,$request->all());
+        $result = $this->team->update($id,$request->all());
         if($result === false){
             return $this->sendError();
         }else{
@@ -171,11 +174,19 @@ class TeamController extends Controller
 
     public function setLocation(LocationRequest $request, $id)
     {
-        $result = $this->teamRepo->update($id,$request->all());
+        $result = $this->team->update($id,$request->all());
         if($result === false){
             return $this->sendError();
         }else{
             return $this->sendResponse();
         }
+    }
+
+    public function getMember($id)
+    {
+        $team = $this->team->find($id);
+        $this->authorize('getAdmin',$team);
+        $members = $this->team->getMembers($id);
+        return $this->sendResponse($members);
     }
 }

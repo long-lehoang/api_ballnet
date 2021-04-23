@@ -166,6 +166,25 @@ class TeamRepo extends BaseRepository{
         }
     }
     
+    public function getAdmin($id)
+    {
+        $team = $this->find($id);
+        $admins = $team->admins;
+
+        $admins = $admins->map(function($admin){
+            $user = $admin->admin;
+            $obj = new \stdClass;
+            $obj->id = $user->id;
+            $obj->name = $user->name;
+            $obj->username = $user->username;
+            $obj->avatar = $user->info->avatar;
+            $obj->address = $user->info->address;
+
+            return $obj;
+        });
+
+        return $admins;
+    }
     /**
      * topAdmin
      *
@@ -290,5 +309,25 @@ class TeamRepo extends BaseRepository{
             Log::error(__CLASS__.' -> '.__FUNCTION__.' -> '.__LINE__.': '.$e->getMessage());
             return $this->sendFailed();
         }
+    }
+
+    public function getMembers($teamId)
+    {
+        $team = $this->find($teamId);
+        $members = $team->members;
+
+        $members = $members->map(function($member){
+            $user = $member->member;
+            $obj = new \stdClass;
+            $obj->id = $user->id;
+            $obj->name = $user->name;
+            $obj->username = $user->username;
+            $obj->avatar = $user->info->avatar;
+            $obj->address = $user->info->address;
+
+            return $obj;
+        });
+
+        return $members;
     }
 }

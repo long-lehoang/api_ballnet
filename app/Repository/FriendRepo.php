@@ -34,7 +34,7 @@ class FriendRepo extends BaseRepository
                 array_push($result,[
                     "id" => $friend->id_friend,
                     "name" => $friend->friend->name,
-                    "avatar" => $friend->friend->avatar == null ? null : $friend->friend->avatar
+                    "avatar" => $friend->friend->info->avatar
                 ]);
             }
             return $this->sendSuccess($result);

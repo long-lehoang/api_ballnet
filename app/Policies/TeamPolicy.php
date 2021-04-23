@@ -80,4 +80,17 @@ class TeamPolicy
             return false;
         }
     }
+
+    public function getAdmin(User $user, Team $team)
+    {
+
+        $members = $team->members;
+
+        foreach ($members as $key => $member) {
+            if($member->member_id === $user->id && $member->status === 'active') 
+                return true;
+        }
+
+        return false;
+    }
 }

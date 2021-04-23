@@ -106,6 +106,7 @@ Route::group(['middleware' => 'auth:api'], function() {
             Route::get('/feed', [PostController::class, 'getPostByTeam']);
             Route::get('/permission', [TeamController::class, 'getPermission']);
             Route::get('/admin', [TeamController::class, 'getAdmin']);
+            Route::get('/member', [TeamController::class, 'getMember']);
             Route::post('/location', [TeamController::class, 'setLocation']);
             Route::post('/admin', [TeamController::class, 'setAdmin']);
             Route::post('/overview', [TeamController::class, 'setOverview']);
