@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
+use App\Contracts\People;
 
 abstract class AUTHENTICATION
 {
@@ -65,11 +66,13 @@ class AuthController extends Controller
 {
     protected $repo;
     protected $infoRepo;
+    protected $peopleService;
 
-    public function __construct(UserRepo $repo, InfoRepo $infoRepo)
+    public function __construct(UserRepo $repo, InfoRepo $infoRepo, People $peopleService)
     {
         $this->repo = $repo;
         $this->infoRepo = $infoRepo;
+        $this->peopleService = $peopleService;
     }
 
     /**
@@ -78,11 +81,11 @@ class AuthController extends Controller
      */
     public function show($username)
     {
-        $user = $this->repo->findUser($username);
+        $user = $this->peopleService->getUser($username);
         if($user['success']){
             return $this->sendResponse($user['data']);
         }else{
-            return $this->sendError();
+            return $this->sendError(null, 'Not Found', 404);
         }
     }
     

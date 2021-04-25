@@ -62,7 +62,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
-    
+        
+    /**
+     * tags
+     *
+     * @return void
+     */
+    public function tags()
+    {
+        return $this->hasMany(Tag::class,'tag_id');
+    }
+
+    public function shares()
+    {
+        return $this->hasMany(Share::class, 'user_id');
+    }
     /**
      * friends
      *

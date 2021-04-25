@@ -35,4 +35,28 @@ interface Team{
      * @return void
      */
     public function setAdmin($teamId, $admins);
+    
+    /**
+     * getTeam
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getTeam($id);
+    
+    /**
+     * kickMember
+     *
+     * @param  mixed $memberId
+     * @return void
+     */
+    public function kickMember($memberId);
+    
+    /**
+     * getFriendToInvite
+     *
+     * @param  mixed $teamId
+     * @return void
+     */
+    public function getFriendToInvite($teamId);
 }

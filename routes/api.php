@@ -83,8 +83,8 @@ Route::group(['middleware' => 'auth:api'], function() {
 
         Route::post('/{id}', [PostController::class, 'update']);
         Route::get('/{id}/comment', [PostController::class, 'getComments']);
-        Route::get('/self/{username}', [PostController::class, 'getPostByUser']);
     });
+    Route::get('/mypost', [PostController::class, 'getMyPost']);
     
     //sport
     Route::group(['prefix' => '/sports'], function() {
@@ -103,13 +103,17 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::group(['prefix' => '/teams'], function(){
         Route::delete('/{id}/leave', [TeamController::class, 'leave']);
         Route::group(['prefix' => '/{id}'], function(){
-            Route::get('/feed', [PostController::class, 'getPostByTeam']);
+            Route::get('/feed', [TeamController::class, 'getPosts']);
             Route::get('/permission', [TeamController::class, 'getPermission']);
             Route::get('/admin', [TeamController::class, 'getAdmin']);
+            Route::get('/invite', [TeamController::class, 'getFriendToInvite']);
             Route::get('/member', [TeamController::class, 'getMember']);
             Route::post('/location', [TeamController::class, 'setLocation']);
             Route::post('/admin', [TeamController::class, 'setAdmin']);
             Route::post('/overview', [TeamController::class, 'setOverview']);
+            Route::post('/avatar', [TeamController::class, 'setAvatar']);
+            Route::post('/cover', [TeamController::class, 'setCover']);
+            Route::post('/kick', [TeamController::class, 'kickMember']);
         });
     });
 

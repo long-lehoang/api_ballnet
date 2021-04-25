@@ -95,7 +95,7 @@ abstract class BaseRepository
     }
     
     public function findByCondition($param , $value ,  $operator = '='){
-        return $this->_model::where($param, $operator, $value);
+        return $this->_model::where($param, $operator, $value)->get();
     }
 
     protected function sendSuccess($data=null){

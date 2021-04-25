@@ -3,9 +3,10 @@
 namespace App\Services;
 
 use App\Contracts\Post;
+use Illuminate\Support\Facades\Auth;
 use App\Repository\UserRepo;
 use Exception;
-
+use Log;
 class PostService implements Post{
     protected $user;
     
@@ -14,40 +15,34 @@ class PostService implements Post{
         $this->user = $user;
     }
     
-    public function getPostByUser($username)
+    public function getMyPost()
     {
+        $user = Auth::guard('api')->user();
         $posts = [];
         try{
-            $user = $this->user->findUser($username);
-            if(!$user['success'])
-            {
-                return [
-                    'success' => false,
-                    'data' => null
-                ];
-            }
-            $user = $user['data'];
 
             //my post
-            $myPost = $user->posts;
+            $myPost = $user->posts()->whereNotIn('private', ['Team'])->get();
             array_push($posts, $myPost);
 
             //get tags post
             $tagPost = [];
-            $tags = !empty($user->tags) ? $user->tags : [];
+            $tags = $user->tags;
+
             foreach ($tags as $key => $tag) {
                 # code...
-                $post = $tag->post;
+                $post = $tag->post()->whereIn('private',['Public', 'Friend'])->get();
+    
                 array_push($tagPost, $post);
             }
             array_push($posts, $tagPost);
-            
+
             //get share post
             $sharePost = [];
-            $shares = !empty($user->shares) ? $user->shares : [];
+            $shares = $user->shares;
             foreach ($shares as $key => $share) {
                 # code...
-                $post = $share->post;
+                $post = $share->post()->whereIn('private',['Public', 'Friend'])->get();
                 array_push($sharePost, $post);
             }
             array_push($posts, $sharePost);
@@ -57,9 +52,10 @@ class PostService implements Post{
                 "data" => $posts
             ];
         }catch(Exception $e){
+            Log::info(__CLASS__.' -> '.__FUNCTION__.' -> '.__LINE__.':'.$e->getMessage());
             return [
                 "success" => false,
-                "message" => $e->message
+                "message" => $e->getMessage(),
             ];
         }
 

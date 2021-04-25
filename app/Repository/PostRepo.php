@@ -27,13 +27,12 @@ class PostRepo extends BaseRepository{
         $posts = [] ;
 
         try{
-            $friends = !empty($user->friends) ? $user->friends : [];
+            $friends = $user->friends;
             foreach($friends as $friend){
-                $post = $friend->friend->posts;
-                
+                $post = $friend->friend->posts()->whereIn('private', ['Public', 'Friend'])->get();                
                 array_push($posts, $post);
             }
-            $post = $user->posts;
+            $post = $user->posts()->whereNotIn('private', ['Team'])->get();
             array_push($posts, $post);
             return $this->sendSuccess($posts);
         }catch(Exception $e){

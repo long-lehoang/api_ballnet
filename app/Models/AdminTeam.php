@@ -30,6 +30,10 @@ class AdminTeam extends Model
         return $this->belongsTo(Team::class, 'team_id');
     }
 
+    public function member(){
+        return $this->belongsTo(MemberTeam::class, 'admin_id', 'member_id');
+    }
+
     public function admin(){
         return $this->belongsTo(User::class, 'admin_id');
     }

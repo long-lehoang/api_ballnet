@@ -36,6 +36,10 @@ class MemberTeam extends Model
         return $this->belongsTo(User::class, 'member_id');
     }
 
+    public function admin(){
+        return $this->hasOne(AdminTeam::class, 'admin_id', 'member_id');
+    }
+
     public function invitedBy(){
         return $this->belongsTo(User::class, 'invited_by');
     }

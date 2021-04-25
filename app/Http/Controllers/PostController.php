@@ -50,8 +50,6 @@ class PostController extends Controller
      */
     public function index()
     {
-        // $this->authorize('viewAny');
-
         $result = $this->postRepo->getPosts();
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -70,7 +68,7 @@ class PostController extends Controller
     {
         try{
             // create post
-            $postInput = $request->only('content','location','private');
+            $postInput = $request->only('content','location','private','team_id');
             $postInput['user_id'] = Auth::guard('api')->user()->id;
             $post = $this->postRepo->create($postInput);
             $post_id = $post->id;
@@ -96,6 +94,7 @@ class PostController extends Controller
 
             return $this->sendResponse();
         }catch(Exception $e){
+            Log::error($e->getMessage());
             return $this->sendError();
         }
     }
@@ -366,18 +365,13 @@ class PostController extends Controller
      * @param string username
      * @return
      */
-    public function getPostByUser($username)
+    public function getMyPost()
     {
-        $result = $this->postService->getPostByUser($username);
+        $result = $this->postService->getMyPost();
         if($result['success']){
             return $this->sendResponse($result['data']);
         }else{
             return $this->sendError();
         }
-    }
-
-    public function getPostByTeam($id)
-    {
-        return $this->sendResponse([]);
     }
 }

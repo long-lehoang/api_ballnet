@@ -7,26 +7,30 @@ use App\Http\Requests\Team\CreateTeamRequest;
 use App\Http\Requests\Team\UpdateTeamRequest;
 use App\Http\Requests\Team\LocationRequest;
 use App\Http\Requests\Team\OverviewRequest;
+use App\Http\Requests\Team\KickRequest;
 use App\Http\Requests\Team\AdminRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
 use App\Contracts\Team;
+use App\Contracts\Image;
 use App\Models\MemberTeam;
 
 class TeamController extends Controller
 {
     protected $team;    
     protected $teamService;
+    protected $imageService;
     /**
      * __construct
      *
      * @param  mixed $team
      * @return void
      */
-    function __construct(TeamRepo $team, Team $teamService)
+    function __construct(TeamRepo $team, Team $teamService, Image $imageService)
     {
         $this->teamService = $teamService;
         $this->team = $team;
+        $this->imageService = $imageService;
     }
 
     /**
@@ -75,10 +79,8 @@ class TeamController extends Controller
      */
     public function show($id)
     {
-        $team = $this->team->find($id);
-        $this->authorize('member', $team);
-        $team->members = $this->team->countMember($id);
-        return $this->sendResponse($team);
+        $result = $this->teamService->getTeam($id);
+        return $this->sendResponse($result);
     }
 
     /**
@@ -233,12 +235,13 @@ class TeamController extends Controller
      * @param  mixed $id
      * @return void
      */
-    public function setAdmin(AdminRequest $request, $id)
+    public function setAdmin(Request $request, $id)
     {
         $team = $this->team->find($id);
         $this->authorize('captain', $team);
 
         $admins = $request->admins;
+        $admins = explode(',',$admins);
         $result = $this->teamService->setAdmin($id, $admins);
         
         if($result){
@@ -254,5 +257,77 @@ class TeamController extends Controller
         $this->authorize('member', $team);
         $posts = $team->posts;
         return $this->sendResponse($posts);
+    }
+
+    public function setAvatar(Request $request, $id)
+    {
+        $team = $this->team->find($id);
+        $this->authorize('captain', $team);
+        if($request->hasFile('image')){
+            //upload image
+            $img = $request->file('image');
+            $result = $this->imageService->upload($img);
+            if(!$result['success']){
+                return $this->sendError(null, "Can't upload image");
+            }
+            //delete image
+            $url = $team->avatar;
+            if(!empty($url)){
+                $this->imageService->delete($url);
+            }
+            //update DB
+            $team->avatar = $result['url'];
+            $team->save();
+            return $this->sendResponse();
+        }
+        return $this->sendError(null, "Image Not Found");
+    }
+
+    public function setCover(Request $request, $id)
+    {
+        $team = $this->team->find($id);
+        $this->authorize('captain', $team);
+        if($request->hasFile('image')){
+            //upload image
+            $img = $request->file('image');
+            $result = $this->imageService->upload($img);
+            if(!$result['success']){
+                return $this->sendError(null, "Can't upload image");
+            }
+            //delete image
+            $url = $team->cover;
+            if(!empty($url)){
+                $this->imageService->delete($url);
+            }
+            //update DB
+            $team->cover = $result['url'];
+            $team->save();
+            return $this->sendResponse();
+        }
+        return $this->sendError(null, "Image Not Found");
+    }
+
+    public function kickMember(KickRequest $request, $id)
+    {
+        $memberId = $request->member_id;
+        $team = $this->team->find($id);
+        $this->authorize('kick', $team);
+
+        $result = $this->teamService->kickMember($memberId);
+
+        if($result){
+            return $this->sendResponse();
+        }else{
+            return $this->sendError();
+        }
+    }
+
+    public function getFriendToInvite($id)
+    {
+        $team = $this->team->find($id);
+        $this->authorize('member', $team);
+        
+        $result = $this->teamService->getFriendToInvite($id);
+        return $this->sendResponse($result);
     }
 }

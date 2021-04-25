@@ -9,4 +9,11 @@ interface People{
      * @return void
      */
     public function getPeople();
+    
+    /**
+     * getUser
+     *
+     * @return void
+     */
+    public function getUser($username);
 }

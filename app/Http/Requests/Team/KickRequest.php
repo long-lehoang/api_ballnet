@@ -4,7 +4,7 @@ namespace App\Http\Requests\Team;
 
 use App\Http\Requests\BaseRequest;
 
-class AdminRequest extends BaseRequest
+class KickRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,7 @@ class AdminRequest extends BaseRequest
     public function rules()
     {
         return [
-            'admins' => '',
+            'member_id' => 'required|integer',
         ];
     }
 }

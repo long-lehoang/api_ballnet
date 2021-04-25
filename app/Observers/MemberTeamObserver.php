@@ -35,7 +35,7 @@ class MemberTeamObserver
             $user = $memberTeam->invitedBy;
             $requestId = $memberTeam->id;
             
-            $member = $team->member;
+            $member = $memberTeam->member;
             $member->notify(new IniviteJoinTeam($user, $team, $requestId));
         }
     }

@@ -28,15 +28,13 @@ class TeamRepo extends BaseRepository{
         try{
             $team = $this->find($teamId);
 
-            $members = $team->members;
-
-            foreach ($members as $key => $member) {
-                Log::info(__CLASS__.__FUNCTION__.__LINE__.$member);
-                if($member->member_id === $memberId && $member->status === 'active') 
-                    return $this->sendSuccess($member);
+            $member = $team->members()->where([['status','active'],['id',$memberId]])->first();
+            if(is_null($member)){
+                Log::error('Not found member at function findMember');
+                return $this->sendFailed();
+            }else{
+                return $this->sendSuccess($member);
             }
-            Log::error('Not found member at function findMember');
-            return $this->sendFailed();
         }catch(Exception $e){
             Log::error($e->getMessage());
             return $this->sendFailed();
@@ -263,13 +261,18 @@ class TeamRepo extends BaseRepository{
             $requests = $team->members;
             $requests = $requests->map(function($request){
                 if($request->status === 'waiting' && $request->invited_by === null){
-                    $member = $request->member;
-                    $member->requestId = $request->id;
-                    return $member;
+                    $obj = new \stdClass;
+                    $user = $request->member;
+                    $obj->requestId = $request->id;
+                    $obj->username = $user->username;
+                    $obj->name = $user->name;
+                    $obj->avatar = $user->info->avatar;
+                    $obj->points = $user->info->points;
+                    $obj->requestTime = $request->created_at;
+                    return $obj;
                 }
             });
-
-            return $this->sendSuccess($requests);
+            return $this->sendSuccess(array_values(array_filter($requests->toArray())));
         }catch(Exception $e){
             return $this->sendFailed();
         }
@@ -289,7 +292,7 @@ class TeamRepo extends BaseRepository{
                 if($request->status === 'waiting' && $request->invited_by !== null){
                     $team = $request->team;
                     $team->requestId = $request->id;
-                    $team->members = $this->countMember($team->id);
+                    $team->member = $this->countMember($team->id);
                 }
                 unset($requests[$key]);
             }
@@ -304,7 +307,7 @@ class TeamRepo extends BaseRepository{
     {
         try{
             $team = $this->find($teamId);
-            $members = $team->members;
+            $members = $team->members()->where('status', 'active')->get();
             return $this->sendSuccess(count($members));
         }catch(Exception $e){
             Log::error(__CLASS__.' -> '.__FUNCTION__.' -> '.__LINE__.': '.$e->getMessage());
@@ -314,9 +317,10 @@ class TeamRepo extends BaseRepository{
 
     public function getMembers($teamId)
     {
+        $user = Auth::guard('api')->user();
         $team = $this->find($teamId);
-        $members = $team->members;
-
+        $members = $team->members()->whereNotIn('member_id', [$user->id])->get();
+        
         $members = $members->map(function($member){
             $user = $member->member;
             $obj = new \stdClass;
@@ -324,11 +328,14 @@ class TeamRepo extends BaseRepository{
             $obj->name = $user->name;
             $obj->username = $user->username;
             $obj->avatar = $user->info->avatar;
-            $obj->address = $user->info->address;
-
+            $obj->isAdmin = $this->isAdmin($user->id, $member->team->id)['success'];
+            $obj->isCaptain = $member->team->id_captain === $user->id;
+            $obj->joinedDate = $member->updated_at;
+            $obj->num_match = $member->num_match;
+            $obj->points = $user->info->points;
+            $obj->memberId = $member->id;
             return $obj;
         });
-
         return $members;
     }
 }

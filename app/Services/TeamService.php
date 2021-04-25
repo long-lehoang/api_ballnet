@@ -38,22 +38,21 @@ class TeamService implements Team{
         //teams attended
         $team = $user->teams->map(function($team){
             if($team->status === 'active'){
-                $team->members = $this->teamRepo->countMember($team->id);
+                $team->member = $this->teamRepo->countMember($team->team->id)['data'];
                 return $team->team;
             }
         });
-
-        return $team;
+        return array_values(array_filter($team->toArray()));
     }
     public function getTeams()
     {
         $teams = $this->teamRepo->all();
-        $teams->map(function($team){
+        $team = $teams->map(function($team){
             $user = Auth::guard('api')->user();
             $team->isMember = $this->teamRepo->isMember($user->id, $team->id)['success'];
             $team->isWaitingForApprove = $this->teamRepo->isWaitingForApprove($user->id, $team->id)['success'];
             $team->isInvitedBy = $this->teamRepo->isInvitedBy($user->id, $team->id)['success'];
-            $team->members = $this->teamRepo->countMember($team->id);
+            $team->member = $this->teamRepo->countMember($team->id)['data'];
             if($team->isInvitedBy || $team->isWaitingForApprove){
                 $team->idRequest = $this->mbTeamRepo->findRequest($user->id, $team->id)->id;
             }
@@ -192,12 +191,17 @@ class TeamService implements Team{
      */
     public function setAdmin($teamId, $admins)
     {
-        if(is_array($admin)){
+        $team = $this->teamRepo->find($teamId);
+        $team->admins()->delete();
+        Log::info(var_dump($admins));
+        if(is_array($admins)){
             foreach ($admins as $key => $value) {
-                $this->adTeamRepo->create([
-                    "team_id" => $teamId,
-                    "admin_id" => $value
-                ]);
+                if(!empty($value)){
+                    $this->adTeamRepo->create([
+                        "team_id" => $teamId,
+                        "admin_id" => $value
+                    ]);
+                }
             }
             return true;
         }else{
@@ -205,4 +209,57 @@ class TeamService implements Team{
         }
     }
     
+    public function getTeam($id)
+    {
+        $user = Auth::guard('api')->user();
+        $team = $this->teamRepo->find($id);
+        $team->isMember = $this->teamRepo->isMember($user->id, $team->id)['success'];
+        $team->isWaitingForApprove = $this->teamRepo->isWaitingForApprove($user->id, $team->id)['success'];
+        $team->isInvitedBy = $this->teamRepo->isInvitedBy($user->id, $team->id)['success'];
+        $team->member = $this->teamRepo->countMember($team->id)['data'];
+        if($team->isInvitedBy || $team->isWaitingForApprove){
+            $team->idRequest = $this->mbTeamRepo->findRequest($user->id, $team->id)->id;
+        }
+        $isCaptain = $team->id_captain === $user->id;
+        $team->isCaptain = $isCaptain;
+        $team->isAdmin = $this->teamRepo->isAdmin($user->id, $team->id)['success'];
+        return $team;
+    }
+
+    public function kickMember($memberId)
+    {
+        $member = $this->mbTeamRepo->find($memberId);
+        if($member->member_id === $member->team->id_captain){
+            return false;
+        }
+
+        if($member->admin !== null){
+            if(Auth::id() !== $member->team->id_captain){
+                return false;                
+            }
+        }
+
+        $member->delete();
+        return true;
+    }
+
+    public function getFriendToInvite($teamId)
+    {
+        $user = Auth::guard('api')->user();
+        $team = $this->teamRepo->find($teamId);
+        $members = $team->members->pluck('member_id')->toArray();
+        $friends = $user->friends()->whereNotIn('id_friend',$members)->get();
+        $result = $friends->map(function($friend){
+            $user = $friend->friend;
+            $obj = new \stdClass;
+            $obj->id = $user->id;
+            $obj->name = $user->name;
+            $obj->avatar = $user->info->avatar;
+            $obj->username = $user->username;
+
+            return $obj;
+        });
+        return $result;
+    }
+
 }

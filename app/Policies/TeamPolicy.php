@@ -83,15 +83,7 @@ class TeamPolicy
 
     public function member(User $user, Team $team)
     {
-
-        $members = $team->members;
-
-        foreach ($members as $key => $member) {
-            if($member->member_id === $user->id && $member->status === 'active') 
-                return true;
-        }
-
-        return false;
+        return $team->members()->where([['status','active'],['member_id',$user->id]])->first() !== null;
     }
 
     public function captain(User $user, Team $team)
@@ -99,4 +91,18 @@ class TeamPolicy
         return $team->id_captain === $user->id;
     }
 
+    public function kick(User $user, Team $team)
+    {
+        //is captain
+        if($team->id_captain === $user->id){
+            return true;
+        }
+
+        //user is admin
+        $admin = $team->admins()->where('admin_id', $user->id)->first();
+        if(is_null($admin)){
+            return false;
+        }
+        return true;
+    }
 }

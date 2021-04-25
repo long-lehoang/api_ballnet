@@ -37,8 +37,6 @@ class MemberTeamRepo extends BaseRepository{
                     'member_id' => $user->id,
                 ],
                 [
-                    'team_id' => $teamId,
-                    'member_id' => $user->id,
                     'invited_by' => null,
                     'status' => 'waiting',
                 ]
@@ -67,8 +65,6 @@ class MemberTeamRepo extends BaseRepository{
                     'member_id' => $userId,
                 ],
                 [
-                    'team_id' => $teamId,
-                    'member_id' => $userId,
                     'invited_by' => $user->id,
                     'status' => 'waiting'
                 ]
