@@ -126,6 +126,9 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/{id}/approve', [TeamRequestController::class, 'approve']);
     });
     
+    Route::group(['prefix' => '/stadiums'], function(){
+        Route::get('/', [StadiumController::class, 'index']);
+    });
 
     //sport category
     Route::get('/sport_category', [SportCategoryController::class, 'index']);
