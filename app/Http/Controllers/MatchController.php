@@ -3,15 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repository\StadiumRepo;
 
-class StadiumController extends Controller
+class MatchController extends Controller
 {
-    protected $stdRepo;
-    function __construct(StadiumRepo $stdRepo)
-    {
-        $this->stdRepo = $stdRepo;
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,8 +13,7 @@ class StadiumController extends Controller
      */
     public function index()
     {
-        $stadiums = $this->stdRepo->active();
-        return $this->sendResponse($stadiums);
+        //
     }
 
     /**
@@ -42,8 +35,7 @@ class StadiumController extends Controller
      */
     public function show($id)
     {
-        $stadium = $this->stdRepo->find($id);
-        return $this->sendResponse($stadium);
+        //
     }
 
     /**
