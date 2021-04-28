@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class VerificationController extends Controller
 {
@@ -17,7 +18,7 @@ class VerificationController extends Controller
             $user->markEmailAsVerified();
         }
     
-        return redirect()->to('/');
+        return redirect()->to('http://localhost:3000/');
     }
     
     public function resend() {

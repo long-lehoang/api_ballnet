@@ -14,6 +14,7 @@ use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamRequestController;
 use App\Http\Controllers\SportCategoryController;
+use App\Http\Controllers\VerificationController;
 
 
 /*
@@ -26,8 +27,8 @@ use App\Http\Controllers\SportCategoryController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('email/verify/{id}', 'VerificationController@verify')->name('verification.verify');
-Route::get('email/resend', 'VerificationController@resend')->name('verification.resend');
+Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify');
+Route::get('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
