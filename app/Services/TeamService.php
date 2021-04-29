@@ -38,8 +38,15 @@ class TeamService implements Team{
         //teams attended
         $team = $user->teams->map(function($team){
             if($team->status === 'active'){
-                $team->member = $this->teamRepo->countMember($team->team->id)['data'];
-                return $team->team;
+                $obj = new \stdClass;
+                $obj = clone $team->team;
+                $obj->member = $this->teamRepo->countMember($team->team->id)['data'];
+                $obj->avatar = $team->team->members
+                ->filter(function($member){return $member->status === 'active';})
+                ->map->member
+                ->map->info->map->only(['avatar'])->map->avatar->values();
+
+                return $obj;
             }
         });
         return array_values(array_filter($team->toArray()));
