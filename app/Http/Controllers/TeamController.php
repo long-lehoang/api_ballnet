@@ -44,7 +44,7 @@ class TeamController extends Controller
 
         return $this->sendResponse($data);
     }
- 
+
     /**
      * Store a newly created resource in storage.
      *

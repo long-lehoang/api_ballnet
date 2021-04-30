@@ -41,7 +41,7 @@ class TeamService implements Team{
                 $obj = new \stdClass;
                 $obj = clone $team->team;
                 $obj->member = $this->teamRepo->countMember($team->team->id)['data'];
-                $obj->avatar = $team->team->members
+                $obj->avatarMembers = $team->team->members
                 ->filter(function($member){return $member->status === 'active';})
                 ->map->member
                 ->map->info->map->only(['avatar'])->map->avatar->values();
@@ -54,16 +54,22 @@ class TeamService implements Team{
     public function getTeams()
     {
         $teams = $this->teamRepo->all();
-        $team = $teams->map(function($team){
+        $teams = $teams->map(function($team){
+            $obj = new \stdClass;
+            $obj = clone $team;
             $user = Auth::guard('api')->user();
-            $team->isMember = $this->teamRepo->isMember($user->id, $team->id)['success'];
-            $team->isWaitingForApprove = $this->teamRepo->isWaitingForApprove($user->id, $team->id)['success'];
-            $team->isInvitedBy = $this->teamRepo->isInvitedBy($user->id, $team->id)['success'];
-            $team->member = $this->teamRepo->countMember($team->id)['data'];
-            if($team->isInvitedBy || $team->isWaitingForApprove){
-                $team->idRequest = $this->mbTeamRepo->findRequest($user->id, $team->id)->id;
+            $obj->isMember = $this->teamRepo->isMember($user->id, $team->id)['success'];
+            $obj->isWaitingForApprove = $this->teamRepo->isWaitingForApprove($user->id, $team->id)['success'];
+            $obj->isInvitedBy = $this->teamRepo->isInvitedBy($user->id, $team->id)['success'];
+            $obj->member = $this->teamRepo->countMember($team->id)['data'];
+            if($obj->isInvitedBy || $obj->isWaitingForApprove){
+                $obj->idRequest = $this->mbTeamRepo->findRequest($user->id, $team->id)->id;
             }
-            return $team;
+            $obj->avatarMembers = $team->members
+            ->filter(function($member){return $member->status === 'active';})
+            ->map->member
+            ->map->info->map->only(['avatar'])->map->avatar->values();
+            return $obj;
         });
 
         return $teams;
