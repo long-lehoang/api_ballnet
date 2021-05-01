@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\Team\CreateTeamRequest;
 use App\Http\Requests\Team\UpdateTeamRequest;
+use App\Http\Requests\Team\CaptainRequest;
 use App\Http\Requests\Team\LocationRequest;
 use App\Http\Requests\Team\OverviewRequest;
 use App\Http\Requests\Team\KickRequest;
@@ -139,12 +140,14 @@ class TeamController extends Controller
      */
     public function leave($id)
     {
+        $team = $this->team->find($id);
+        $this->authorize('member', $team);
         $result = $this->teamService->leave($id);
 
         if($result['success']){
-            return $this->sendResponse();
+            return $this->sendResponse(null, $result['message']);
         }else{
-            return $this->sendError();
+            return $this->sendError(null, $result['message']);
         }
     }
     
@@ -329,5 +332,14 @@ class TeamController extends Controller
         
         $result = $this->teamService->getFriendToInvite($id);
         return $this->sendResponse($result);
+    }
+
+    public function setCaptain(CaptainRequest $request, $id)
+    {
+        $captainId = $request->captain_id;
+        $team = $this->team->find($id);
+        $this->authorize('captain', $team);
+        $result = $this->teamService->changeCaptain($id, $captainId);
+        return $this->sendResponse();
     }
 }

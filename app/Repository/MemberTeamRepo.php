@@ -95,4 +95,13 @@ class MemberTeamRepo extends BaseRepository{
             return $this->sendFailed();
         }
     }
+
+    public function findMember($teamId, $memberId)
+    {
+        $member = $this->_model::where([
+            ['member_id', $memberId],
+            ['team_id', $teamId]
+        ])->firstOrFail();
+        return $member;
+    }
 }

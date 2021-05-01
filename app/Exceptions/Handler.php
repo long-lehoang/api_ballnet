@@ -43,6 +43,14 @@ class Handler extends ExceptionHandler
                 'data' => null
             ], 403);
         }
+        if ($e instanceof ModelNotFoundException) {
+            return response()->json([
+                'success' => false,
+                'code' => 404,
+                'message' => $e->getMessage(),
+                'data' => null
+            ], 404);
+        }
 
         return parent::render($request, $e);
     }

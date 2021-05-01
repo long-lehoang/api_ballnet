@@ -28,7 +28,7 @@ class TeamRepo extends BaseRepository{
         try{
             $team = $this->find($teamId);
 
-            $member = $team->members()->where([['status','active'],['id',$memberId]])->first();
+            $member = $team->members()->where([['status','active'],['member_id',$memberId]])->first();
             if(is_null($member)){
                 Log::error('Not found member at function findMember');
                 return $this->sendFailed();

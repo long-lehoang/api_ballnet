@@ -59,4 +59,13 @@ interface Team{
      * @return void
      */
     public function getFriendToInvite($teamId);
+    
+    /**
+     * changeCaptain
+     *
+     * @param  mixed $teamId
+     * @param  mixed $captainId
+     * @return void
+     */
+    public function changeCaptain($teamId, $captainId);
 }

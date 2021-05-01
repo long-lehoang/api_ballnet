@@ -90,55 +90,10 @@ class TeamService implements Team{
 
         //check if captain leave team
         if($team->id_captain === $user->id){
-            $newCaptain = $this->teamRepo->topAdmin($teamId);
-            if(!$newCaptain['success']){
-                Log::error('Error when find new captain by admin');
-                return [
-                    'success' => false,
-                    'message' => 'Error when find alternative admin'
-                ];
-            }
-            
-            if($newCaptain['data'] === null || ($newCaptain['data'] !== null && $newCaptain['data']->member_id === $user->id)){
-                $newCaptain = $this->teamRepo->topMember($teamId);
-                if(!$newCaptain['success']){
-                    Log::error('Error when find new captain by member');
-                    return [
-                        'success' => false,
-                        'message' => 'Error when find alternative member'
-                    ];
-                }else{
-                    Log::info(__CLASS__.' -> '.__FUNCTION__.' -> '.__LINE__.': topMember[data] = '.$newCaptain['data']);
-
-                    if($newCaptain['data'] === null || ($newCaptain['data'] !== null && $newCaptain['data']->member_id === $user->id)){
-                        $result = $this->teamRepo->delete($team->id);
-                        if(!$result){
-                            Log::error('Error when delete team');
-                            return [
-                                'success' => false,
-                                'message' => "Can't delete team"
-                            ];
-                        }else{
-                            Log::info(__CLASS__.' -> '.__FUNCTION__.' -> '.__LINE__.': delete Team');
-                            return [
-                                'success' => true,
-                                'data' => null,
-                            ];
-                        }
-                    }
-                }
-            }
-
-            $newCaptain = $newCaptain['data'];
-            $result = $this->teamRepo->replaceCaptain($newCaptain->member_id, $team->id);
-            if(!$result['success']){
-                Log::error('Error when replace new captain');
-
-                return [
-                    'success' => false,
-                    'message' => "Can't update new captain"
-                ];
-            }
+            return [
+                'success' => false,
+                'message' => "Captain can't leave team, please change captain of team"
+            ];
         }
 
         //remove member
@@ -152,30 +107,6 @@ class TeamService implements Team{
             ];
         }
 
-        //check member of team > 0
-        $result = $this->teamRepo->countMember($team->id);
-        if(!$result['success']){
-            Log::error('Error when count member');
-
-            return [
-                'success' => false,
-                'message' => "Error happened when count member"
-            ];
-        }
-
-        //remove team when total member is 0
-        if($result['data'] === 0){
-            $result = $this->teamRepo->delete($team->id);
-            if(!$result){
-                Log::error('Error when delete team at line 147');
-
-                return [
-                    'success' => false,
-                    'message' => "Can't delete team"
-                ];
-            }
-            Log::info(__CLASS__.' -> '.__FUNCTION__.' -> '.__LINE__.': delete Team');
-        }
         //case success
         return [
             'success' => true,
@@ -274,5 +205,20 @@ class TeamService implements Team{
         });
         return $result;
     }
-
+    
+    /**
+     * changeCaptain
+     *
+     * @param  mixed $teamId
+     * @param  mixed $captainId
+     * @return void
+     */
+    public function changeCaptain($teamId, $captainId)
+    {
+        $member = $this->mbTeamRepo->findMember($teamId, $captainId);
+        $team = $this->teamRepo->find($teamId);
+        $team->id_captain = $captainId;
+        $team->save();
+        $this->adTeamRepo->deleteAdmin($teamId, $captainId);
+    }
 }
