@@ -103,21 +103,20 @@ Route::group(['middleware' => 'auth:api'], function() {
     //team
     Route::apiResource('teams', TeamController::class);
     Route::get('/myteam', [TeamController::class, 'myTeams']);
-    Route::group(['prefix' => '/teams'], function(){
-        Route::delete('/{id}/leave', [TeamController::class, 'leave']);
-        Route::group(['prefix' => '/{id}'], function(){
-            Route::get('/feed', [TeamController::class, 'getPosts']);
-            Route::get('/permission', [TeamController::class, 'getPermission']);
-            Route::get('/admin', [TeamController::class, 'getAdmin']);
-            Route::get('/invite', [TeamController::class, 'getFriendToInvite']);
-            Route::get('/member', [TeamController::class, 'getMember']);
-            Route::post('/location', [TeamController::class, 'setLocation']);
-            Route::post('/admin', [TeamController::class, 'setAdmin']);
-            Route::post('/overview', [TeamController::class, 'setOverview']);
-            Route::post('/avatar', [TeamController::class, 'setAvatar']);
-            Route::post('/cover', [TeamController::class, 'setCover']);
-            Route::post('/kick', [TeamController::class, 'kickMember']);
-        });
+    Route::group(['prefix' => '/teams/{id}'], function(){
+        Route::delete('/leave', [TeamController::class, 'leave']);
+        Route::get('/feed', [TeamController::class, 'getPosts']);
+        Route::get('/permission', [TeamController::class, 'getPermission']);
+        Route::get('/admin', [TeamController::class, 'getAdmin']);
+        Route::get('/invite', [TeamController::class, 'getFriendToInvite']);
+        Route::get('/member', [TeamController::class, 'getMember']);
+        Route::post('/location', [TeamController::class, 'setLocation']);
+        Route::post('/admin', [TeamController::class, 'setAdmin']);
+        Route::post('/overview', [TeamController::class, 'setOverview']);
+        Route::post('/avatar', [TeamController::class, 'setAvatar']);
+        Route::post('/cover', [TeamController::class, 'setCover']);
+        Route::post('/kick', [TeamController::class, 'kickMember']);
+        Route::post('/captain', [TeamController::class, 'setCaptain']);
     });
 
     Route::group(['prefix' => '/team_requests'], function(){

@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Repository\BaseRepository;
+use Exception;
+
 
 class AdminTeamRepo extends BaseRepository
 {
@@ -15,4 +17,11 @@ class AdminTeamRepo extends BaseRepository
         return \App\Models\AdminTeam::class;
     }
 
+    public function deleteAdmin($teamId, $adminId)
+    {
+        $admin = $this->_model::where([
+            ['team_id', $teamId],
+            ['admin_id',$adminId]
+        ])->delete();
+    }
 }

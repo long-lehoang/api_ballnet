@@ -28,7 +28,7 @@ class TeamRepo extends BaseRepository{
         try{
             $team = $this->find($teamId);
 
-            $member = $team->members()->where([['status','active'],['id',$memberId]])->first();
+            $member = $team->members()->where([['status','active'],['member_id',$memberId]])->first();
             if(is_null($member)){
                 Log::error('Not found member at function findMember');
                 return $this->sendFailed();
@@ -192,15 +192,11 @@ class TeamRepo extends BaseRepository{
         try{
             $team = $this->find($teamId);
             $admins = $team->admins;
-            $admins = $admins->map(function($admin){
-                $member = $this->findMember($admin->admin_id, $admin->team_id);
-                return $member['data'];
-            });
+            $admins = $admins->map->member;
             $member = $admins->where('status','active')->sortByDesc("num_match")->first();
 
             return $this->sendSuccess($member);
         }catch(Exception $e){
-
             return $this->sendFailed();
         }
     }
