@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repository\UserRepo;
 use App\Repository\SportRepo;
+use Auth;
+use Log;
 
 class SportController extends Controller
 {
@@ -29,6 +31,8 @@ class SportController extends Controller
      */
     public function show($username)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = $this->user->findUser($username);
         if($user['success']){
             return $this->sendResponse($user['data']->sports);
@@ -43,6 +47,8 @@ class SportController extends Controller
      */
     public function getMainSport($username)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = $this->user->findUser($username);
         if($user['success']){
             $mainSport = $this->sport->mainSport($user['data']->id);

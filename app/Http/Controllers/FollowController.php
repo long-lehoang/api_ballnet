@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repository\FollowRepo;
 use App\Repository\UserRepo;
+use Auth;
+use Log;
 
 class FollowController extends Controller
 {
@@ -24,6 +26,8 @@ class FollowController extends Controller
      * @return [json]
      */
     public function count($username){
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = $this->user->findUser($username);
         if($user['success']){
             $follow = $user['data']->follower()->count();

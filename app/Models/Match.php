@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Match extends Model
 {
     use HasFactory;
-
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'matchs';
     /**
      * The attributes that are mass assignable.
      *
@@ -18,9 +23,12 @@ class Match extends Model
         'time',
         'location',
         'sport',
+        'type',
         'private',
         'status',
-        'created_by'
+        'created_by',
+        'team_1',
+        'team_2'
     ];
 
     public function createdBy()
@@ -36,5 +44,20 @@ class Match extends Model
     public function joinings()
     {
         return $this->hasMany(MatchJoining::class);
+    }
+
+    public function team1()
+    {
+        return $this->belongsTo(Team::class, 'team_1');
+    }
+
+    public function team2()
+    {
+        return $this->belongsTo(Team::class, 'team_2');
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(MatchInvitation::class);
     }
 }

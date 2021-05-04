@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Exception;
+use Log;
 
 class NotificationController extends Controller
 {
@@ -15,6 +16,8 @@ class NotificationController extends Controller
 
     public function index()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         try{
             $user = Auth::guard('api')->user();
             $notification = $user->notifications()->get()->toArray();
@@ -26,6 +29,8 @@ class NotificationController extends Controller
 
     public function readAll()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         try{
             $user = Auth::guard('api')->user();
             $user->unreadNotifications->markAsRead();
@@ -37,6 +42,8 @@ class NotificationController extends Controller
 
     public function delete($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         try{
             $user = Auth::guard('api')->user();
             $user->notifications()->findOrFail($id)->delete();

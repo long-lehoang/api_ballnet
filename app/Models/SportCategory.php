@@ -14,7 +14,12 @@ class SportCategory extends Model
      *
      * @var array
      */
-     protected $fillable = [
+    protected $fillable = [
         'name'
     ];
+
+    public function types()
+    {
+        return $this->hasMany(TypeSport::class, 'sport_id');
+    }
 }

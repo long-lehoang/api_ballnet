@@ -22,6 +22,10 @@ use App\Observers\MemberTeamObserver;
 use App\Models\MemberTeam;
 use App\Models\User;
 use App\Observers\UserObserver;
+use App\Models\Match;
+use App\Observers\MatchObserver;
+use App\Models\MatchInvitation;
+use App\Observers\MatchInvitationObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -51,5 +55,7 @@ class EventServiceProvider extends ServiceProvider
         Team::observe(TeamObserver::class);
         MemberTeam::observe(MemberTeamObserver::class);
         User::observe(UserObserver::class);
+        Match::observe(MatchObserver::class);
+        MatchInvitation::observe(MatchInvitationObserver::class);
     }
 }

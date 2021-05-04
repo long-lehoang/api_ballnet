@@ -7,6 +7,8 @@ use App\Repository\MemberTeamRepo;
 use App\Http\Requests\TeamRequest\JoinRequest;
 use App\Http\Requests\TeamRequest\InviteRequest;
 use App\Models\Team;
+use Auth;
+use Log;
 
 class TeamRequestController extends Controller
 {
@@ -31,6 +33,8 @@ class TeamRequestController extends Controller
      */
     public function requestJoinTeam($teamId)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->teamRepo->find($teamId);
         $this->authorize('member', $team);
         
@@ -49,6 +53,8 @@ class TeamRequestController extends Controller
      */
     public function myInvitation()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->teamRepo->myInvitation();
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -65,6 +71,8 @@ class TeamRequestController extends Controller
      */
     public function join(JoinRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $teamId = $request->input('team_id');
 
         $result = $this->memberTeamRepo->join($teamId);
@@ -83,6 +91,8 @@ class TeamRequestController extends Controller
      */
     public function invite(InviteRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $userId = $request->input('user_id');
         $teamId = $request->input('team_id');
         $team = $this->teamRepo->find($teamId);
@@ -107,6 +117,8 @@ class TeamRequestController extends Controller
      */
     public function cancel($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $request = $this->memberTeamRepo->find($id);
         $this->authorize('cancel', $request);
 
@@ -122,6 +134,8 @@ class TeamRequestController extends Controller
      */
     public function approve($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $request = $this->memberTeamRepo->find($id);
         $this->authorize('approve', $request);
 

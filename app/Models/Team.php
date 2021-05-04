@@ -24,6 +24,9 @@ class Team extends Model
         'id_captain'
     ];
 
+    protected $appends = [
+        'matchs',
+    ];
     public function captain(){
         return $this->belongsTo(User::class, 'id_captain');
     }
@@ -38,5 +41,27 @@ class Team extends Model
 
     public function posts(){
         return $this->hasMany(Post::class, 'team_id');
+    }
+
+    public function matchHome(){
+        return $this->hasMany(Match::class, 'team_1');
+    }
+
+    public function matchGuest(){
+        return $this->hasMany(Match::class, 'team_2');
+    }
+
+    public function getMatchsAttribute(){
+        //get relations
+        $matchHome = $this->matchHome;
+        $matchGuest = $this->matchGuest;
+
+        //merge
+        return $matchHome->merge($matchGuest);
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(MatchInvitation::class);
     }
 }

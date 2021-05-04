@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Repository\FriendRepo;
 use App\Repository\UserRepo;
 use App\Contracts\Friend;
+use Auth;
+use Log;
 
 class FriendController extends Controller
 {
@@ -35,6 +37,7 @@ class FriendController extends Controller
      */
     public function index(Request $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
         $result = $this->repo->getFriends();
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -50,6 +53,7 @@ class FriendController extends Controller
      * @return void
      */
     public function count($username){
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
         $user = $this->user->findUser($username);
         if($user['success']){
             $friends = $user['data']->friends()->count();
@@ -68,6 +72,8 @@ class FriendController extends Controller
      */
     public function getFriendOfUser($username)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->friendService->getFriendOfUser($username);
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -84,6 +90,8 @@ class FriendController extends Controller
      */
     public function delete($username)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = $this->user->findUser($username);
         if(!$user['success']){
             return $this->sendError(null, 'Not Found User', 404);

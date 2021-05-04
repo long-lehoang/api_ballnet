@@ -50,6 +50,8 @@ class PostController extends Controller
      */
     public function index()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->postRepo->getPosts();
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -66,6 +68,8 @@ class PostController extends Controller
      */
     public function store(CreatePostRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         try{
             // create post
             $postInput = $request->only('content','location','private','team_id');
@@ -107,6 +111,8 @@ class PostController extends Controller
      */
     public function show($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         //get post
         try{
             $post = $this->postRepo->find($id);
@@ -171,6 +177,7 @@ class PostController extends Controller
      */
     public function update(EditPostRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         $data = $request->all();
         //update
@@ -223,6 +230,8 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->postRepo->delete($id);
         if($result)
             return $this->sendResponse();
@@ -238,6 +247,8 @@ class PostController extends Controller
      */
     public function like($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         try{
             $user = Auth::guard('api')->user();
             $this->likeRepo->updateOrCreate([
@@ -259,6 +270,8 @@ class PostController extends Controller
      */
     public function unLike($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = Auth::guard('api')->user();
         $result = $this->likeRepo->unLike($id,$user->id);
         if($result['success']){
@@ -277,6 +290,8 @@ class PostController extends Controller
      */
     public function comment(CommentRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = Auth::guard('api')->user();
         try{
             $this->commentRepo->forceCreate([
@@ -297,6 +312,8 @@ class PostController extends Controller
      */
     public function getComments($post_id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->postRepo->getComments($post_id);
         if($result['success']){
             return $this->sendResponse($result['data']);
@@ -313,6 +330,8 @@ class PostController extends Controller
      */
     public function unComment($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $delete = $this->commentRepo->delete($id);
         if($delete){
             return $this->sendResponse();
@@ -329,6 +348,8 @@ class PostController extends Controller
      */
     public function share($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         try{
             $user = Auth::guard('api')->user();
             $this->shareRepo->updateOrCreate([
@@ -350,6 +371,8 @@ class PostController extends Controller
      */
     public function unShare($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = Auth::guard('api')->user();
         $result = $this->shareRepo->unShare($id,$user->id);
         if($result['success']){
@@ -367,6 +390,8 @@ class PostController extends Controller
      */
     public function getMyPost()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->postService->getMyPost();
         if($result['success']){
             return $this->sendResponse($result['data']);

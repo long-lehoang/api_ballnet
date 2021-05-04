@@ -3,28 +3,32 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Repository\StadiumRepo;
-use Log;
-use Auth;
 
-class StadiumController extends Controller
+class MatchInvitationController extends Controller
 {
-    protected $stdRepo;
-    function __construct(StadiumRepo $stdRepo)
-    {
-        $this->stdRepo = $stdRepo;
-    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($teamId)
     {
-        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        //
+    }
 
-        $stadiums = $this->stdRepo->active();
-        return $this->sendResponse($stadiums);
+    public function request(Request $request, $teamId)
+    {
+        //TODO
+    }
+
+    public function accept($teamId, $id)
+    {
+        //TODO
+    }
+
+    public function cancel($teamId, $id)
+    {
+        //TODO
     }
 
     /**
@@ -46,10 +50,7 @@ class StadiumController extends Controller
      */
     public function show($id)
     {
-        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
-
-        $stadium = $this->stdRepo->find($id);
-        return $this->sendResponse($stadium);
+        //
     }
 
     /**

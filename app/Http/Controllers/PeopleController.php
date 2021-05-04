@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Contracts\People;
+use Auth;
+use Log;
 
 class PeopleController extends Controller
 {
@@ -21,6 +23,8 @@ class PeopleController extends Controller
      */
     public function index()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->peopleService->getPeople();
 
         if($result['success']){

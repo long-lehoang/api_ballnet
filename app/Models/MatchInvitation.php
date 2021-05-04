@@ -5,18 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MatchJoining extends Model
+class MatchInvitation extends Model
 {
     use HasFactory;
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'match_joining';
-
-     /**
       * The attributes that are mass assignable.
       *
       * @var array
@@ -24,14 +17,11 @@ class MatchJoining extends Model
     protected $fillable = [
         'team_id',
         'match_id',
-        'player_id',
-        'invited_by',
-        'status',
     ];
 
-    public function attendance()
+    public function team()
     {
-        return $this->hasOne(AttendanceMatchJoining::class, 'id_match_joining');
+        return $this->belongsTo(Team::class);
     }
 
     public function match()

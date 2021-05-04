@@ -15,6 +15,10 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\TeamRequestController;
 use App\Http\Controllers\SportCategoryController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\MatchController;
+use App\Http\Controllers\TypeSportController;
+use App\Http\Controllers\MatchInvitationController;
+use App\Http\Controllers\MatchJoiningController;
 
 
 /*
@@ -117,6 +121,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/cover', [TeamController::class, 'setCover']);
         Route::post('/kick', [TeamController::class, 'kickMember']);
         Route::post('/captain', [TeamController::class, 'setCaptain']);
+        Route::post('/sport', [TeamController::class, 'setSport']);
     });
 
     Route::group(['prefix' => '/team_requests'], function(){
@@ -132,8 +137,26 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/', [StadiumController::class, 'index']);
     });
 
+    Route::apiResource('matchs', MatchController::class);
+    Route::group(['prefix' => '/matchs'], function(){
+        Route::put('/{id}/leave', [MatchController::class, 'leave']); //team leave from match
+    });
+
+    Route::group(['prefix' => '/match_invitations/{teamId}'], function(){
+        Route::get('/', [MatchInvitationController::class, 'index']); //invitation of team
+        Route::post('/{id}/accept', [MatchInvitationController::class, 'accept']);
+        Route::post('/{id}/cancel', [MatchInvitationController::class, 'cancel']);
+        Route::post('/request', [MatchInvitationController::class, 'request']);
+    });
+
+    Route::group(['prefix' => '/match_joining/{teamId}'], function(){
+        Route::get('/', [MatchJoiningController::class, 'index']);
+        //TODO
+    });
     //sport category
     Route::get('/sport_category', [SportCategoryController::class, 'index']);
+    Route::get('/sport_category/{name}', [SportCategoryController::class, 'show']);
+    Route::get('/type_sport', [TypeSportController::class, 'index']);
 }); 
 
 Route::get('/username/{username}', [AuthController::class, 'checkUsername']);

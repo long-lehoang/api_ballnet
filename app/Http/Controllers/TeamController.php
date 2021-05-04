@@ -10,11 +10,13 @@ use App\Http\Requests\Team\LocationRequest;
 use App\Http\Requests\Team\OverviewRequest;
 use App\Http\Requests\Team\KickRequest;
 use App\Http\Requests\Team\AdminRequest;
+use App\Http\Requests\Team\SportRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\TeamRepo;
 use App\Contracts\Team;
 use App\Contracts\Image;
 use App\Models\MemberTeam;
+use Log;
 
 class TeamController extends Controller
 {
@@ -41,6 +43,8 @@ class TeamController extends Controller
      */
     public function index()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $data = $this->teamService->getTeams();
 
         return $this->sendResponse($data);
@@ -54,6 +58,8 @@ class TeamController extends Controller
      */
     public function store(CreateTeamRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         //get current user
         $user = Auth::guard('api')->user();
 
@@ -80,6 +86,8 @@ class TeamController extends Controller
      */
     public function show($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->teamService->getTeam($id);
         return $this->sendResponse($result);
     }
@@ -93,6 +101,8 @@ class TeamController extends Controller
      */
     public function update(UpdateTeamRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         //get input
         $input = $request->all();
 
@@ -113,6 +123,8 @@ class TeamController extends Controller
      */
     public function destroy($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('captain',$team);
         $team->delete();
@@ -127,6 +139,8 @@ class TeamController extends Controller
      */
     public function myTeams()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->teamService->getMyTeam();
 
         return $this->sendResponse($team);
@@ -140,6 +154,8 @@ class TeamController extends Controller
      */
     public function leave($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('member', $team);
         $result = $this->teamService->leave($id);
@@ -159,6 +175,8 @@ class TeamController extends Controller
      */
     public function getPermission($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $result = $this->teamService->getPermission($id);
         return $this->sendResponse($result);
     }
@@ -171,6 +189,8 @@ class TeamController extends Controller
      */
     public function getAdmin($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('member',$team);
         $admin = $this->team->getAdmin($id);
@@ -186,6 +206,8 @@ class TeamController extends Controller
      */
     public function setOverview(OverviewRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('captain',$team);
 
@@ -206,6 +228,8 @@ class TeamController extends Controller
      */
     public function setLocation(LocationRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('captain',$team);
 
@@ -225,6 +249,8 @@ class TeamController extends Controller
      */
     public function getMember($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('member',$team);
         $members = $this->team->getMembers($id);
@@ -240,6 +266,8 @@ class TeamController extends Controller
      */
     public function setAdmin(Request $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('captain', $team);
 
@@ -253,17 +281,34 @@ class TeamController extends Controller
             return $this->sendError();
         }
     }
-
+    
+    /**
+     * getPosts
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function getPosts($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('member', $team);
         $posts = $team->posts;
         return $this->sendResponse($posts);
     }
-
+    
+    /**
+     * setAvatar
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
     public function setAvatar(Request $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('captain', $team);
         if($request->hasFile('image')){
@@ -285,9 +330,18 @@ class TeamController extends Controller
         }
         return $this->sendError(null, "Image Not Found");
     }
-
+    
+    /**
+     * setCover
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
     public function setCover(Request $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('captain', $team);
         if($request->hasFile('image')){
@@ -309,9 +363,18 @@ class TeamController extends Controller
         }
         return $this->sendError(null, "Image Not Found");
     }
-
+    
+    /**
+     * kickMember
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
     public function kickMember(KickRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $memberId = $request->member_id;
         $team = $this->team->find($id);
         $this->authorize('kick', $team);
@@ -324,22 +387,64 @@ class TeamController extends Controller
             return $this->sendError();
         }
     }
-
+    
+    /**
+     * getFriendToInvite
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function getFriendToInvite($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $team = $this->team->find($id);
         $this->authorize('member', $team);
         
         $result = $this->teamService->getFriendToInvite($id);
         return $this->sendResponse($result);
     }
-
+    
+    /**
+     * setCaptain
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
     public function setCaptain(CaptainRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $captainId = $request->captain_id;
         $team = $this->team->find($id);
         $this->authorize('captain', $team);
         $result = $this->teamService->changeCaptain($id, $captainId);
+        return $this->sendResponse();
+    }
+    
+    /**
+     * setSport
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
+    public function setSport(SportRequest $request, $id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        //authorize
+        $team = $this->team->find($id);
+        $this->authorize('changeSport', $team);
+
+        //get new sport
+        $sport = $request->sport;
+
+        //update
+        $team->sport = $sport;
+        $team->save();
+
         return $this->sendResponse();
     }
 }

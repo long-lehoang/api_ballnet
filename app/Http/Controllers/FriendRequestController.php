@@ -6,6 +6,7 @@ use App\Http\Requests\FriendRequest\AddFriendRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Contracts\Friend;
 use App\Repository\FriendRequestRepo;
+use Log;
 
 class FriendRequestController extends Controller
 {    
@@ -30,6 +31,8 @@ class FriendRequestController extends Controller
      */
     public function index()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $request = $this->friendService->getFriendRequests();
         return $this->sendResponse($request);
     }
@@ -42,6 +45,8 @@ class FriendRequestController extends Controller
      */
     public function store(AddFriendRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $username = $request->only('username');
         $result = $this->friendService->addFriend($username);
         
@@ -60,6 +65,8 @@ class FriendRequestController extends Controller
      */
     public function delete($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $request = $this->fRRepo->find($id);
         $this->authorize('cancelRequest', $request);
 
@@ -79,6 +86,8 @@ class FriendRequestController extends Controller
      */
     public function acceptRequest($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $request = $this->fRRepo->find($id);
         $this->authorize('acceptRequest', $request);
         //call accept request

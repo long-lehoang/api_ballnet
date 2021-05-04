@@ -4,7 +4,7 @@ namespace App\Http\Requests\Team;
 
 use App\Http\Requests\BaseRequest;
 
-class CreateTeamRequest extends BaseRequest
+class UpdateTeamRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.

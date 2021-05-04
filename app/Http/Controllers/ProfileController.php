@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Profile\UsernameRequest;
 use App\Contracts\Image;
 use Exception;
+use Log;
 
 class ProfileController extends Controller
 {
@@ -34,6 +35,8 @@ class ProfileController extends Controller
      * @return [json]
      */
     public function show($username){
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = $this->userRepo->findUser($username);
         if($user['success']){
             return $this->sendResponse($user['data']->info);
@@ -49,6 +52,8 @@ class ProfileController extends Controller
      */
     private function updateUser($param)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = Auth::guard('api')->user();
         try{
             $result = $this->userRepo->update($user->id, $param);
@@ -70,6 +75,8 @@ class ProfileController extends Controller
      */
     private function updateProfile($param)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $user = Auth::guard('api')->user();
         try{
             $result = $this->infoRepo->update($user->id, $param);
@@ -91,6 +98,8 @@ class ProfileController extends Controller
      */
     public function updateAddress(LocationRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         return $this->updateProfile($request->all());
     }
     
@@ -102,6 +111,8 @@ class ProfileController extends Controller
      */
     public function updateName(NameRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         return $this->updateUser($request->all());
     }
     
@@ -113,6 +124,8 @@ class ProfileController extends Controller
      */
     public function updateUsername(UsernameRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         return $this->updateUser($request->all());
     }
     /**
@@ -123,6 +136,8 @@ class ProfileController extends Controller
      */
     public function updateEmail(EmailRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         return $this->updateUser($request->all());
     }
 
@@ -134,6 +149,8 @@ class ProfileController extends Controller
      */
     public function updateOverview(OverviewRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         return $this->updateProfile($request->all());
     }
 
@@ -145,6 +162,8 @@ class ProfileController extends Controller
      */
     public function updatePhone(PhoneRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         return $this->updateProfile($request->all());
     }
 
@@ -156,6 +175,8 @@ class ProfileController extends Controller
      */
     public function updateBirthday(BirthdayRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         return $this->updateProfile($request->all());
     }
 
@@ -165,6 +186,8 @@ class ProfileController extends Controller
      */
     public function updateAvatar(Request $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         if($request->hasFile('image')){
             $user = Auth::guard('api')->user();
             $profile = $user->info;
@@ -194,6 +217,8 @@ class ProfileController extends Controller
      */
     public function updateCover(Request $request)
     {                
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         if($request->hasFile('image')){
             $user = Auth::guard('api')->user();
             $profile = $user->info;

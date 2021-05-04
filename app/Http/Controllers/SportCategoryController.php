@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SportCategory;
+use Auth;
+use Log;
 
 class SportCategoryController extends Controller
 {
@@ -14,6 +16,8 @@ class SportCategoryController extends Controller
      */
     public function index()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $list = SportCategory::all();
         return $this->sendResponse($list);
     }
@@ -35,9 +39,12 @@ class SportCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($name)
     {
-        //
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $types = SportCategory::where('name', $name)->firstOrFail()->types;
+        return $this->sendResponse($types);
     }
 
     /**
