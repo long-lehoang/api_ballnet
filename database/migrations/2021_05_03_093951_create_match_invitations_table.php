@@ -17,6 +17,7 @@ class CreateMatchInvitationsTable extends Migration
             $table->id();
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->foreignId('match_id')->constrained('matchs')->onDelete('cascade');
+            $table->string('status');
             $table->timestamps();
         });
     }

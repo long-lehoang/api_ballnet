@@ -3,9 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repository\TeamRepo;
+use App\Repository\MatchInivitationRepo;
+use App\Http\Requests\MatchInvitation\CreateRequest;
+use App\Contracts\Match;
 
 class MatchInvitationController extends Controller
 {
+    protected $teamRepo;
+    protected $matchInviteRepo;
+    protected $matchService;
+
+    function __construct(TeamRepo $teamRepo, MatchInivitationRepo $matchInviteRepo, Match $matchService)
+    {
+        $this->teamRepo = $teamRepo;
+        $this->matchInviteRepo = $matchInviteRepo;
+        $this->matchService = $matchService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,14 +30,36 @@ class MatchInvitationController extends Controller
         //
     }
 
-    public function request(Request $request, $teamId)
+    public function request(CreateRequest $request, $teamId)
     {
-        //TODO
+        //authorize admin
+        $team = $this->teamRepo->find($teamId);
+        $this->authorize('admin', $team);
+
+        //create request
+        $this->matchInviteRepo->create(
+            [
+                "match_id" => $request->match_id,
+                "team_id" => $teamId,
+            ],
+            [
+                "status" => "request",
+            ]
+        );
+
+        return $this->sendResponse();
     }
 
     public function accept($teamId, $id)
     {
-        //TODO
+        //authorize
+        $team = $this->teamRepo->find($teamId);
+        $this->authorize('admin', $team);
+        $match = $this->matchRepo->find($id);
+        $this->authorize('acceptTeam', $match);
+
+        $this->matchService->acceptTeam($id);
+        return $this->sendResponse();
     }
 
     public function cancel($teamId, $id)

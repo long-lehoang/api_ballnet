@@ -17,6 +17,7 @@ class MatchInvitation extends Model
     protected $fillable = [
         'team_id',
         'match_id',
+        'status'
     ];
 
     public function team()

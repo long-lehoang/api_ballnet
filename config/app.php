@@ -179,6 +179,7 @@ return [
         App\Providers\PeopleServiceProvider::class,
         App\Providers\FriendServiceProvider::class,
         App\Providers\TeamServiceProvider::class,
+        App\Providers\MatchServiceProvider::class,
     ],
 
     /*

@@ -109,8 +109,28 @@ class MatchPolicy
 
     public function leave(User $user, Match $match)
     {
-        //TODO
+        //check if admin
+        $admins = $match->team1->admins->filter(function($admin){
+            return $admin->admin_id === $user->id;   
+        });
+
+        //check if captain
+        $captain = $match->team1->id_captain === $user->id;
+        if(!$captain&&!$admins){
+            return false;
+        }
+
+        //check if have member join match        
+        $joins = $match->joinings->filter(function($join){
+            return $join->team_id===$join->match->$team_2;
+        });
+        if(!empty($joins)){
+            return false;
+        }
+
+        return true;
     }
+
     /**
      * Determine whether the user can restore the model.
      *
@@ -123,15 +143,8 @@ class MatchPolicy
         //
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\Match  $match
-     * @return mixed
-     */
-    public function forceDelete(User $user, Match $match)
+    public function acceptTeam(User $user, Match $match)
     {
-        //
+        //TODO
     }
 }
