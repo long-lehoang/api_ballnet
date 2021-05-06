@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\MatchInvitation;
+use App\Notifications\MatchInvitation as InviteNotice;
 
 class MatchInvitationObserver
 {
@@ -14,8 +15,14 @@ class MatchInvitationObserver
      */
     public function created(MatchInvitation $matchInvitation)
     {
-        //TODO: notify all members of team
-        //Notify to team which is invited.
+        $team1 = $matchInvitation->match->team1;
+        $team2 = $matchInvitation->team;
+        $match = $matchInvitation->match;
+        if($matchInvitation->status == 'requested'){
+            $team1->captain->notify(new InviteNotice($team1, $team2, $match));
+        }else{
+            $team2->captain->notify(new InviteNotice($team2, $team1, $match));
+        }
     }
 
     /**
@@ -37,7 +44,20 @@ class MatchInvitationObserver
      */
     public function deleted(MatchInvitation $matchInvitation)
     {
-        //TODO: delete notification of matchInvitation
+        //delete notification of matchInvitation
+        if($matchInvitation->status == 'requested'){
+            $matchInvitation->match->team1->captain->notifications()->where([
+                ['type', 'App\\Notifications\\MatchInvitation'],
+                ['data','LIKE','%"id_match":'.$matchInvitation->match_id.'%'],
+                ['data','LIKE','%"id_team":'.$matchInvitation->team_id.'%'],
+            ])->delete();
+        }else{
+            $matchInvitation->team->captain->notifications()->where([
+                ['type', 'App\\Notifications\\MatchInvitation'],
+                ['data','LIKE','%"id_match":'.$matchInvitation->match_id.'%'],
+                ['data','LIKE','%"id_team":'.$matchInvitation->team_id.'%'],
+            ])->delete();
+        }
     }
 
     /**

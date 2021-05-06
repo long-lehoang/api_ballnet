@@ -49,10 +49,12 @@ class MatchInvitation extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'id_my_team' => $this->team->id,
-            'name_my_team' => $this->team->name,
+            'id_my_team' => $this->myTeam->id,
+            'name_my_team' => $this->myTeam->name,
+            'avatar_my_team' => $this->myTeam->avatar;
             'id_team' => $this->team->id,
             'name_team' => $this->team->name,
+            'avatar_team' => $this->team->avatar;
             'id_match' => $this->match->id,
             'sport' => $this->match->sport,
             'type' => $this->match->type,

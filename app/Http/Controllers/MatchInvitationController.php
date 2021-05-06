@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repository\TeamRepo;
 use App\Repository\MatchInivitationRepo;
+use App\Repository\MatchRepo;
 use App\Http\Requests\MatchInvitation\CreateRequest;
 use App\Contracts\Match;
 
@@ -14,7 +15,7 @@ class MatchInvitationController extends Controller
     protected $matchInviteRepo;
     protected $matchService;
 
-    function __construct(TeamRepo $teamRepo, MatchInivitationRepo $matchInviteRepo, Match $matchService)
+    function __construct(TeamRepo $teamRepo,MatchRepo $matchRepo, MatchInivitationRepo $matchInviteRepo, Match $matchService)
     {
         $this->teamRepo = $teamRepo;
         $this->matchInviteRepo = $matchInviteRepo;
@@ -35,7 +36,9 @@ class MatchInvitationController extends Controller
         //authorize admin
         $team = $this->teamRepo->find($teamId);
         $this->authorize('admin', $team);
-
+        //authorize match
+        $match = $this->matchRepo->find($request->match_id);
+        $this->authorize('teamRequest', $match);
         //create request
         $this->matchInviteRepo->create(
             [
@@ -43,7 +46,7 @@ class MatchInvitationController extends Controller
                 "team_id" => $teamId,
             ],
             [
-                "status" => "request",
+                "status" => "requested",
             ]
         );
 
@@ -53,10 +56,8 @@ class MatchInvitationController extends Controller
     public function accept($teamId, $id)
     {
         //authorize
-        $team = $this->teamRepo->find($teamId);
-        $this->authorize('admin', $team);
-        $match = $this->matchRepo->find($id);
-        $this->authorize('acceptTeam', $match);
+        $invitation = $this->matchInviteRepo->find($id);
+        $this->authorize('acceptTeam', $invitation);
 
         $this->matchService->acceptTeam($id);
         return $this->sendResponse();
@@ -64,7 +65,12 @@ class MatchInvitationController extends Controller
 
     public function cancel($teamId, $id)
     {
-        //TODO
+        //authorize
+        $invitation = $this->matchInviteRepo->find($id);
+        $this->authorize('acceptTeam', $invitation);
+
+        $this->matchService->cancelTeam($id);
+        return $this->sendResponse();
     }
 
     /**
@@ -111,4 +117,6 @@ class MatchInvitationController extends Controller
     {
         //
     }
+
+
 }

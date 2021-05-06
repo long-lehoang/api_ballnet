@@ -140,6 +140,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::apiResource('matchs', MatchController::class);
     Route::group(['prefix' => '/matchs'], function(){
         Route::put('/{id}/leave', [MatchController::class, 'leave']); //team leave from match
+        Route::post('/{id}/invite', [MatchController::class, 'invite']);
+        
     });
 
     Route::group(['prefix' => '/match_invitations/{teamId}'], function(){

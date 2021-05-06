@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Requests\Match\UpdateMatchRequest;
-use App\Http\Requests\Match\LeaveRequest;
+use App\Http\Requests\Match\InviteRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\MatchRepo;
 use App\Repository\MatchJoiningRepo;
@@ -69,7 +69,7 @@ class MatchController extends Controller
         $input = $request->all();
         $teamId = $input['team_1'];
         $team = $this->teamRepo->find($teamId);
-        $this->authorize('admin', $team);
+        $this->authorize('captain', $team);
 
         $input["created_by"] = Auth::id();
         if($input['private'] === 'Team'){
@@ -150,23 +150,28 @@ class MatchController extends Controller
      * @param  mixed $id
      * @return void
      */
-    public function leave(LeaveRequest $request, $id)
+    public function leave($id)
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         $match = $this->matchRepo->find($id);
         $this->authorize('leave', $match);
 
-        $team_id = $request->team_id;
-
-        if($match->team_1 == $team_id){
-            $match->team_1 = null;
-        }
-        if($match->team_2 == $team_id){
-            $match->team_2 = null;
-        }
+        $match->team_2 = null;
+        
         $match->save();
 
+        return $this->sendResponse();
+    }
+
+    public function invite(InviteRequest $request, $id)
+    {
+        $match = $this->matchRepo->find($id);
+        $this->authorize('member', $match->team1);
+
+        $teams = $request->teams;
+        $teams = explode(',', $teams);
+        $this->matchService->inviteTeam($teams, $id);
         return $this->sendResponse();
     }
 }

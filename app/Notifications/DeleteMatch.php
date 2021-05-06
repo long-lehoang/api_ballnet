@@ -9,8 +9,7 @@ use Illuminate\Notifications\Notification;
 use App\Models\Team;
 use App\Models\Match;
 
-
-class AcceptMatchInvitation extends Notification implements ShouldQueue
+class DeleteMatch extends Notification implements ShouldQueue
 {
     use Queueable;
 

@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use App\Models\Team;
 use App\Models\Match;
 
-//TODO
+
 class TeamLeaveMatch extends Notification implements ShouldQueue
 {
     use Queueable;
@@ -19,13 +19,11 @@ class TeamLeaveMatch extends Notification implements ShouldQueue
      *
      * @return void
      */
-    protected $myTeam;
     protected $team;
     protected $match;
 
-    public function __construct(Team $myTeam, Team $team, Match $match)
+    public function __construct(Team $team, Match $match)
     {
-        $this->myTeam = $myTeam;
         $this->team = $team;
         $this->match = $match;
     }
@@ -50,8 +48,6 @@ class TeamLeaveMatch extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'id_my_team' => $this->team->id,
-            'name_my_team' => $this->team->name,
             'id_team' => $this->team->id,
             'name_team' => $this->team->name,
             'id_match' => $this->match->id,

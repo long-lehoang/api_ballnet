@@ -4,7 +4,7 @@ namespace App\Http\Requests\Match;
 
 use App\Http\Requests\BaseRequest;
 
-class LeaveRequest extends BaseRequest
+class InviteRequest extends BaseRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -14,7 +14,7 @@ class LeaveRequest extends BaseRequest
     public function rules()
     {
         return [
-            "team_id" => "required",
+            "teams" => "required",
         ];
     }
 }

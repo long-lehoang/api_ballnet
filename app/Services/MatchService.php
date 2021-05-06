@@ -31,4 +31,37 @@ class MatchService implements Match{
         $match->team_2 = $invitation->team_id;
         $match->save();
     }
+    
+    /**
+     * cancelTeam
+     *
+     * @param  mixed $invitationId
+     * @return void
+     */
+    public function cancelTeam($invitationId){
+        $invitation = $this->matchInviteRepo->find($invitationId);
+        $invitation->delete();
+    }
+    
+    /**
+     * inviteTeam
+     *
+     * @param  mixed $teams
+     * @param  mixed $matchId
+     * @return void
+     */
+    public function inviteTeam($teams, $matchId){
+        foreach ($teams as $key => $team) {
+            $this->matchInviteRepo->create(
+                [
+                    "match_id" => $matchId,
+                    "team_id" => $team,
+                ],
+                [
+                    "status" => "invited",
+                ]
+            );
+        }
+    }
+
 }

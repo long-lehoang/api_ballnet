@@ -69,7 +69,9 @@ class MatchObserver
      */
     public function deleted(Match $match)
     {
-        //TODO: delete all NewMatch Notifications
+        //notify all member Notifications
+        $users = $match->joinings->map->user;
+        $users->map->notify(new DeleteMatch($match->team1, $match));
     }
 
     /**
