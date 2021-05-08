@@ -82,19 +82,19 @@ class MatchService implements Match{
             $this->matchJoining->create(
                 [
                     "match_id" => $matchId,
-                    "team_id" => $team,
                 ],
                 [
+                    "team_id" => $team,
                     "player_id" => Auth::id(),
                 ]
             );
         }else{
             $this->matchJoining->create(
                 [
-                    "match_id" => $matchId,
                     "team_id" => $team,
                 ],
                 [
+                    "match_id" => $matchId,
                     "player_id" => $playerId,
                     "invited_by" => Auth::id()
                 ]

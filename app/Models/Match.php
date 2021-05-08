@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Log;
+use Auth;
 
 class Match extends Model
 {
@@ -37,7 +38,13 @@ class Match extends Model
         'avatar2',
         'member1',
         'member2',
+        'admin1',
+        'admin2',
         'stadium',
+        'join1',
+        'join2',
+        'wait1',
+        'wait2',
     ];
 
     public function createdBy()
@@ -94,5 +101,83 @@ class Match extends Model
     {
         $stadium = Booking::join('stadiums', 'booking.stadium_id', '=', 'stadiums.id')->select('stadiums.name')->where('match_id', $this->id)->first();
         return $stadium == null ? null : $stadium->name;
+    }
+
+    public function getJoin1Attribute()
+    {
+        $join = MatchJoining::where([
+            ['team_id', $this->team_1],
+            ['status', 'active']
+        ])->first();
+        return !is_null($join);
+    }
+
+    public function getJoin2Attribute()
+    {
+        $join = MatchJoining::where([
+            ['team_id', $this->team_2],
+            ['status', 'active']
+        ])->first();
+        return !is_null($join);
+    }
+
+    public function getWait1Attribute()
+    {
+        $join = MatchJoining::where([
+            ['team_id', $this->team_1],
+            ['status', 'waiting']
+        ])->first();
+        if(is_null($join)) return 0;
+
+        if(is_null($join->invited_by)){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
+
+    public function getWait2Attribute()
+    {
+        $join = MatchJoining::where([
+            ['team_id', $this->team_2],
+            ['status', 'waiting']
+        ])->first();
+        if(is_null($join)) return 0;
+
+        if(is_null($join->invited_by)){
+            return 1;
+        }else{
+            return 2;
+        }
+    }
+
+    public function getAdmin1Attribute()
+    {
+        $admin = AdminTeam::where([
+            ['admin_id', Auth::id()],
+            ['team_id', $this->team_1]
+        ])->first();
+
+        $captain = Team::where([
+            ['id', $this->team_1],
+            ['id_captain', Auth::id()]
+        ])->first();
+
+        return !is_null($admin)||!is_null($captain);
+    }
+
+    public function getAdmin2Attribute()
+    {
+        $admin = AdminTeam::where([
+            ['admin_id', Auth::id()],
+            ['team_id', $this->team_2]
+        ])->first();
+
+        $captain = Team::where([
+            ['id', $this->team_2],
+            ['id_captain', Auth::id()]
+        ])->first();
+
+        return !is_null($admin)||!is_null($captain);
     }
 }
