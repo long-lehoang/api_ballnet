@@ -152,4 +152,8 @@ class User extends Authenticatable
     public function adminTeams(){
         return $this->hasMany(AdminTeam::class, 'admin_id');
     }
+
+    public function matchs(){
+        return $this->hasMany(MatchJoining::class, 'player_id');
+    }
 }

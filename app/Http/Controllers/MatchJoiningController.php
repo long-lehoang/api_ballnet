@@ -3,17 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
+use App\Http\Requests\MatchJoining\CreateRequest;
+use App\Repository\MatchRepo;
+use App\Repository\MatchJoiningRepo;
+use App\Contracts\Match;
 
 class MatchJoiningController extends Controller
 {
+    protected $matchRepo;
+    protected $matchService;
+    protected $matchJoining;
+
+    function __construct(MatchRepo $matchRepo, Match $matchService, MatchJoiningRepo $matchJoining)
+    {
+        $this->matchRepo = $matchRepo;
+        $this->matchService = $matchService;
+        $this->matchJoining = $matchJoining;
+    }
     /**
-     * Display a listing of the resource.
+     * Display a matches joining of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        $matchJoinings = Auth::guard('api')->user()->matchs;
+        return $this->sendResponse($matchJoinings);
     }
 
     /**
@@ -22,9 +38,17 @@ class MatchJoiningController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        //
+        $match = $this->matchRepo->find($request->match_id);
+        //authorize
+        $this->authorize('userJoin', $match);
+
+        //save request
+        $this->matchService->userJoin($request->match_id, $request->team_id, $request->player_id);
+        
+        //response
+        return $this->sendResponse();
     }
 
     /**
@@ -35,7 +59,11 @@ class MatchJoiningController extends Controller
      */
     public function show($id)
     {
-        //
+        $match = $this->matchRepo->find($id);
+        $joinings = $match->joinings->filter(function($join){
+            return $join->status === 'active';
+        });
+        return $this->sendResponse($joinings);
     }
 
     /**
@@ -47,7 +75,16 @@ class MatchJoiningController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $joining = $this->matchJoining->find($id);
+        //authorize
+        $this->authorize('updateJoining', $joining);
+        
+        //update
+        $joining->status = 'active';
+        $joining->save();
+
+        //response
+        return $this->sendResponse();
     }
 
     /**
@@ -58,6 +95,12 @@ class MatchJoiningController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $joining = $this->matchJoining->find($id);
+        //authorize
+        $this->authorize('deleteJoining', $joining);
+        //delete
+        $joining->delete();
+
+        return $this->sendResponse();
     }
 }

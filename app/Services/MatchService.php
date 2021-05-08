@@ -5,15 +5,18 @@ namespace App\Services;
 use App\Contracts\Match;
 use App\Repository\MatchRepo;
 use App\Repository\MatchInvitationRepo;
+use Auth;
 
 class MatchService implements Match{
     
     protected $matchRepo;
     protected $matchInviteRepo;
+    protected $matchJoining;
 
-    function __construct(MatchRepo $matchRepo, MatchInvitationRepo $matchInviteRepo){
+    function __construct(MatchRepo $matchRepo, MatchInvitationRepo $matchInviteRepo, MatchJoining $matchJoining){
         $this->matchRepo = $matchRepo;
         $this->matchInviteRepo = $matchInviteRepo;
+        $this->matchJoining = $matchJoining;
     }
     /**
      * acceptTeam
@@ -63,5 +66,39 @@ class MatchService implements Match{
             );
         }
     }
-
+    
+        
+    /**
+     * userJoin
+     *
+     * @param  mixed $matchId
+     * @param  mixed $teamId
+     * @param  mixed $playerId
+     * @return void
+     */
+    public function userJoin($matchId, $teamId, $playerId)
+    {
+        if(is_null($playerId)){
+            $this->matchJoining->create(
+                [
+                    "match_id" => $matchId,
+                    "team_id" => $team,
+                ],
+                [
+                    "player_id" => Auth::id(),
+                ]
+            );
+        }else{
+            $this->matchJoining->create(
+                [
+                    "match_id" => $matchId,
+                    "team_id" => $team,
+                ],
+                [
+                    "player_id" => $playerId,
+                    "invited_by" => Auth::id()
+                ]
+            );
+        }
+    }
 }

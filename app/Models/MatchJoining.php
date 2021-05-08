@@ -43,4 +43,9 @@ class MatchJoining extends Model
     {
         return $this->belongsTo(User::class, 'player_id');
     }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

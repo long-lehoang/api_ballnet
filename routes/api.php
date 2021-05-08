@@ -151,10 +151,14 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/request', [MatchInvitationController::class, 'request']);
     });
 
-    Route::group(['prefix' => '/match_joining/{teamId}'], function(){
+    Route::group(['prefix' => '/match_joinings'], function(){
         Route::get('/', [MatchJoiningController::class, 'index']);
-        //TODO
+        Route::get('/match/{id}', [MatchJoiningController::class, 'show']);
+        Route::post('/', [MatchJoiningController::class, 'store']);
+        Route::delete('/{id}', [MatchJoiningController::class, 'destroy']);
+        Route::put('/{id}', [MatchJoiningController::class, 'update']);      
     });
+
     //sport category
     Route::get('/sport_category', [SportCategoryController::class, 'index']);
     Route::get('/sport_category/{name}', [SportCategoryController::class, 'show']);

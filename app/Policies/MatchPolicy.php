@@ -6,6 +6,7 @@ use App\Models\Match;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\MatchInvitation;
+use App\Models\MatchJoining;
 
 class MatchPolicy
 {
@@ -125,5 +126,36 @@ class MatchPolicy
     public function teamRequest(User $user, Match $match)
     {
         return is_null($match->team_2);
+    }
+
+    public function userJoin(User $user, Match $match)
+    {
+        if($match->private === 'Public'){
+            return true;
+        }
+
+        if(!is_null($match->team1)&&!is_null($match->team1->members()->where('member_id', $user->id)->first())){
+            return true;
+        }
+
+        if(!is_null($match->team2)&&!is_null($match->team2->members()->where('member_id', $user->id)->first())){
+            return true;
+        }
+
+        return false;
+    }
+
+    public function updateJoining(User $user, MatchJoining $joining)
+    {
+        if(is_null($joining->invited_by)){
+            return $joining->player_id === $user->id;
+        }else{
+            return !is_null($joining->team->admins()->where("admin_id", $user->id)->first());
+        }
+    }
+
+    public function deleteJoining(User $user, MatchJoining $joining)
+    {
+        return $joining->player_id === $user->id||!is_null($joining->team->admins()->where("admin_id", $user->id)->first());
     }
 }

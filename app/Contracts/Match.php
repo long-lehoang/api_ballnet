@@ -28,4 +28,16 @@ interface Match{
      * @return void
      */
     public function inviteTeam($teams, $matchId);
+    
+        
+    /**
+     * userJoin
+     *
+     * @param  mixed $matchId
+     * @param  mixed $teamId
+     * @param  mixed $playerId
+     * @return void
+     */
+    public function userJoin($matchId, $teamId, $playerId);
+    
 }
