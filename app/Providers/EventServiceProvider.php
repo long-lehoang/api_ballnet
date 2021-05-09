@@ -26,6 +26,8 @@ use App\Models\Match;
 use App\Observers\MatchObserver;
 use App\Models\MatchInvitation;
 use App\Observers\MatchInvitationObserver;
+use App\Models\MatchJoining;
+use App\Observers\MatchJoiningObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -57,5 +59,6 @@ class EventServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Match::observe(MatchObserver::class);
         MatchInvitation::observe(MatchInvitationObserver::class);
+        MatchJoining::observe(MatchJoiningObserver::class);
     }
 }

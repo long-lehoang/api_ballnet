@@ -36,15 +36,21 @@ class Match extends Model
     protected $appends = [
         'avatar1',
         'avatar2',
+        'name1',
+        'name2',
         'member1',
         'member2',
         'admin1',
         'admin2',
+        'captain1',
+        'captain2',
         'stadium',
         'join1',
         'join2',
         'wait1',
         'wait2',
+        'idRequest1',
+        'idRequest2',
     ];
 
     public function createdBy()
@@ -89,12 +95,12 @@ class Match extends Model
 
     public function getMember1Attribute()
     {
-        return $this->team_1 === null ? 0 : MatchJoining::where("team_id", $this->team_1)->count();
+        return $this->team_1 === null ? 0 : MatchJoining::where([["team_id", $this->team_1],["match_id", $this->id]])->count();
     }
 
     public function getMember2Attribute()
     {
-        return $this->team_2 === null ? 0 :  MatchJoining::where("team_id", $this->team_2)->count();
+        return $this->team_2 === null ? 0 :  MatchJoining::where([["team_id", $this->team_2],["match_id", $this->id]])->count();
     }
 
     public function getStadiumAttribute()
@@ -106,6 +112,8 @@ class Match extends Model
     public function getJoin1Attribute()
     {
         $join = MatchJoining::where([
+            ["match_id", $this->id],
+            ['player_id', Auth::id()],
             ['team_id', $this->team_1],
             ['status', 'active']
         ])->first();
@@ -115,6 +123,8 @@ class Match extends Model
     public function getJoin2Attribute()
     {
         $join = MatchJoining::where([
+            ["match_id", $this->id],
+            ['player_id', Auth::id()],
             ['team_id', $this->team_2],
             ['status', 'active']
         ])->first();
@@ -124,7 +134,9 @@ class Match extends Model
     public function getWait1Attribute()
     {
         $join = MatchJoining::where([
+            ["match_id", $this->id],
             ['team_id', $this->team_1],
+            ['player_id', Auth::id()],
             ['status', 'waiting']
         ])->first();
         if(is_null($join)) return 0;
@@ -139,7 +151,9 @@ class Match extends Model
     public function getWait2Attribute()
     {
         $join = MatchJoining::where([
+            ["match_id", $this->id],
             ['team_id', $this->team_2],
+            ['player_id', Auth::id()],
             ['status', 'waiting']
         ])->first();
         if(is_null($join)) return 0;
@@ -179,5 +193,59 @@ class Match extends Model
         ])->first();
 
         return !is_null($admin)||!is_null($captain);
+    }
+
+    public function getIdRequest1Attribute()
+    {
+        $join = MatchJoining::where([
+            ["match_id", $this->id],
+            ['team_id', $this->team_1],
+            ['player_id', Auth::id()],
+        ])->first();
+
+        if(is_null($join)){
+            return null;
+        }else{
+            return $join->id;
+        }
+    }
+
+    public function getIdRequest2Attribute()
+    {
+        $join = MatchJoining::where([
+            ["match_id", $this->id],
+            ['team_id', $this->team_2],
+            ['player_id', Auth::id()],
+        ])->first();
+
+        if(is_null($join)){
+            return null;
+        }else{
+            return $join->id;
+        }
+    }
+
+    public function getName1Attribute()
+    {
+        $team = Team::find($this->team_1);
+        return is_null($team) ? null : $team->name;
+    }
+
+    public function getName2Attribute()
+    {
+        $team = Team::find($this->team_2);
+        return is_null($team) ? null : $team->name;
+    }
+
+    public function getCaptain1Attribute()
+    {
+        $team = Team::find($this->team_1);
+        return !is_null($team)&&$team->id_captain === Auth::id();
+    }
+
+    public function getCaptain2Attribute()
+    {
+        $team = Team::find($this->team_2);
+        return !is_null($team)&&$team->id_captain === Auth::id();
     }
 }

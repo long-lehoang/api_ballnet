@@ -4,22 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repository\TeamRepo;
-use App\Repository\MatchInivitationRepo;
+use App\Repository\MatchInvitationRepo;
 use App\Repository\MatchRepo;
 use App\Http\Requests\MatchInvitation\CreateRequest;
 use App\Contracts\Match;
+use Log;
+use Auth;
 
 class MatchInvitationController extends Controller
 {
     protected $teamRepo;
     protected $matchInviteRepo;
     protected $matchService;
+    protected $matchRepo;
 
-    function __construct(TeamRepo $teamRepo,MatchRepo $matchRepo, MatchInivitationRepo $matchInviteRepo, Match $matchService)
+    function __construct(TeamRepo $teamRepo,MatchRepo $matchRepo, MatchInvitationRepo $matchInviteRepo, Match $matchService)
     {
         $this->teamRepo = $teamRepo;
         $this->matchInviteRepo = $matchInviteRepo;
         $this->matchService = $matchService;
+        $this->matchRepo = $matchRepo;
     }
     /**
      * Display a listing of the resource.
@@ -33,6 +37,8 @@ class MatchInvitationController extends Controller
 
     public function request(CreateRequest $request, $teamId)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         //authorize admin
         $team = $this->teamRepo->find($teamId);
         $this->authorize('admin', $team);
@@ -55,6 +61,8 @@ class MatchInvitationController extends Controller
 
     public function accept($teamId, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         //authorize
         $invitation = $this->matchInviteRepo->find($id);
         $this->authorize('acceptTeam', $invitation);
@@ -65,6 +73,8 @@ class MatchInvitationController extends Controller
 
     public function cancel($teamId, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         //authorize
         $invitation = $this->matchInviteRepo->find($id);
         $this->authorize('acceptTeam', $invitation);

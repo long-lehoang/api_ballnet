@@ -47,11 +47,12 @@ class NewMatch extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            'id_team' => $this->team->id,
-            'name_team' => $this->team->name,
-            'id_match' => $this->match->id,
+            'team_id' => $this->team->id,
+            'team_name' => $this->team->name,
+            'team_avatar' => $this->team->avatar,
+            'match_id' => $this->match->id,
             'sport' => $this->match->sport,
-            'type' => $this->match->type,
+            'type_sport' => $this->match->type,
             'location' => $this->match->location,
             'time_start' => explode(', ',$this->match->time)[0]
         ];

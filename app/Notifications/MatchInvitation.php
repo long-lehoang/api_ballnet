@@ -8,6 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Team;
 use App\Models\Match;
+use App\Models\MatchInvitation;
 
 class MatchInvitation extends Notification implements ShouldQueue
 {
@@ -21,45 +22,47 @@ class MatchInvitation extends Notification implements ShouldQueue
     protected $myTeam;
     protected $team;
     protected $match;
+    protected $invitation;
 
-    public function __construct(Team $myTeam, Team $team, Match $match)
+    public function __construct(Team $myTeam, Team $team, Match $match, MatchInvitation $invitation)
     {
         $this->myTeam = $myTeam;
         $this->team = $team;
+        $this->invitation = $invitation;
         $this->match = $match;
     }
 
     /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
+    * Get the notification's delivery channels.
+    *
+    * @param  mixed  $notifiable
+    * @return array
+    */
     public function via($notifiable)
     {
         return ['database', 'broadcast'];
     }
 
     /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
+    * Get the array representation of the notification.
+    *
+    * @param  mixed  $notifiable
+    * @return array
+    */
     public function toArray($notifiable)
     {
         return [
-            'id_my_team' => $this->myTeam->id,
-            'name_my_team' => $this->myTeam->name,
-            'avatar_my_team' => $this->myTeam->avatar;
-            'id_team' => $this->team->id,
-            'name_team' => $this->team->name,
-            'avatar_team' => $this->team->avatar;
-            'id_match' => $this->match->id,
+            'my_team_id' => $this->myTeam->id,
+            'my_team_name' => $this->myTeam->name,
+            'team_id' => $this->team->id,
+            'team_name' => $this->team->name,
+            'team_avatar' => $this->team->avatar,
+            'match_id' => $this->match->id,
             'sport' => $this->match->sport,
-            'type' => $this->match->type,
+            'type_sport' => $this->match->type,
             'location' => $this->match->location,
-            'time_start' => explode(', ',$this->match->time)[0]
+            'time_start' => explode(', ',$this->match->time)[0],
+            'request_id' => $this->invitation->id,
         ];
     }
 }

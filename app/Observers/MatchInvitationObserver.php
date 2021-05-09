@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\MatchInvitation;
 use App\Notifications\MatchInvitation as InviteNotice;
+use App\Notifications\TeamRequestMatch;
 
 class MatchInvitationObserver
 {
@@ -19,9 +20,9 @@ class MatchInvitationObserver
         $team2 = $matchInvitation->team;
         $match = $matchInvitation->match;
         if($matchInvitation->status == 'requested'){
-            $team1->captain->notify(new InviteNotice($team1, $team2, $match));
+            $team1->captain->notify(new TeamRequestMatch($team1, $team2, $match, $matchInvitation));
         }else{
-            $team2->captain->notify(new InviteNotice($team2, $team1, $match));
+            $team2->captain->notify(new InviteNotice($team2, $team1, $match, $matchInvitation));
         }
     }
 

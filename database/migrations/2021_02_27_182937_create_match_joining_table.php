@@ -17,8 +17,8 @@ class CreateMatchJoiningTable extends Migration
             $table->id();
             $table->foreignId('match_id')->constrained('matchs');
             $table->foreignId('palyer_id')->constrained('users');
-            $table->foreignId('team_id')->constrained('teams')->nullable();
-            $table->foreignId('invited_by')->constrained('users')->nullable();
+            $table->foreignId('team_id')->nullable()->constrained('teams');
+            $table->foreignId('invited_by')->nullable()->constrained('users');
             $table->tinyInteger('status');
             $table->timestamps();
         });

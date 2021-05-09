@@ -38,9 +38,9 @@ abstract class BaseRepository
      * @param array $attributes
      * @return mixed
      */
-    public function create($params)
+    public function create($keys = [], $params = [])
     {
-        return $this->_model->firstOrCreate($params);
+        return $this->_model->firstOrCreate($keys,$params);
     }
 
     /**

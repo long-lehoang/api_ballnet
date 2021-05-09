@@ -48,4 +48,9 @@ class MatchJoining extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function invitedBy()
+    {
+        return $this->belongsTo(User::class, 'invited_by');
+    }
 }

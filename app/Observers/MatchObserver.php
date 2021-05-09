@@ -5,6 +5,10 @@ namespace App\Observers;
 use App\Models\Match;
 use App\Notifications\NewMatch;
 use App\Notifications\MatchInvitation;
+use App\Notifications\AcceptMatchInvitation;
+use App\Notifications\TeamLeaveMatch;
+use App\Notifications\DeleteMatch;
+use App\Notifications\UpdateMatch;
 
 class MatchObserver
 {
@@ -29,7 +33,7 @@ class MatchObserver
      */
     public function updated(Match $match)
     {
-        //
+        //notify for all member of team about new team join to match
     }
 
     /**
@@ -40,24 +44,40 @@ class MatchObserver
      */
     public function updating(Match $match)
     {
-        $team1 = $match->team1;
 
         if($match->isDirty('team2')){
             // team has cancel
             $new_team = $match->team2;
-            $old_team = $match->getOriginal('team2');
+            $old_team = $match->getOriginal('team_2');
 
             if($new_team === null && $old_team !==null){
                 //case leave match
                 //notify to members of team 1
-                $team1->members->map->member->notify(new TeamLeaveMatch($team1, $old_team, $match));
+                foreach ($match->joinings as $join) {
+                    if($join->team_id === $match->team_1 && $join->status === 'active'){
+                        $join->user->notify(new TeamLeaveMatch($match->team1, $old_team, $match));
+                    }
+                }
+                
             }else{
                 //case join match
                 //notify to members of team 1
-                $team1->members->map->member->notify(new AcceptMatchInvitation($team1, $new_team, $match));
+                foreach ($match->joinings as $join) {
+                    if($join->team_id === $match->team_1 && $join->status === 'active'){
+                        $join->user->notify(new AcceptMatchInvitation($team1, $new_team, $match));
+                    }
+                }
                 
                 //notify to member of team2 (NewMatch)
                 $new_team->members->map->member->notify(new NewMatch($new_team, $match));
+            }
+        }
+
+        if($match->isDirty('type')||$match->isDirty('location')||$match->isDirty('time')){
+            foreach ($match->joinings as $join) {
+                if($join->status === 'active'){
+                    $join->user->notify(new UpdateMatch($match,$match->team1));
+                }
             }
         }
     }

@@ -114,7 +114,8 @@ class MatchController extends Controller
         
         //get params
         $params = $request->all();
-        
+        Log::debug("Data Input: [".json_encode($params)."]");
+
         //update
         $match->update($params);
 
@@ -166,6 +167,8 @@ class MatchController extends Controller
 
     public function invite(InviteRequest $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $match = $this->matchRepo->find($id);
         $this->authorize('member', $match->team1);
 

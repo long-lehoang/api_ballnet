@@ -8,6 +8,7 @@ use App\Http\Requests\MatchJoining\CreateRequest;
 use App\Repository\MatchRepo;
 use App\Repository\MatchJoiningRepo;
 use App\Contracts\Match;
+use Log;
 
 class MatchJoiningController extends Controller
 {
@@ -28,6 +29,8 @@ class MatchJoiningController extends Controller
      */
     public function index()
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $matchJoinings = Auth::guard('api')->user()->matchs;
         return $this->sendResponse($matchJoinings);
     }
@@ -40,15 +43,17 @@ class MatchJoiningController extends Controller
      */
     public function store(CreateRequest $request)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $match = $this->matchRepo->find($request->match_id);
         //authorize
         $this->authorize('userJoin', $match);
 
         //save request
-        $this->matchService->userJoin($request->match_id, $request->team_id, $request->player_id);
+        $join = $this->matchService->userJoin($request->match_id, $request->team_id, $request->player_id);
         
         //response
-        return $this->sendResponse();
+        return $this->sendResponse($join);
     }
 
     /**
@@ -59,6 +64,8 @@ class MatchJoiningController extends Controller
      */
     public function show($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $match = $this->matchRepo->find($id);
         $joinings = $match->joinings->filter(function($join){
             return $join->status === 'active';
@@ -75,6 +82,8 @@ class MatchJoiningController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $joining = $this->matchJoining->find($id);
         //authorize
         $this->authorize('updateJoining', $joining);
@@ -95,6 +104,8 @@ class MatchJoiningController extends Controller
      */
     public function destroy($id)
     {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
         $joining = $this->matchJoining->find($id);
         //authorize
         $this->authorize('deleteJoining', $joining);

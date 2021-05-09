@@ -8,9 +8,9 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Team;
 use App\Models\Match;
+use App\Models\MatchInvitation;
 
-
-class AcceptMatchInvitation extends Notification implements ShouldQueue
+class TeamRequestMatch extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -19,12 +19,16 @@ class AcceptMatchInvitation extends Notification implements ShouldQueue
      *
      * @return void
      */
+    protected $myTeam;
     protected $team;
     protected $match;
+    protected $invitation;
 
-    public function __construct(Team $team, Match $match)
+    public function __construct(Team $myTeam, Team $team, Match $match, MatchInvitation $invitation)
     {
+        $this->myTeam = $myTeam;
         $this->team = $team;
+        $this->invitation = $invitation;
         $this->match = $match;
     }
 
@@ -48,6 +52,8 @@ class AcceptMatchInvitation extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
+            'my_team_id' => $this->myTeam->id,
+            'my_team_name' => $this->myTeam->name,
             'team_id' => $this->team->id,
             'team_name' => $this->team->name,
             'team_avatar' => $this->team->avatar,
@@ -55,7 +61,8 @@ class AcceptMatchInvitation extends Notification implements ShouldQueue
             'sport' => $this->match->sport,
             'type_sport' => $this->match->type,
             'location' => $this->match->location,
-            'time_start' => explode(', ',$this->match->time)[0]
+            'time_start' => explode(', ',$this->match->time)[0],
+            'request_id' => $this->invitation->id,
         ];
     }
 }

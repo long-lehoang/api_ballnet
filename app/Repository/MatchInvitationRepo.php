@@ -15,16 +15,6 @@ class MatchInvitationRepo extends BaseRepository
     {
         return \App\Models\MatchInvitation::class;
     }
-    
-    /**
-     * invitation
-     *
-     * @return void
-     */
-    public function create($keys, $data)
-    {
-        return $this->_model->firstOrCreate($keys,$data);
-    }
 
     public function deleteByMatchId($matchId)
     {

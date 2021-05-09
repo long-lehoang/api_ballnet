@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Contracts\Match;
 use App\Repository\MatchRepo;
+use App\Repository\MatchJoiningRepo;
 use App\Repository\MatchInvitationRepo;
+use App\Repository\TeamRepo;
 use Auth;
 
 class MatchService implements Match{
@@ -12,11 +14,13 @@ class MatchService implements Match{
     protected $matchRepo;
     protected $matchInviteRepo;
     protected $matchJoining;
+    protected $teamRepo;
 
-    function __construct(MatchRepo $matchRepo, MatchInvitationRepo $matchInviteRepo, MatchJoining $matchJoining){
+    function __construct(MatchRepo $matchRepo, MatchInvitationRepo $matchInviteRepo, MatchJoiningRepo $matchJoining, TeamRepo $teamRepo){
         $this->matchRepo = $matchRepo;
         $this->matchInviteRepo = $matchInviteRepo;
         $this->matchJoining = $matchJoining;
+        $this->teamRepo = $teamRepo;
     }
     /**
      * acceptTeam
@@ -79,23 +83,37 @@ class MatchService implements Match{
     public function userJoin($matchId, $teamId, $playerId)
     {
         if(is_null($playerId)){
-            $this->matchJoining->create(
-                [
-                    "match_id" => $matchId,
-                ],
-                [
-                    "team_id" => $team,
-                    "player_id" => Auth::id(),
-                ]
-            );
+            //check is member
+            if($this->teamRepo->isMember(Auth::id(), $teamId)['success']){
+                return $this->matchJoining->create(
+                    [
+                        "match_id" => $matchId,
+                        "team_id" => $teamId,
+                        "player_id" => Auth::id(),
+                    ],
+                    [
+                        "status" => "active"
+                    ]
+                );
+            }else{
+                return $this->matchJoining->create(
+                    [
+                        "match_id" => $matchId,
+                        "team_id" => $teamId,
+                        "player_id" => Auth::id(),
+                    ],
+                    [
+                    ]
+                );
+            }
         }else{
-            $this->matchJoining->create(
+            return $this->matchJoining->create(
                 [
-                    "team_id" => $team,
-                ],
-                [
+                    "team_id" => $teamId,
                     "match_id" => $matchId,
                     "player_id" => $playerId,
+                ],
+                [
                     "invited_by" => Auth::id()
                 ]
             );

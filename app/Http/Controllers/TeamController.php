@@ -141,11 +141,19 @@ class TeamController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        $team = $this->teamService->getMyTeam();
+        $teams = $this->teamService->getMyTeam();
 
-        return $this->sendResponse($team);
+        return $this->sendResponse($teams);
     }
     
+    public function myTeamWithCaptain()
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $teams = Auth::guard('api')->user()->captainTeams;
+        
+        return $this->sendResponse($teams);
+    }
     /**
      * leave
      *

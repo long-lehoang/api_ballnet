@@ -27,6 +27,9 @@ class Team extends Model
     protected $appends = [
         'matchs',
     ];
+
+    protected $hidden = ['matchs'];
+    
     public function captain(){
         return $this->belongsTo(User::class, 'id_captain');
     }
