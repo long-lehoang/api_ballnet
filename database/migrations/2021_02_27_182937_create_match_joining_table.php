@@ -15,10 +15,10 @@ class CreateMatchJoiningTable extends Migration
     {
         Schema::create('match_joining', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('match_id')->constrained('matchs');
+            $table->foreignId('match_id')->constrained('matchs')->onDelete('cascade');
             $table->foreignId('palyer_id')->constrained('users');
-            $table->foreignId('team_id')->nullable()->constrained('teams');
-            $table->foreignId('invited_by')->nullable()->constrained('users');
+            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('cascade');
+            $table->foreignId('invited_by')->nullable()->constrained('users')->onDelete('set null');
             $table->tinyInteger('status');
             $table->timestamps();
         });
