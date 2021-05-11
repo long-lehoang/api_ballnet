@@ -9,6 +9,7 @@ use App\Notifications\AcceptMatchInvitation;
 use App\Notifications\TeamLeaveMatch;
 use App\Notifications\DeleteMatch;
 use App\Notifications\UpdateMatch;
+use Log;
 
 class MatchObserver
 {
@@ -34,17 +35,6 @@ class MatchObserver
     public function updated(Match $match)
     {
         //notify for all member of team about new team join to match
-    }
-
-    /**
-     * Listen to the User updating event.
-     *
-     * @param  \App\User  $user
-     * @return void
-     */
-    public function updating(Match $match)
-    {
-
         if($match->isDirty('team2')){
             // team has cancel
             $new_team = $match->team2;
@@ -59,6 +49,8 @@ class MatchObserver
                     }
                 }
                 
+                //delete all joining with team2 
+                $match->joinings->where('team_id', $old_team)->delete();
             }else{
                 //case join match
                 //notify to members of team 1
@@ -80,6 +72,18 @@ class MatchObserver
                 }
             }
         }
+    }
+
+    /**
+     * Listen to the User updating event.
+     *
+     * @param  \App\User  $user
+     * @return void
+     */
+    public function updating(Match $match)
+    {
+
+        
     }
     /**
      * Handle the Match "deleted" event.

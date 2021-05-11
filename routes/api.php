@@ -106,6 +106,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     //team
     Route::apiResource('teams', TeamController::class);
+    Route::get('/team_sport/{sport}',[TeamController::class, 'teamWithSport']);
     Route::get('/myteam', [TeamController::class, 'myTeams']);
     Route::get('/myteam_captain', [TeamController::class, 'myTeamWithCaptain']);
     Route::group(['prefix' => '/teams/{id}'], function(){
