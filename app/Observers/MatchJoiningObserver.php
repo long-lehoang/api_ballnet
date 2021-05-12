@@ -18,6 +18,7 @@ class MatchJoiningObserver
      */
     public function created(MatchJoining $matchJoining)
     {
+        //TODO
         if($matchJoining->status === 'active'){
             $joins = $matchJoining->match->joinings;
             foreach ($joins as $join) {
@@ -31,7 +32,12 @@ class MatchJoiningObserver
                 $matchJoining->team->admins->map->admin->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
                 $matchJoining->team->captain->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
             }else{
-                $matchJoining->user->notify(new InviteJoinMatch($matchJoining->match, $matchJoining, $matchJoining->invitedBy));
+                if(($matchJoining->team->admins()->where('admin_id', $matchJoining->invited_by)->first())||$matchJoining->team->id_captain === $matchJoining->invited_by ){
+                    $matchJoining->user->notify(new InviteJoinMatch($matchJoining->match, $matchJoining, $matchJoining->invitedBy));
+                }
+                else{
+                    $matchJoining->user->notify(new InviteJoinMatch($matchJoining->match, $matchJoining, $matchJoining->invitedBy));
+                }
             }
         }
     }
@@ -45,10 +51,6 @@ class MatchJoiningObserver
     public function updated(MatchJoining $matchJoining)
     {
         //delete other invitation
-        MatchJoining::where([
-            ['match_id', $matchJoining->match_id],
-            ['status','waiting']
-        ])->delete();
 
         $joins = $matchJoining->match->joinings;
         foreach ($joins as $join) {
@@ -59,15 +61,23 @@ class MatchJoiningObserver
         }
 
         //delete all notifications
-        $matchJoining->team->admins->map->admin->notifications()->where(
-            ['type', 'App\\Notifications\\RequestJoiningMatch'],
-            ['data', '%"joining_id":'.$matchJoining->id.'%']
-        )->delete();
+        $matchJoining->user->notifications()->where([
+            ['type', 'App\\Notifications\\InviteJoinMatch'],
+            ['data','LIKE' ,'%"request_id":'.$matchJoining->id.'%']
+        ])->delete();
+
+        $admins = $matchJoining->team->admins->map->admin;
+        foreach ($admins as $admin) {
+            $admin->notifications()->where([
+                ['type', 'App\\Notifications\\RequestJoiningMatch'],
+                ['data','LIKE', '%"request_id":'.$matchJoining->id.'%']
+            ])->delete();
+        }
         
-        $matchJoining->team->captain->notifications()->where(
+        $matchJoining->team->captain->notifications()->where([
             ['type', 'App\\Notifications\\RequestJoiningMatch'],
-            ['data', '%"joining_id":'.$matchJoining->id.'%']
-        )->delete();
+            ['data','LIKE', '%"request_id":'.$matchJoining->id.'%']
+        ])->delete();
     }
 
     /**

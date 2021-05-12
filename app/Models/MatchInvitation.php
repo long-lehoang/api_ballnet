@@ -17,7 +17,8 @@ class MatchInvitation extends Model
     protected $fillable = [
         'team_id',
         'match_id',
-        'status'
+        'status',
+        'invited_by',
     ];
 
     public function team()
@@ -28,5 +29,10 @@ class MatchInvitation extends Model
     public function match()
     {
         return $this->belongsTo(Match::class);
+    }
+
+    public function invitedBy()
+    {
+        return $this->belongsTo(User::class, 'invited_by');
     }
 }

@@ -43,6 +43,7 @@ class MatchJoiningController extends Controller
      */
     public function store(CreateRequest $request)
     {
+        //TODO
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         $match = $this->matchRepo->find($request->match_id);
@@ -113,5 +114,13 @@ class MatchJoiningController extends Controller
         $joining->delete();
 
         return $this->sendResponse();
+    }
+
+    public function getFriendNotInMatch($match_id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $people = $this->matchService->getFriendNotInMatch($match_id);
+        return $this->sendResponse($people);
     }
 }

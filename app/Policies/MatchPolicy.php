@@ -148,14 +148,14 @@ class MatchPolicy
     public function updateJoining(User $user, MatchJoining $joining)
     {
         if(is_null($joining->invited_by)){
-            return $joining->player_id === $user->id;
+            return !is_null($joining->team->admins()->where("admin_id", $user->id)->first())||$joining->team->id_captain === $user->id;
         }else{
-            return !is_null($joining->team->admins()->where("admin_id", $user->id)->first());
+            return $joining->player_id === $user->id;
         }
     }
 
     public function deleteJoining(User $user, MatchJoining $joining)
     {
-        return $joining->player_id === $user->id||!is_null($joining->team->admins()->where("admin_id", $user->id)->first());
+        return $joining->player_id === $user->id||!is_null($joining->team->admins()->where("admin_id", $user->id)->first())||$joining->team->id_captain === $user->id;
     }
 }

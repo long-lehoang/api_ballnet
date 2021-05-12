@@ -40,4 +40,21 @@ interface Match{
      */
     public function userJoin($matchId, $teamId, $playerId);
     
+    /**
+     * getFriendNotInMatch
+     *
+     * @param  mixed $matchId
+     * @return void
+     */
+    public function getFriendNotInMatch($matchId);
+    
+    /**
+     * memberOfTeam
+     *
+     * @param  mixed $id
+     * @param  mixed $team_id
+     * @return void
+     */
+    public function memberOfTeam($id, $team_id);
+    
 }

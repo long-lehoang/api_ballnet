@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Repository\MatchRepo;
 use App\Repository\MatchJoiningRepo;
 use App\Repository\TeamRepo;
+use App\Contracts\Match;
 use Log;
 
 class MatchController extends Controller
@@ -17,12 +18,14 @@ class MatchController extends Controller
     protected $matchRepo;
     protected $matchJoiningRepo;
     protected $teamRepo;
+    protected $matchService;
 
-    function __construct(MatchRepo $match, MatchJoiningRepo $matchJoining, TeamRepo $team)
+    function __construct(Match $matchService, MatchRepo $match, MatchJoiningRepo $matchJoining, TeamRepo $team)
     {
         $this->matchRepo = $match;
         $this->matchJoiningRepo = $matchJoining;
         $this->teamRepo = $team;
+        $this->matchService = $matchService;
     }
     /**
      * Display a listing of the resource.
@@ -172,9 +175,24 @@ class MatchController extends Controller
         $match = $this->matchRepo->find($id);
         $this->authorize('member', $match->team1);
 
-        $teams = $request->teams;
-        $teams = explode(',', $teams);
-        $this->matchService->inviteTeam($teams, $id);
+        $team_id = $request->team_id;
+        $this->matchService->inviteTeam($team_id, $id);
         return $this->sendResponse();
+    }
+    
+    /**
+     * memberOfTeam
+     *
+     * @param  mixed $id
+     * @param  mixed $team_id
+     * @return void
+     */
+    public function memberOfTeam($id, $team_id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $members = $this->matchService->memberOfTeam($id, $team_id);
+
+        return $this->sendResponse($members);
     }
 }

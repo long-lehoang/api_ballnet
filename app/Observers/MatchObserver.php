@@ -35,7 +35,7 @@ class MatchObserver
     public function updated(Match $match)
     {
         //notify for all member of team about new team join to match
-        if($match->isDirty('team2')){
+        if($match->isDirty('team_2')){
             // team has cancel
             $new_team = $match->team2;
             $old_team = $match->getOriginal('team_2');

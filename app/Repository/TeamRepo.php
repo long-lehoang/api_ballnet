@@ -334,4 +334,9 @@ class TeamRepo extends BaseRepository{
         });
         return $members;
     }
+
+    public function findWithSport($sport)
+    {
+        return $this->_model::where('sport', $sport)->get();
+    }
 }

@@ -455,4 +455,9 @@ class TeamController extends Controller
 
         return $this->sendResponse();
     }
+    public function teamWithSport($sport)
+    {
+        $teams = $this->team->findWithSport($sport);
+        return $this->sendResponse($teams);
+    }
 }

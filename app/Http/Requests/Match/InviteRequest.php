@@ -14,7 +14,7 @@ class InviteRequest extends BaseRequest
     public function rules()
     {
         return [
-            "teams" => "required",
+            "team_id" => "integer|required",
         ];
     }
 }
