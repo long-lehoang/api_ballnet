@@ -56,5 +56,12 @@ interface Match{
      * @return void
      */
     public function memberOfTeam($id, $team_id);
-    
+            
+    /**
+     * getTeamRequestOfMatch
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getTeamRequestOfMatch($id);
 }

@@ -7,6 +7,7 @@ use App\Notifications\NewJoiningMatch;
 use App\Notifications\RequestJoiningMatch;
 use App\Notifications\UserLeaveMatch;
 use App\Notifications\InviteJoinMatch;
+use App\Notifications\SuggestMatchMember;
 
 class MatchJoiningObserver
 {
@@ -27,18 +28,14 @@ class MatchJoiningObserver
                     $join->user->notify(new NewJoiningMatch($matchJoining->match, $matchJoining->user));
                 }
             }
+        }else if($matchJoining->status === 'requested'){
+            $matchJoining->team->admins->map->admin->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
+            $matchJoining->team->captain->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
+            
+        }else if($matchJoining->status === 'invited'){
+            $matchJoining->user->notify(new InviteJoinMatch($matchJoining->match, $matchJoining, $matchJoining->invitedBy));
         }else{
-            if(is_null($matchJoining->invited_by)){
-                $matchJoining->team->admins->map->admin->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
-                $matchJoining->team->captain->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
-            }else{
-                if(($matchJoining->team->admins()->where('admin_id', $matchJoining->invited_by)->first())||$matchJoining->team->id_captain === $matchJoining->invited_by ){
-                    $matchJoining->user->notify(new InviteJoinMatch($matchJoining->match, $matchJoining, $matchJoining->invitedBy));
-                }
-                else{
-                    $matchJoining->user->notify(new InviteJoinMatch($matchJoining->match, $matchJoining, $matchJoining->invitedBy));
-                }
-            }
+            $matchJoining->user->notify(new SuggestMatchMember($matchJoining->match, $matchJoining, $matchJoining->invitedBy));
         }
     }
 

@@ -195,4 +195,40 @@ class MatchController extends Controller
 
         return $this->sendResponse($members);
     }
+    
+    /**
+     * removeTeam
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function removeTeam($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $match = $this->matchRepo->find($id);
+        $this->authorize('captain', $match->team1);
+
+        $match->team_2 = null;
+        $match->save();
+
+        return $this->sendResponse();
+    }
+    
+    /**
+     * getTeamRequestOfMatch
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getTeamRequestOfMatch($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $match = $this->matchRepo->find($id);
+        $this->authorize('captain', $match->team1);
+        
+        $invitations = $this->matchService->getTeamRequestOfMatch($id);
+        return $this->sendResponse($invitations);
+    }
 }

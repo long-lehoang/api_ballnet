@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notification;
 use App\Models\User;
 use App\Models\Match;
 
+//user leave match
 class UserLeaveMatch extends Notification implements ShouldQueue
 {
     use Queueable;

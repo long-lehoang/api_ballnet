@@ -9,6 +9,7 @@ use App\Notifications\AcceptMatchInvitation;
 use App\Notifications\TeamLeaveMatch;
 use App\Notifications\DeleteMatch;
 use App\Notifications\UpdateMatch;
+use App\Models\Team;
 use Log;
 
 class MatchObserver
@@ -43,20 +44,21 @@ class MatchObserver
             if($new_team === null && $old_team !==null){
                 //case leave match
                 //notify to members of team 1
+                $team2 = Team::find($old_team);
                 foreach ($match->joinings as $join) {
                     if($join->team_id === $match->team_1 && $join->status === 'active'){
-                        $join->user->notify(new TeamLeaveMatch($match->team1, $old_team, $match));
+                        $join->user->notify(new TeamLeaveMatch($team2, $match));
                     }
                 }
                 
                 //delete all joining with team2 
-                $match->joinings->where('team_id', $old_team)->delete();
+                $match->joinings()->where('team_id', $old_team)->delete();
             }else{
                 //case join match
                 //notify to members of team 1
                 foreach ($match->joinings as $join) {
                     if($join->team_id === $match->team_1 && $join->status === 'active'){
-                        $join->user->notify(new AcceptMatchInvitation($team1, $new_team, $match));
+                        $join->user->notify(new AcceptMatchInvitation($new_team, $match));
                     }
                 }
                 

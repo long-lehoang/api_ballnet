@@ -144,6 +144,8 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::put('/{id}/leave', [MatchController::class, 'leave']); //team leave from match
         Route::post('/{id}/invite', [MatchController::class, 'invite']);
         Route::get('/{id}/member/{team_id}', [MatchController::class, 'memberOfTeam']);
+        Route::delete('/{id}/team', [MatchController::class, 'removeTeam']);
+        Route::get('/{id}/team/request', [MatchController::class, 'getTeamRequestOfMatch']);
     });
 
     Route::group(['prefix' => '/match_invitations/{teamId}'], function(){

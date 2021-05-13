@@ -10,6 +10,7 @@ use App\Models\Team;
 use App\Models\Match;
 use App\Models\MatchInvitation;
 
+//Match Invitation for team
 class MatchInvitation extends Notification implements ShouldQueue
 {
     use Queueable;

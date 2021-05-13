@@ -43,7 +43,7 @@ class MatchJoiningController extends Controller
      */
     public function store(CreateRequest $request)
     {
-        //TODO
+    
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         $match = $this->matchRepo->find($request->match_id);
@@ -90,7 +90,11 @@ class MatchJoiningController extends Controller
         $this->authorize('updateJoining', $joining);
         
         //update
-        $joining->status = 'active';
+        if($joining->status == 'invited' || $joining->status == 'requested'){
+            $joining->status = 'active';
+        }else{
+            $joining->status = 'requested';
+        }
         $joining->save();
 
         //response

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Match;
 use App\Models\MatchJoining;
 
+//user request to join match
 class RequestJoiningMatch extends Notification implements ShouldQueue
 {
     use Queueable;

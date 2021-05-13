@@ -41,7 +41,7 @@ class MatchInvitationController extends Controller
 
         //authorize admin
         $team = $this->teamRepo->find($teamId);
-        $this->authorize('admin', $team);
+        $this->authorize('captain', $team);
         //authorize match
         $match = $this->matchRepo->find($request->match_id);
         $this->authorize('teamRequest', $match);

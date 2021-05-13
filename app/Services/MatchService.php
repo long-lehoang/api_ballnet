@@ -31,12 +31,10 @@ class MatchService implements Match{
     public function acceptTeam($invitationId){
         $invitation = $this->matchInviteRepo->find($invitationId);
         //case invited by member
-        if($invitation->status == 'invited'){
-            if($invitation->invited_by !== $invitation->match->team1->id_captain){
-                $invitation->status = 'requested';
-                $invitation->save();
-                return ;
-            }
+        if($invitation->status == 'suggested'){
+            $invitation->status = 'requested';
+            $invitation->save();
+            return ;
         }
         //other case
 
@@ -68,16 +66,30 @@ class MatchService implements Match{
      * @return void
      */
     public function inviteTeam($team_id, $matchId){
-        $this->matchInviteRepo->create(
-            [
-                "match_id" => $matchId,
-                "team_id" => $team_id,
-            ],
-            [
-                "status" => "invited",
-                "invited_by" => Auth::id()
-            ]
-        );
+        $match = $this->matchRepo->find($matchId);
+        if($match->team1->id_captain === Auth::id()){
+            $this->matchInviteRepo->create(
+                [
+                    "match_id" => $matchId,
+                    "team_id" => $team_id,
+                ],
+                [
+                    "status" => "invited",
+                    "invited_by" => Auth::id()
+                ]
+            );
+        }else{
+            $this->matchInviteRepo->create(
+                [
+                    "match_id" => $matchId,
+                    "team_id" => $team_id,
+                ],
+                [
+                    "status" => "suggested",
+                    "invited_by" => Auth::id()
+                ]
+            );
+        }
     }
     
         
@@ -112,20 +124,37 @@ class MatchService implements Match{
                         "player_id" => Auth::id(),
                     ],
                     [
+                        "status" => "requested"
                     ]
                 );
             }
         }else{
-            return $this->matchJoining->create(
-                [
-                    "team_id" => $teamId,
-                    "match_id" => $matchId,
-                    "player_id" => $playerId,
-                ],
-                [
-                    "invited_by" => Auth::id()
-                ]
-            );
+            //check admin
+            if($this->teamRepo->isAdmin(Auth::id(),$teamId)['success']){
+                return $this->matchJoining->create(
+                    [
+                        "team_id" => $teamId,
+                        "match_id" => $matchId,
+                        "player_id" => $playerId,
+                    ],
+                    [
+                        "invited_by" => Auth::id(),
+                        "status" => "invited"
+                    ]
+                );
+            }else{
+                return $this->matchJoining->create(
+                    [
+                        "team_id" => $teamId,
+                        "match_id" => $matchId,
+                        "player_id" => $playerId,
+                    ],
+                    [
+                        "invited_by" => Auth::id(),
+                        "status" => "suggested"
+                    ]
+                );
+            }
         }
     }
     
@@ -176,5 +205,26 @@ class MatchService implements Match{
         });
         return $members;
     }
+    
+    /**
+     * getTeamRequestOfMatch
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getTeamRequestOfMatch($id)
+    {
+        $match = $this->matchRepo->find($id);
+        $invitations = $match->invitations->map(function($invitation){
+            if($invitation->status !== 'suggested'){
+                $obj = new \stdClass;
+                $obj = clone $invitation->team;
+                $obj->request_id = $invitation->id;
+                $obj->status = $invitation->status;
+                return $obj;
+            }
+        });
 
+        return array_values(array_filter($invitations->toArray()));
+    }
 }

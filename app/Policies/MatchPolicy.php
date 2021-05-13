@@ -147,10 +147,10 @@ class MatchPolicy
 
     public function updateJoining(User $user, MatchJoining $joining)
     {
-        if(is_null($joining->invited_by)){
-            return !is_null($joining->team->admins()->where("admin_id", $user->id)->first())||$joining->team->id_captain === $user->id;
-        }else{
+        if($joining->status == 'invited' || $joining->status == 'suggested'){
             return $joining->player_id === $user->id;
+        }else{
+            return !is_null($joining->team->admins()->where("admin_id", $user->id)->first())||$joining->team->id_captain === $user->id;
         }
     }
 

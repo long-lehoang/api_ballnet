@@ -11,6 +11,7 @@ use App\Models\Match;
 use App\Models\MatchInvitation;
 use App\Models\User;
 
+//Suggest match for team
 class SuggestMatch extends Notification implements ShouldQueue
 {
     use Queueable;

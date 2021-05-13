@@ -8,9 +8,10 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\User;
 use App\Models\Match;
+use App\Models\MatchJoining;
 
-//new member join match
-class NewJoiningMatch extends Notification implements ShouldQueue
+//suggest user join match
+class SuggestMatchUser extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -21,11 +22,13 @@ class NewJoiningMatch extends Notification implements ShouldQueue
      */
     protected $user;
     protected $match;
+    protected $join;
 
-    public function __construct(Match $match, User $user)
+    public function __construct(Match $match, MatchJoining $join, User $user)
     {
         $this->user = $user;
         $this->match = $match;
+        $this->join = $join;
     }
 
     /**
@@ -56,6 +59,7 @@ class NewJoiningMatch extends Notification implements ShouldQueue
             'username' => $this->user->username,
             'name' => $this->user->name,
             'avatar' => $this->user->info->avatar,
+            'request_id' => $this->join->id,
         ];
     }
 }

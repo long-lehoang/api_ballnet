@@ -24,12 +24,10 @@ class MatchInvitationObserver
         $match = $matchInvitation->match;
         if($matchInvitation->status == 'requested'){
             $team1->captain->notify(new TeamRequestMatch($team1, $team2, $match, $matchInvitation));
+        }else if($matchInvitation->status == 'invited'){
+            $team2->captain->notify(new InviteNotice($team2, $team1, $match, $matchInvitation));
         }else{
-            if($matchInvitation->invited_by === $matchInvitation->match->team1->id_captain){
-                $team2->captain->notify(new SuggestMatch($team2, $matchInvitation->invitedBy, $match, $matchInvitation));
-            }else{
-                $team2->captain->notify(new InviteNotice($team2, $team1, $match, $matchInvitation));
-            }
+            $team2->captain->notify(new SuggestMatch($team2, $matchInvitation->invitedBy, $match, $matchInvitation));
         }
     }
 
