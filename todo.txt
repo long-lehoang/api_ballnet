@@ -1,3 +1,10 @@
+Overview status của trận đấu (Done):
+    - Thêm, xóa, sửa trận đấu
+    - Mời team, xóa team, đồng ý, từ chối team tham gia trận đấu.
+    - Mời user, xóa user, đồng ý, từ chối user tham gia trận đấu với mỗi team nhất định.
+    - Thông báo về những event trên.
+
+Todo: 
 - Hiện thực việc đánh giá sau trận
     - Hiện thực việc gửi thông báo sau trận đấu (hệ thống tự detect thời gian). (15/5/2021)
 - Hiện thực các màn hình liên quan tới trận đấu                                 (16/5/2021)
@@ -10,6 +17,6 @@
 - Testing & optimize                                                            (30/6/2021)
 - Viết report                                                                   (5/6/2021)
 - Làm slide                                                                     (10/6/2021)
-
+- Làm poster                                                                    (13/6/2021)
 * Phản biện:                        (14/6/2021)
 * Bảo vệ:                           (21/6/2021)
