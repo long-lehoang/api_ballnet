@@ -56,20 +56,7 @@ class MatchInvitationObserver
      */
     public function deleted(MatchInvitation $matchInvitation)
     {
-        //delete notification of matchInvitation
-        if($matchInvitation->status == 'requested'){
-            $matchInvitation->match->team1->captain->notifications()->where([
-                ['type', 'App\\Notifications\\MatchInvitation'],
-                ['data','LIKE','%"id_match":'.$matchInvitation->match_id.'%'],
-                ['data','LIKE','%"id_team":'.$matchInvitation->team_id.'%'],
-            ])->delete();
-        }else{
-            $matchInvitation->team->captain->notifications()->where([
-                ['type', 'App\\Notifications\\MatchInvitation'],
-                ['data','LIKE','%"id_match":'.$matchInvitation->match_id.'%'],
-                ['data','LIKE','%"id_team":'.$matchInvitation->team_id.'%'],
-            ])->delete();
-        }
+        
     }
 
     /**

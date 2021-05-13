@@ -38,9 +38,6 @@ class MatchService implements Match{
         }
         //other case
 
-        //delete all invitation of match
-        $this->matchInviteRepo->deleteByMatchId($invitation->match_id);
-
         //update match with new team 2
         $match = $this->matchRepo->find($invitation->match_id);
         $match->team_2 = $invitation->team_id;
@@ -109,10 +106,10 @@ class MatchService implements Match{
                 return $this->matchJoining->create(
                     [
                         "match_id" => $matchId,
-                        "team_id" => $teamId,
                         "player_id" => Auth::id(),
                     ],
                     [
+                        "team_id" => $teamId,
                         "status" => "active"
                     ]
                 );
@@ -120,10 +117,10 @@ class MatchService implements Match{
                 return $this->matchJoining->create(
                     [
                         "match_id" => $matchId,
-                        "team_id" => $teamId,
                         "player_id" => Auth::id(),
                     ],
                     [
+                        "team_id" => $teamId,
                         "status" => "requested"
                     ]
                 );
@@ -133,11 +130,11 @@ class MatchService implements Match{
             if($this->teamRepo->isAdmin(Auth::id(),$teamId)['success']){
                 return $this->matchJoining->create(
                     [
-                        "team_id" => $teamId,
                         "match_id" => $matchId,
                         "player_id" => $playerId,
                     ],
                     [
+                        "team_id" => $teamId,
                         "invited_by" => Auth::id(),
                         "status" => "invited"
                     ]
@@ -145,11 +142,11 @@ class MatchService implements Match{
             }else{
                 return $this->matchJoining->create(
                     [
-                        "team_id" => $teamId,
                         "match_id" => $matchId,
                         "player_id" => $playerId,
                     ],
                     [
+                        "team_id" => $teamId,
                         "invited_by" => Auth::id(),
                         "status" => "suggested"
                     ]

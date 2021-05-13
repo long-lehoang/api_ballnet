@@ -40,7 +40,8 @@ class MatchObserver
             // team has cancel
             $new_team = $match->team2;
             $old_team = $match->getOriginal('team_2');
-
+            Log::debug($old_team);
+            Log::debug($new_team);
             if($new_team === null && $old_team !==null){
                 //case leave match
                 //notify to members of team 1
@@ -63,7 +64,24 @@ class MatchObserver
                 }
                 
                 //notify to member of team2 (NewMatch)
-                $new_team->members->map->member->notify(new NewMatch($new_team, $match));
+                $new_team->members->map->member->map->notify(new NewMatch($new_team, $match));
+                
+                Log::debug($match->id);
+                // delete notification invitation
+                $match->team1->captain->notifications()->where([
+                    ['type', 'App\\Notifications\\TeamRequestMatch'],
+                    ['data','LIKE','%"match_id":'.$match->id.'%']
+                ])->delete();
+
+                $users = $match->invitations->map->team->map->captain;
+                foreach ($users as $user) {
+                    $user->notifications()->where([
+                        ['type', 'App\\Notifications\\MatchInvitation'],
+                        ['data','LIKE','%"match_id":'.$match->id.'%']
+                    ])->delete();
+                }
+                
+                $match->invitations()->delete();
             }
         }
 

@@ -95,12 +95,12 @@ class Match extends Model
 
     public function getMember1Attribute()
     {
-        return $this->team_1 === null ? 0 : MatchJoining::where([["team_id", $this->team_1],["match_id", $this->id]])->count();
+        return $this->team_1 === null ? 0 : MatchJoining::where([["team_id", $this->team_1],["match_id", $this->id],["status","active"]])->count();
     }
 
     public function getMember2Attribute()
     {
-        return $this->team_2 === null ? 0 :  MatchJoining::where([["team_id", $this->team_2],["match_id", $this->id]])->count();
+        return $this->team_2 === null ? 0 :  MatchJoining::where([["team_id", $this->team_2],["match_id", $this->id],["status","active"]])->count();
     }
 
     public function getStadiumAttribute()

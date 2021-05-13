@@ -75,7 +75,7 @@ class TeamController extends Controller
             'status' => 'active'
         ]);
         //response
-        return $this->sendResponse();
+        return $this->sendResponse($team);
     }
 
     /**

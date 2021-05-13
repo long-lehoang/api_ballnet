@@ -20,7 +20,7 @@ class MemberTeamObserver
     {
         Log::info(__CLASS__.' :: '.__FUNCTION__.' : '.'request_id='.$memberTeam->id);
 
-        if($memberTeam->invited_by === null){
+        if($memberTeam->invited_by === null && $memberTeam->status !== 'active'){
             $team = $memberTeam->team;
             $user = $memberTeam->member;
             $requestId = $memberTeam->id;
@@ -30,7 +30,7 @@ class MemberTeamObserver
                 $admin->admin->notify(new RequestJoinTeam($user, $team, $requestId));
             }
             $team->captain->notify(new RequestJoinTeam($user, $team, $requestId));
-        }else{
+        }else if($memberTeam->status !== 'active'){
             $team = $memberTeam->team;
             $user = $memberTeam->invitedBy;
             $requestId = $memberTeam->id;
