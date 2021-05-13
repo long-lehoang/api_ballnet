@@ -1,0 +1,15 @@
+- Hiện thực việc đánh giá sau trận
+    - Hiện thực việc gửi thông báo sau trận đấu (hệ thống tự detect thời gian). (15/5/2021)
+- Hiện thực các màn hình liên quan tới trận đấu                                 (16/5/2021)
+- Hiện thực các màn hình liên quan tới sân đấu                                  (29/5/2021)
+    - Hiện thực trang của sân.                                                  (20/5/2021)
+    - Hiện thực việc quản lý đặt sân của user                                   (22/5/2021)
+    - Hiện thực việc quản lý đặt sân của chủ sân                                (25/5/2021)
+- Hiện thực các suggestion                                                      (26/5/2021)
+
+- Testing & optimize                                                            (30/6/2021)
+- Viết report                                                                   (5/6/2021)
+- Làm slide                                                                     (10/6/2021)
+
+* Phản biện:                        (14/6/2021)
+* Bảo vệ:                           (21/6/2021)
