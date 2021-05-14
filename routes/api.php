@@ -144,6 +144,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::put('/{id}/leave', [MatchController::class, 'leave']); //team leave from match
         Route::post('/{id}/invite', [MatchController::class, 'invite']);
         Route::get('/{id}/member/{team_id}', [MatchController::class, 'memberOfTeam']);
+        Route::get('/{id}/request/{team_id}', [MatchController::class, 'requestOfTeam']);
         Route::delete('/{id}/team', [MatchController::class, 'removeTeam']);
         Route::get('/{id}/team/request', [MatchController::class, 'getTeamRequestOfMatch']);
     });
@@ -161,7 +162,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/', [MatchJoiningController::class, 'store']);
         Route::delete('/{id}', [MatchJoiningController::class, 'destroy']);
         Route::put('/{id}', [MatchJoiningController::class, 'update']);  
-        Route::get('/friend_not_in_match/{match_id}', [MatchJoiningController::class, 'getFriendNotInMatch']);    
+        Route::get('/friend_not_in_match/{match_id}', [MatchJoiningController::class, 'getFriendNotInMatch']);
     });
 
     //sport category

@@ -231,4 +231,16 @@ class MatchController extends Controller
         $invitations = $this->matchService->getTeamRequestOfMatch($id);
         return $this->sendResponse($invitations);
     }
+
+    public function requestOfTeam($id, $team_id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $team = $this->teamRepo->find($team_id);
+        $this->authorize('admin', $team);
+
+        $requests = $this->matchService->requestOfTeam($id, $team_id);
+
+        return $this->sendResponse($requests);
+    }
 }

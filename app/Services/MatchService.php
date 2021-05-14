@@ -213,7 +213,7 @@ class MatchService implements Match{
     {
         $match = $this->matchRepo->find($id);
         $invitations = $match->invitations->map(function($invitation){
-            if($invitation->status !== 'suggested'){
+            if($invitation->status === 'requested'){
                 $obj = new \stdClass;
                 $obj = clone $invitation->team;
                 $obj->request_id = $invitation->id;
@@ -223,5 +223,26 @@ class MatchService implements Match{
         });
 
         return array_values(array_filter($invitations->toArray()));
+    }
+
+    public function requestOfTeam($matchId, $teamId)
+    {
+        $match = $this->matchRepo->find($matchId);
+        $joins = $match->joinings()->where([
+            ["team_id", $teamId],
+            ["status", "requested"]
+        ])->get();
+        $list = $joins->map(function($join){
+            $obj = new \stdClass;
+            $obj->id = $join->user->id;
+            $obj->username = $join->user->username;
+            $obj->name = $join->user->name;
+            $obj->avatar = $join->user->info->avatar;
+            $obj->request_id = $join->id;
+
+            return $obj;
+        });
+
+        return $list;
     }
 }
