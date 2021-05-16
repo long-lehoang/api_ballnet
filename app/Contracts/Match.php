@@ -64,4 +64,36 @@ interface Match{
      * @return void
      */
     public function getTeamRequestOfMatch($id);
+        
+    /**
+     * requestOfTeam
+     *
+     * @param  mixed $matchId
+     * @param  mixed $teamId
+     * @return void
+     */
+    public function requestOfTeam($matchId, $teamId);
+
+    /**
+     * updateStatus
+     *
+     * @return void
+     */
+    public function updateStatus();
+    
+    /**
+     * getReviewMember
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getReviewMember($id);
+    
+    /**
+     * getReviewStadium
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getReviewStadium($id);
 }

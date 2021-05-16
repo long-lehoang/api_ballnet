@@ -92,6 +92,28 @@ class MatchObserver
                 }
             }
         }
+
+        //notify before match, after match
+        if($match->isDirty('status')){
+            //notify before match
+            if($match->status === 'upcoming'){
+                foreach ($match->joinings as $join) {
+                    $join->user->notify(new UpcomingMatch($match));
+                }
+            }
+
+            //notify before match
+            if($match->status === 'old'){
+                $delay = now()->addMinutes(30);
+
+                foreach ($match->joinings as $join) {
+                    $join->user->notify((new ReviewMatch($match))->delay($delay));
+                }
+
+                if(!is_null($match->booking))
+                $match->createBy->notify((new ReviewStadium($match, $match->booking->stadium))->delay($delay));
+            }
+        }
     }
 
     /**

@@ -231,7 +231,14 @@ class MatchController extends Controller
         $invitations = $this->matchService->getTeamRequestOfMatch($id);
         return $this->sendResponse($invitations);
     }
-
+    
+    /**
+     * requestOfTeam
+     *
+     * @param  mixed $id
+     * @param  mixed $team_id
+     * @return void
+     */
     public function requestOfTeam($id, $team_id)
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
@@ -242,5 +249,77 @@ class MatchController extends Controller
         $requests = $this->matchService->requestOfTeam($id, $team_id);
 
         return $this->sendResponse($requests);
+    }
+    
+    /**
+     * getToReviewMember
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getToReviewMember($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        //authorize
+        $match = $this->matchRepo->find($id);
+        $this->authorize('reviewMember', $match);
+
+        //handle
+        $data = $this->matchService->getReviewMember($id);
+
+        return $this->sendResponse($data);
+    }
+    
+    /**
+     * reviewMember
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
+    public function reviewMember(Request $request, $id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        //TODO
+
+        return $this->sendResponse();
+    }
+    
+    /**
+     * getToReviewStadium
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getToReviewStadium($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        //authorize
+        $match = $this->matchRepo->find($id);
+        $this->authorize('reviewStadium', $match);
+
+        //handle
+        $data = $this->matchService->getReviewStadium($id);
+
+        return $this->sendResponse($data);
+    }
+    
+    /**
+     * reviewStadium
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
+    public function reviewStadium(Request $request, $id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        //TODO
+
+        return $this->sendResponse();
     }
 }

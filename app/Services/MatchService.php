@@ -8,6 +8,7 @@ use App\Repository\MatchJoiningRepo;
 use App\Repository\MatchInvitationRepo;
 use App\Repository\TeamRepo;
 use Auth;
+use Carbon\Carbon;
 
 class MatchService implements Match{
     
@@ -224,7 +225,14 @@ class MatchService implements Match{
 
         return array_values(array_filter($invitations->toArray()));
     }
-
+    
+    /**
+     * requestOfTeam
+     *
+     * @param  mixed $matchId
+     * @param  mixed $teamId
+     * @return void
+     */
     public function requestOfTeam($matchId, $teamId)
     {
         $match = $this->matchRepo->find($matchId);
@@ -244,5 +252,108 @@ class MatchService implements Match{
         });
 
         return $list;
+    }
+    
+    /**
+     * updateStatus
+     *
+     * @return void
+     */
+    public function updateStatus()
+    {
+        $new = $this->matchRepo->getNewMatch();
+        $upcoming = $this->matchRepo->getUpcomingMatch();
+        $current = $this->matchRepo->getCurrentMatch();
+
+        foreach ($new as $match) {
+            $time = explode(', ', $match->time);
+            $startTime = new Carbon($time[0]);
+            if($startTime->diffInHours() == 0){
+                $match->status = 'upcoming';
+            }
+
+            $match->save();
+        }
+
+        foreach ($upcoming as $match) {
+            $time = explode(', ', $match->time);
+            $startTime = new Carbon($time[0]);
+            if($startTime->diffInMinutes() == 0){
+                $match->status = 'happening';
+            }
+
+            $match->save();
+        }
+
+        foreach ($current as $match) {
+            $time = explode(', ', $match->time);
+            $endTime = new Carbon($time[1]);
+            
+            if($endTime->diffInMinutes() == 0){
+                $match->status = 'old';
+            }
+
+            $match->save();
+        }
+    }
+    
+    /**
+     * getReviewMember (team_id, team_avatar, team_name, member_id, member_avatar, member_name)
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getReviewMember($id)
+    {
+        $match = $this->matchRepo->find($id);
+        
+        $data = new \stdClass;
+
+        //get my join
+        $join = $match->joinings()->where([
+            ['status', 'active'],
+            ['player_id', Auth::id()]
+        ])->first();
+        
+        //get opponent team
+        $team = $match->team_1 == $join->team_id ? $match->team2 : $match->team1;
+        
+        $data->team_id = $team->id;
+        $data->team_name = $team->name;
+        $data->team_avatar = $team->avatar;
+
+        $joinings = $match->joinings()->where('team_id', $join->team_id)->get();
+        //get member
+        $data->members = $joinings->map(function($join){
+            $obj = new \stdClass;
+            $user = $join->user;
+            $obj->id = $user->id;
+            $obj->avatar = $user->info->avatar;
+            $obj->name = $user->name;
+
+            return $obj;
+        });
+
+        //return
+        return $data;
+    }
+    
+    /**
+     * getReviewStadium
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function getReviewStadium($id)
+    {
+        $match = $this->matchRepo->find($id);
+
+        $stadium = $match->booking->stadium;
+
+        $data = new \stdClass;
+        $data->id = $stadium->id;
+        $data->name = $stadium->name;
+        
+        return $data;
     }
 }

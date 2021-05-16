@@ -15,4 +15,35 @@ class Booking extends Model
      * @var string
      */
     protected $table = 'booking';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'stadium_id',
+        'user_id',
+        'booking_time',
+        'feedback',
+        'price',
+        'type',
+        'rating',
+        'match_id',
+    ];
+
+    public function stadium()
+    {
+        return $this->belongsTo(Stadium::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function match()
+    {
+        return $this->belongsTo(Match::class);
+    }
 }

@@ -34,6 +34,8 @@ class Match extends Model
     ];
 
     protected $appends = [
+        'avatar_user',
+        'name_user',
         'avatar1',
         'avatar2',
         'name1',
@@ -247,5 +249,15 @@ class Match extends Model
     {
         $team = Team::find($this->team_2);
         return !is_null($team)&&$team->id_captain === Auth::id();
+    }
+
+    public function getAvatarUserAttribute()
+    {
+        return $this->createdBy->info->avatar;
+    }
+
+    public function getNameUserAttribute()
+    {
+        return $this->createdBy->name;
     }
 }

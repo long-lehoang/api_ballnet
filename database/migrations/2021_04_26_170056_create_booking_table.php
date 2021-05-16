@@ -20,9 +20,9 @@ class CreateBookingTable extends Migration
             $table->string('booking_time');
             $table->string('status')->default('new');
             $table->string('feedback')->nullable();
-            $table->unsignedBigInteger('price');
-            $table->string('type');
-            $table->integer('rating');
+            $table->unsignedBigInteger('price')->nullable();
+            $table->string('type')->nullable();
+            $table->integer('rating')->nullable();
             $table->foreignId('match_id')->nullable()->constrained('matchs')->onDelete('set null');
             $table->timestamps();
         });

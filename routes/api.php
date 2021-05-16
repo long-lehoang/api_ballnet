@@ -147,6 +147,10 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/{id}/request/{team_id}', [MatchController::class, 'requestOfTeam']);
         Route::delete('/{id}/team', [MatchController::class, 'removeTeam']);
         Route::get('/{id}/team/request', [MatchController::class, 'getTeamRequestOfMatch']);
+        Route::post('/{id}/review/member', [MatchController::class, 'reviewMember']);
+        Route::get('/{id}/review/member', [MatchController::class, 'getToReviewMember']);
+        Route::post('/{id}/review/stadium', [MatchController::class, 'reviewStadium']);
+        Route::get('/{id}/review/stadium', [MatchController::class, 'getToReviewStadium']);
     });
 
     Route::group(['prefix' => '/match_invitations/{teamId}'], function(){
