@@ -19,6 +19,7 @@ class CreateMatchsTable extends Migration
             $table->string('sport');
             $table->string('location');
             $table->string('private');
+            $table->string('result')->nullable();
             $table->tinyInteger('status');
             $table->foreignId('stadium_id')->constrained('stadiums')->nullable();
             $table->foreignId('created_by')->constrained('users');

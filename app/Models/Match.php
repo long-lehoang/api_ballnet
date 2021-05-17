@@ -30,7 +30,8 @@ class Match extends Model
         'status',
         'created_by',
         'team_1',
-        'team_2'
+        'team_2',
+        'result',
     ];
 
     protected $appends = [

@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Models\MatchResult;
+use App\Models\Match;
+use Log;
 
 class MatchResultObserver
 {
@@ -14,7 +16,34 @@ class MatchResultObserver
      */
     public function created(MatchResult $matchResult)
     {
-        //TODO
+        
+        //delete notification
+        $matchResult->reviewer->notifications()->where([
+            ['type', 'App\\Notifications\\ReviewMatch'],
+            ['data','LIKE','%"match_id":'.$matchResult->match_id.'%']
+        ]);
+
+        //if rating 0, team is left match
+        if($matchResult->rating > 0){
+            //update result
+            $results = MatchResult::where('match_id', $matchResult->id)->pluck('result')->toArray();
+            $results = array_count_values($results);
+            $result = array_keys($results, max($results));
+            Log::debug($result);
+            $match = $matchResult->match;
+            $match->result = $result;
+            $match->save();
+            
+            //update number team 1
+            $team1 = $match->team1;
+            $team1->number++;
+            $team1->save();
+
+            //update number team 2
+            $team2 = $match->team2;
+            $team2->number++;
+            $team2->save();
+        }
     }
 
     /**

@@ -28,4 +28,14 @@ class MatchResult extends Model
         'result',
         'opponent_team_id',
     ];
+
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewer_id');
+    }
+
+    public function match()
+    {
+        return $this->belongsTo(Match::class);
+    }
 }
