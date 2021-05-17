@@ -159,7 +159,7 @@ class MatchPolicy
         return $joining->player_id === $user->id||!is_null($joining->team->admins()->where("admin_id", $user->id)->first())||$joining->team->id_captain === $user->id;
     }
 
-    public function reviewMember(User $user, Match $match)
+    public function review(User $user, Match $match)
     {
         //check finish
         if($match->status !== 'old'){
@@ -171,11 +171,4 @@ class MatchPolicy
         return in_array($user->id, $joins);
     }
 
-    public function reviewStadium(User $user, Match $match)
-    {
-        if(is_null($match->booking))
-        return false;
-        
-        return $match->created_by === $user->id;
-    }
 }

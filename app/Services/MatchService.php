@@ -9,6 +9,7 @@ use App\Repository\MatchInvitationRepo;
 use App\Repository\MatchResultRepo;
 use App\Repository\MatchAttendantRepo;
 use App\Repository\TeamRepo;
+use App\Repository\BookingRepo;
 use Auth;
 use Carbon\Carbon;
 
@@ -20,14 +21,16 @@ class MatchService implements Match{
     protected $teamRepo;
     protected $matchResultRepo;
     protected $matchAttendantRepo;
+    protected $bookingRepo;
 
-    function __construct(MatchRepo $matchRepo,MatchAttendantRepo $matchAttendantRepo, MatchResultRepo $matchResultRepo, MatchInvitationRepo $matchInviteRepo, MatchJoiningRepo $matchJoining, TeamRepo $teamRepo){
+    function __construct(MatchRepo $matchRepo, BookingRepo $bookingRepo, MatchAttendantRepo $matchAttendantRepo, MatchResultRepo $matchResultRepo, MatchInvitationRepo $matchInviteRepo, MatchJoiningRepo $matchJoining, TeamRepo $teamRepo){
         $this->matchRepo = $matchRepo;
         $this->matchInviteRepo = $matchInviteRepo;
         $this->matchJoining = $matchJoining;
         $this->teamRepo = $teamRepo;
         $this->matchResultRepo = $matchResultRepo;
         $this->matchAttendantRepo = $matchAttendantRepo;
+        $this->bookingRepo = $bookingRepo;
     }
     /**
      * acceptTeam
@@ -309,7 +312,7 @@ class MatchService implements Match{
      * @param  mixed $id
      * @return void
      */
-    public function getReviewMember($id)
+    public function getToReview($id)
     {
         $match = $this->matchRepo->find($id);
         
@@ -345,25 +348,16 @@ class MatchService implements Match{
     }
     
     /**
-     * getReviewStadium
+     * reviewMember
      *
-     * @param  mixed $id
+     * @param  mixed $result
+     * @param  mixed $matchId
+     * @param  mixed $teamId
+     * @param  mixed $teamRating
+     * @param  mixed $members
      * @return void
      */
-    public function getReviewStadium($id)
-    {
-        $match = $this->matchRepo->find($id);
-
-        $stadium = $match->booking->stadium;
-
-        $data = new \stdClass;
-        $data->id = $stadium->id;
-        $data->name = $stadium->name;
-        
-        return $data;
-    }
-
-    public function reviewMember($result, $matchId, $teamId, $teamRating, $members)
+    public function review($result, $matchId, $teamId, $teamRating, $members)
     {
         //add result
         $this->matchResultRepo->create([

@@ -147,10 +147,8 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/{id}/request/{team_id}', [MatchController::class, 'requestOfTeam']);
         Route::delete('/{id}/team', [MatchController::class, 'removeTeam']);
         Route::get('/{id}/team/request', [MatchController::class, 'getTeamRequestOfMatch']);
-        Route::post('/{id}/review/member', [MatchController::class, 'reviewMember']);
-        Route::get('/{id}/review/member', [MatchController::class, 'getToReviewMember']);
-        Route::post('/{id}/review/stadium', [MatchController::class, 'reviewStadium']);
-        Route::get('/{id}/review/stadium', [MatchController::class, 'getToReviewStadium']);
+        Route::post('/{id}/review', [MatchController::class, 'review']);
+        Route::get('/{id}/review', [MatchController::class, 'getToReview']);
     });
 
     Route::group(['prefix' => '/match_invitations/{teamId}'], function(){
@@ -167,6 +165,12 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::delete('/{id}', [MatchJoiningController::class, 'destroy']);
         Route::put('/{id}', [MatchJoiningController::class, 'update']);  
         Route::get('/friend_not_in_match/{match_id}', [MatchJoiningController::class, 'getFriendNotInMatch']);
+    });
+
+    //booking
+    Route::group(['prefix' => '/booking'], function(){
+        Route::post('/{id}/review', [BookingController::class, 'review']);
+        Route::get('/{id}/review', [BookingController::class, 'getToReview']);
     });
 
     //sport category

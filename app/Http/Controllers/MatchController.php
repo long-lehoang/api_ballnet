@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Match\CreateMatchRequest;
 use App\Http\Requests\Match\UpdateMatchRequest;
 use App\Http\Requests\Match\InviteRequest;
+use App\Http\Requests\Match\ReviewMatch;
 use Illuminate\Support\Facades\Auth;
 use App\Repository\MatchRepo;
 use App\Repository\MatchJoiningRepo;
@@ -257,16 +258,16 @@ class MatchController extends Controller
      * @param  mixed $id
      * @return void
      */
-    public function getToReviewMember($id)
+    public function getToReview($id)
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         //authorize
         $match = $this->matchRepo->find($id);
-        $this->authorize('reviewMember', $match);
+        $this->authorize('review', $match);
 
         //handle
-        $data = $this->matchService->getReviewMember($id);
+        $data = $this->matchService->getToReview($id);
 
         return $this->sendResponse($data);
     }
@@ -278,52 +279,18 @@ class MatchController extends Controller
      * @param  mixed $id
      * @return void
      */
-    public function reviewMember(Request $request, $id)
+    public function review(ReviewMatch $request, $id)
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         //authorize
         $match = $this->matchRepo->find($id);
-        $this->authorize('reviewMember', $match);
+        $this->authorize('review', $match);
 
-        $this->matchService->reviewMember($request->result,$request->match_id, $request->team_id, $request->rating_team, $request->members);
+        $this->matchService->review($request->result,$request->match_id, $request->team_id, $request->rating_team, $request->members);
 
         return $this->sendResponse();
     }
     
-    /**
-     * getToReviewStadium
-     *
-     * @param  mixed $id
-     * @return void
-     */
-    public function getToReviewStadium($id)
-    {
-        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
-
-        //authorize
-        $match = $this->matchRepo->find($id);
-        $this->authorize('reviewStadium', $match);
-
-        //handle
-        $data = $this->matchService->getReviewStadium($id);
-
-        return $this->sendResponse($data);
-    }
     
-    /**
-     * reviewStadium
-     *
-     * @param  mixed $request
-     * @param  mixed $id
-     * @return void
-     */
-    public function reviewStadium(Request $request, $id)
-    {
-        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
-
-        //TODO
-
-        return $this->sendResponse();
-    }
 }

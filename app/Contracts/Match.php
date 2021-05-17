@@ -87,13 +87,18 @@ interface Match{
      * @param  mixed $id
      * @return void
      */
-    public function getReviewMember($id);
-    
+    public function getToReview($id);
+        
     /**
-     * getReviewStadium
+     * reviewMember
      *
-     * @param  mixed $id
+     * @param  mixed $result
+     * @param  mixed $matchId
+     * @param  mixed $teamId
+     * @param  mixed $teamRating
+     * @param  mixed $members
      * @return void
      */
-    public function getReviewStadium($id);
+    public function review($result, $matchId, $teamId, $teamRating, $members);
+
 }

@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use App\Models\Match;
+use App\Models\Booking;
 use App\Models\Stadium;
 
 class ReviewStadium extends Notification implements ShouldQueue
@@ -18,12 +18,12 @@ class ReviewStadium extends Notification implements ShouldQueue
      *
      * @return void
      */
-    protected $match;
+    protected $booking;
     protected $stadium;
 
-    public function __construct(Match $match, Stadium $stadium)
+    public function __construct(Booking $booking, Stadium $stadium)
     {
-        $this->match = $match;
+        $this->booking = $booking;
         $this->stadium = $stadium;
     }
 
@@ -48,7 +48,7 @@ class ReviewStadium extends Notification implements ShouldQueue
     {
         return [
             'name' => $this->stadium->name,
-            'match_id' => $this->match->id,
+            'book_id' => $this->booking->id,
         ];
     }
 }
