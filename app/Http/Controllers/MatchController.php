@@ -282,7 +282,11 @@ class MatchController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        //TODO
+        //authorize
+        $match = $this->matchRepo->find($id);
+        $this->authorize('reviewMember', $match);
+
+        $this->matchService->reviewMember($request->result,$request->match_id, $request->team_id, $request->rating_team, $request->members);
 
         return $this->sendResponse();
     }

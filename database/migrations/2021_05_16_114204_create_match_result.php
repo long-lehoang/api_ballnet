@@ -17,8 +17,10 @@ class CreateMatchResult extends Migration
             $table->id();
             $table->foreignId('match_id')->constrained('matchs')->onDelete('cascade');
             $table->foreignId('reviewer_id')->constrained('users')->onDelete('cascade');
-            $table->integer('result')->nullable();
+            $table->foreignId('opponent_team_id')->constrained('teams')->onDelete('cascade');
+            $table->string('result')->nullable();
             $table->integer('rating')->nullable();
+
             $table->timestamps();
         });
     }

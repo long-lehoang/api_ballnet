@@ -6,6 +6,8 @@ use App\Contracts\Match;
 use App\Repository\MatchRepo;
 use App\Repository\MatchJoiningRepo;
 use App\Repository\MatchInvitationRepo;
+use App\Repository\MatchResultRepo;
+use App\Repository\MatchAttendantRepo;
 use App\Repository\TeamRepo;
 use Auth;
 use Carbon\Carbon;
@@ -16,12 +18,16 @@ class MatchService implements Match{
     protected $matchInviteRepo;
     protected $matchJoining;
     protected $teamRepo;
+    protected $matchResultRepo;
+    protected $matchAttendantRepo;
 
-    function __construct(MatchRepo $matchRepo, MatchInvitationRepo $matchInviteRepo, MatchJoiningRepo $matchJoining, TeamRepo $teamRepo){
+    function __construct(MatchRepo $matchRepo,MatchAttendantRepo $matchAttendantRepo, MatchResultRepo $matchResultRepo, MatchInvitationRepo $matchInviteRepo, MatchJoiningRepo $matchJoining, TeamRepo $teamRepo){
         $this->matchRepo = $matchRepo;
         $this->matchInviteRepo = $matchInviteRepo;
         $this->matchJoining = $matchJoining;
         $this->teamRepo = $teamRepo;
+        $this->matchResultRepo = $matchResultRepo;
+        $this->matchAttendantRepo = $matchAttendantRepo;
     }
     /**
      * acceptTeam
@@ -330,7 +336,7 @@ class MatchService implements Match{
             $obj->id = $user->id;
             $obj->avatar = $user->info->avatar;
             $obj->name = $user->name;
-
+            $obj->join_id = $join->id;
             return $obj;
         });
 
@@ -355,5 +361,30 @@ class MatchService implements Match{
         $data->name = $stadium->name;
         
         return $data;
+    }
+
+    public function reviewMember($result, $matchId, $teamId, $teamRating, $members)
+    {
+        //add result
+        $this->matchResultRepo->create([
+            "reviewer_id" => Auth::id(),
+            "match_id" => $matchId,
+        ],[
+            "opponent_team_id" => $teamId,
+            "rating" => $teamRating,
+            "result" => $result,
+        ]);
+
+        //add review for member
+        $members = json_decode($members);
+        foreach ($members as $member) {
+            $this->matchAttendantRepo->create([
+                "id_match_joining" => $member->join_id,
+                "user_id" => Auth::id()
+            ],[
+                "rating" => $member->rating,
+                "attendance" => $member->rating == 0 ? 0 : 1,
+            ]);
+        }
     }
 }

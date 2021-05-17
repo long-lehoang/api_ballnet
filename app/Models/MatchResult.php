@@ -26,5 +26,6 @@ class MatchResult extends Model
         'rating',
         'match_id',
         'result',
+        'opponent_team_id',
     ];
 }
