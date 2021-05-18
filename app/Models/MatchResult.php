@@ -38,4 +38,9 @@ class MatchResult extends Model
     {
         return $this->belongsTo(Match::class);
     }
+
+    public function opponent()
+    {
+        return $this->belongsTo(Team::class,'opponent_team_id');
+    }
 }

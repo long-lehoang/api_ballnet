@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Models\AttendanceMatchJoining;
 use App\Models\Sport;
 use App\Models\MemberTeam;
+use DB;
+
 class AttendanceMatchJoiningObserver
 {
     /**
@@ -16,50 +18,41 @@ class AttendanceMatchJoiningObserver
     public function created(AttendanceMatchJoining $attendanceMatchJoining)
     {
         $joining = $attendanceMatchJoining->match_joining;
-        //update num_match
-        $attendants = AttendanceMatchJoining::where('id_match_joining', $attendanceMatchJoining->id_match_joining)->get();
-        
-        $attendances = $attendants->pluck('attendance')->toArray();
-        $attendances = array_count_values($attendances);
-        $attendance = array_keys($attendances, max($attendances));
+        //update rating
+        $rating = DB::select("SELECT AVG(attendance_match_joining.rating) AS rating FROM attendance_match_joining 
+        INNER JOIN match_joining ON attendance_match_joining.id_match_joining = match_joining.id 
+        WHERE (match_joining.player_id = $joining->player_id)")[0];
 
-        $rating = $attendants->pluck('rating')->toArray();
-        $rating = array_sum($rating)/count($rating);
-        if($attendance == 1){
-            //update num_match in team
-            $member = MemberTeam::where([
-                ['team_id', $joining->team_id],
-                ['member_id', $joining->player_id]
-            ])->first();
-            if(!is_null($member)){
-                $member->num_match++;
-                $member->save();
-            }
-            //update num_match sport of user
-            
-            $sport = Sport::where([
-                ['sport', $joining->match->sport],
-                ['user_id', $joining->player_id]
-            ])->first();
-    
-            if(is_null($sport)){
-                Sport::create([
-                    'sport' => $joining->match->sport,
-                    'user_id' => $joining->player_id,
-                    'rating' => $rating,
-                    'num_match' => 1
-                ]);
-            }else{
-                $sport = Sport::where([
-                    'sport' => $joining->match->sport,
-                    'user_id' => $joining->player_id,
-                ]);
-
-                $sport->rating = ($sport->rating * $sport->num_match + $rating)/($sport->num_match + 1)
-                $sport->num_match++;
-                $sport->save();
-            }
+        //update num match in team of user
+        $numInTeam = DB::select("SELECT COUNT(*) AS num FROM attendance_match_joining 
+        INNER JOIN match_joining ON attendance_match_joining.id_match_joining = match_joining.id 
+        WHERE (match_joining.player_id = $joining->player_id) AND (match_joining.team_id = $joining->team_id) 
+        GROUP BY match_joining.match_id
+        HAVING (AVG(attendance) > 0.5)")[0];
+        $member = MemberTeam::where([
+            ['team_id', $joining->team_id],
+            ['member_id', $joining->player_id]
+        ])->first();
+        if(!is_null($member)){
+            $member->num_match = $numInTeam->num;
+            $member->save();
         }
+
+        //update num_match sport of user
+        $numOfUser = DB::select("SELECT COUNT(*) AS num FROM attendance_match_joining 
+        INNER JOIN match_joining ON attendance_match_joining.id_match_joining = match_joining.id 
+        WHERE (match_joining.player_id = $joining->player_id)
+        GROUP BY match_joining.match_id
+        HAVING (AVG(attendance) > 0.5)")[0];
+        
+        Sport::updateOrCreate([
+            'sport' => $joining->match->sport,
+            'user_id' => $joining->player_id
+        ],
+        [
+            'rating' => $rating->rating,
+            'num_match' => $numOfUser->num
+        ]);
     }
 
     /**

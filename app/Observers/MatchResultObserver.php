@@ -21,28 +21,28 @@ class MatchResultObserver
         $matchResult->reviewer->notifications()->where([
             ['type', 'App\\Notifications\\ReviewMatch'],
             ['data','LIKE','%"match_id":'.$matchResult->match_id.'%']
-        ]);
+        ])->delete();
 
         //if rating 0, team is left match
         if($matchResult->rating > 0){
             //update result
-            $results = MatchResult::where('match_id', $matchResult->id)->pluck('result')->toArray();
+            $results = MatchResult::where('match_id', $matchResult->match_id)->pluck('result')->toArray();
+
             $results = array_count_values($results);
-            $result = array_keys($results, max($results));
-            Log::debug($result);
+            $result = array_keys($results, max($results))[0];
+
             $match = $matchResult->match;
             $match->result = $result;
             $match->save();
             
-            //update number team 1
-            $team1 = $match->team1;
-            $team1->number++;
-            $team1->save();
+            //update num_match
+            $number = MatchResult::where('opponent_team_id', $matchResult->opponent_team_id)->groupByRaw('opponent_team_id, match_id')->count();
+            $rating = MatchResult::selectRaw('AVG(rating) as rating')->where('opponent_team_id', $matchResult->opponent_team_id)->first();
 
-            //update number team 2
-            $team2 = $match->team2;
-            $team2->number++;
-            $team2->save();
+            $team = $matchResult->opponent;
+            $team->num_match = $number;
+            $team->rating = $rating->rating;
+            $team->save();
         }
     }
 
