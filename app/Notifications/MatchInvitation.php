@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Team;
 use App\Models\Match;
-use App\Models\MatchInvitation;
+use App\Models\MatchInvitation as Invitation;
 
 //Match Invitation for team
 class MatchInvitation extends Notification implements ShouldQueue
@@ -25,7 +25,7 @@ class MatchInvitation extends Notification implements ShouldQueue
     protected $match;
     protected $invitation;
 
-    public function __construct(Team $myTeam, Team $team, Match $match, MatchInvitation $invitation)
+    public function __construct(Team $myTeam, Team $team, Match $match, Invitation $invitation)
     {
         $this->myTeam = $myTeam;
         $this->team = $team;

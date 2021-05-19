@@ -9,6 +9,7 @@ use App\Policies\TeamPolicy;
 use App\Models\MemberTeam;
 use App\Policies\FriendPolicy;
 use App\Models\FriendRequest;
+use App\Models\User;
 use App\Policies\MatchPolicy;
 use App\Models\Match;
 use App\Models\MatchInvitation;
@@ -32,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         Team::class => TeamPolicy::class,
         MemberTeam::class => TeamPolicy::class,
         FriendRequest::class => FriendPolicy::class,
+        User::class => FriendPolicy::class,
         Match::class => MatchPolicy::class,
         MatchInvitation::class => MatchPolicy::class,
         MatchJoining::class => MatchPolicy::class,

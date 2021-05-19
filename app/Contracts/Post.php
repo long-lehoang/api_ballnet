@@ -3,10 +3,12 @@
 namespace App\Contracts;
 
 interface Post{    
+    
     /**
-     * getMyPost
+     * getPostOfUser
      *
+     * @param  mixed $id
      * @return void
      */
-    public function getMyPost();
+    public function getPostOfUser($id);
 }

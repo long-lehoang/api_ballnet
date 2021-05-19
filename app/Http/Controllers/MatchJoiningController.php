@@ -127,4 +127,12 @@ class MatchJoiningController extends Controller
         $people = $this->matchService->getFriendNotInMatch($match_id);
         return $this->sendResponse($people);
     }
+
+    public function invitation()
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $matchs = $this->matchService->getInvitationOfJoining();
+        return $this->sendResponse($matchs);
+    }
 }

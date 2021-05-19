@@ -14,6 +14,7 @@ use App\Http\Requests\Profile\NameRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Profile\UsernameRequest;
 use App\Contracts\Image;
+use App\Contracts\Post;
 use Exception;
 use Log;
 
@@ -22,11 +23,13 @@ class ProfileController extends Controller
     protected $userRepo;
     protected $infoRepo;
     protected $imageService;
-    public function __construct(UserRepo $userRepo, InfoRepo $infoRepo, Image $imageService)
+    protected $postService;
+    public function __construct(UserRepo $userRepo, InfoRepo $infoRepo, Image $imageService, Post $postService)
     {
         $this->userRepo = $userRepo;
         $this->infoRepo = $infoRepo;
         $this->imageService = $imageService;
+        $this->postService = $postService;
     }
     
     /**
@@ -241,4 +244,33 @@ class ProfileController extends Controller
         return $this->sendError(null, "Image Not Found");
     }
     
+    /**
+     * myMatch
+     *
+     * @return void
+     */
+    public function myMatch($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        
+        $user = $this->userRepo->find($id);
+        $this->authorize('friend', $user);
+
+        $data = array_values($user->matchs->map->match->sortByDesc('created_at')->toArray());
+        return $this->sendResponse($data);
+    }
+    
+    /**
+     * myPost
+     *
+     * @param  mixed $id
+     * @return void
+     */
+    public function myPost($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $data = $this->postService->getPostOfUser($id);
+        return $this->sendResponse($data);
+    }
 }

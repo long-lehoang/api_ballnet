@@ -221,4 +221,16 @@ class TeamService implements Team{
         $team->save();
         $this->adTeamRepo->deleteAdmin($teamId, $captainId);
     }
+
+    public function getMatchInvitation($id)
+    {
+        $team = $this->teamRepo->find($id);
+        $invitations = $team->invitations->map(function($invitation){
+            $match = $invitation->match;
+            $match->request_id = $invitation->id;
+            return $match;
+        });
+        $data = array_values($invitations->sortByDesc('created_at')->toArray());
+        return $data;
+    }
 }

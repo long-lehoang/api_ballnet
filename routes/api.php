@@ -55,6 +55,8 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/birthday', [ProfileController::class, 'updateBirthday']);
         Route::post('/avatar', [ProfileController::class, 'updateAvatar']);
         Route::post('/cover', [ProfileController::class, 'updateCover']);
+        Route::get('/match/{id}',[ProfileController::class, 'myMatch']);
+        Route::get('/post/{id}', [ProfileController::class, 'myPost']);
     });
     
     //friend
@@ -91,7 +93,6 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/{id}', [PostController::class, 'update']);
         Route::get('/{id}/comment', [PostController::class, 'getComments']);
     });
-    Route::get('/mypost', [PostController::class, 'getMyPost']);
     
     //sport
     Route::group(['prefix' => '/sports'], function() {
@@ -124,6 +125,8 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/kick', [TeamController::class, 'kickMember']);
         Route::post('/captain', [TeamController::class, 'setCaptain']);
         Route::post('/sport', [TeamController::class, 'setSport']);
+        Route::get('/matchs', [TeamController::class, 'getMatch']);
+        Route::get('/matchs/invitation', [TeamController::class, 'getMatchInvitation']);
     });
 
     Route::group(['prefix' => '/team_requests'], function(){
@@ -159,7 +162,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     });
 
     Route::group(['prefix' => '/match_joinings'], function(){
-        Route::get('/', [MatchJoiningController::class, 'index']);
+        Route::get('/invitation', [MatchJoiningController::class, 'invitation']);
         Route::get('/match/{id}', [MatchJoiningController::class, 'show']);
         Route::post('/', [MatchJoiningController::class, 'store']);
         Route::delete('/{id}', [MatchJoiningController::class, 'destroy']);

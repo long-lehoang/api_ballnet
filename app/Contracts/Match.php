@@ -100,5 +100,11 @@ interface Match{
      * @return void
      */
     public function review($result, $matchId, $teamId, $teamRating, $members);
-
+    
+    /**
+     * getInvitationOfJoining
+     *
+     * @return void
+     */
+    public function getInvitationOfJoining();
 }

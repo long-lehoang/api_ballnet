@@ -460,4 +460,28 @@ class TeamController extends Controller
         $teams = $this->team->findWithSport($sport);
         return $this->sendResponse($teams);
     }
+
+    public function getMatch($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        
+        //authorize
+        $team = $this->team->find($id);
+        $this->authorize('member', $team);
+
+        $data = array_values($team->matchs->sortByDesc('created_at')->toArray());
+        return $this->sendResponse($data);
+    }
+
+    public function getMatchInvitation($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        
+        //authorize
+        $team = $this->team->find($id);
+        $this->authorize('captain', $team);
+
+        $data = $this->teamService->getMatchInvitation($id);
+        return $this->sendResponse($data);
+    }
 }

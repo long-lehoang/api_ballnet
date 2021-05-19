@@ -140,14 +140,12 @@ class Match extends Model
             ["match_id", $this->id],
             ['team_id', $this->team_1],
             ['player_id', Auth::id()],
-            ['status', 'waiting']
         ])->first();
         if(is_null($join)) return 0;
-
-        if(is_null($join->invited_by)){
-            return 1;
-        }else{
+        if($join->status == 'invited'){
             return 2;
+        }else if($join->status == 'requested'){
+            return 1;
         }
     }
 
@@ -157,14 +155,12 @@ class Match extends Model
             ["match_id", $this->id],
             ['team_id', $this->team_2],
             ['player_id', Auth::id()],
-            ['status', 'waiting']
         ])->first();
         if(is_null($join)) return 0;
-
-        if(is_null($join->invited_by)){
-            return 1;
-        }else{
+        if($join->status == 'invited'){
             return 2;
+        }else if($join->status == 'requested'){
+            return 1;
         }
     }
 

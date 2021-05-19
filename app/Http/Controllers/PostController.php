@@ -382,21 +382,4 @@ class PostController extends Controller
         }
     }
 
-    /**
-     * Get Posts by username
-     * 
-     * @param string username
-     * @return
-     */
-    public function getMyPost()
-    {
-        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
-
-        $result = $this->postService->getMyPost();
-        if($result['success']){
-            return $this->sendResponse($result['data']);
-        }else{
-            return $this->sendError();
-        }
-    }
 }

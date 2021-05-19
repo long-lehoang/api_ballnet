@@ -381,4 +381,21 @@ class MatchService implements Match{
             ]);
         }
     }
+    
+    /**
+     * getInvitationOfJoining
+     *
+     * @return void
+     */
+    public function getInvitationOfJoining()
+    {
+        $user = Auth::guard('api')->user();
+
+        $invitations = $user->matchs->filter(function($join){
+            return $join->status == 'invited' || $join->status == 'suggested';
+        });
+
+        return array_values($invitations->map->match->sortByDesc('created_at')->toArray());
+    }
+
 }

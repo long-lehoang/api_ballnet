@@ -43,22 +43,7 @@ class MatchController extends Controller
         //response
         return $this->sendResponse($data);
     }
-    
-    /**
-     * invitation
-     *
-     * @return void
-     */
-    public function invitation()
-    {
-        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        //get data
-        $data = $this->matchJoiningRepo->invitation();
-        
-        //response
-        return $this->sendResponse($data);
-    }
     /**
      * Store a newly created resource in storage.
      *
@@ -80,8 +65,8 @@ class MatchController extends Controller
             $input['team_2'] = $input['team_1'];
         }
         //save input
-        $this->matchRepo->forceCreate($input);
-        return $this->sendResponse();
+        $match = $this->matchRepo->forceCreate($input);
+        return $this->sendResponse($match);
     }
 
     /**
@@ -291,6 +276,4 @@ class MatchController extends Controller
 
         return $this->sendResponse();
     }
-    
-    
 }
