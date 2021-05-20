@@ -16,10 +16,11 @@ class CreateStadiumsTable extends Migration
         Schema::create('stadiums', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('status');
+            $table->boolean('status')->default(1);
             $table->string('type');
             $table->string('sport');
-            $table->float('rating')->nullable();
+            $table->string('location');
+            $table->float('rating')->default(0);
             $table->unsignedBigInteger('id_owner');
             $table->foreign('id_owner')->references('id')->on('users');
             $table->timestamps();

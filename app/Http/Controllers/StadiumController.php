@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repository\StadiumRepo;
+use App\Http\Requests\Stadium\CreateRequest;
+use App\Http\Requests\Stadium\UpdateRequest;
 use Log;
 use Auth;
 
@@ -33,9 +35,18 @@ class StadiumController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        //
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        
+        $stadium = $this->stdRepo->create([
+            'name' => $request->name,
+            'sport' => $request->sport ,
+            'location' => $request->location,
+            'user_id' => Auth::id()
+        ]);
+
+        return $this->sendResponse($stadium);
     }
 
     /**
@@ -59,9 +70,22 @@ class StadiumController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
-        //
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        
+        $stadium = $this->stdRepo->find($id);
+        //authorize
+        $this->authorize('update', $stadium);
+
+        $stadium->update([
+            'name' => $request->name,
+            'sport' => $request->sport ,
+            'location' => $request->location,
+        ]);
+        $stadium->fresh();
+
+        return $this->sendResponse($stadium);
     }
 
     /**
@@ -72,6 +96,13 @@ class StadiumController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        
+        $stadium = $this->stdRepo->find($id);
+        //authorize
+        $this->authorize('delete', $stadium);
+
+        $stadium->delete();
+        return $this->sendResponse();
     }
 }

@@ -19,6 +19,7 @@ use App\Http\Controllers\MatchController;
 use App\Http\Controllers\TypeSportController;
 use App\Http\Controllers\MatchInvitationController;
 use App\Http\Controllers\MatchJoiningController;
+use App\Http\Controllers\StadiumController;
 
 
 /*
@@ -138,9 +139,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/{id}/approve', [TeamRequestController::class, 'approve']);
     });
     
-    Route::group(['prefix' => '/stadiums'], function(){
-        Route::get('/', [StadiumController::class, 'index']);
-    });
+    Route::apiResource('stadiums', StadiumController::class);
 
     Route::apiResource('matchs', MatchController::class);
     Route::group(['prefix' => '/matchs'], function(){
