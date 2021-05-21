@@ -17,7 +17,8 @@ class UpdateRequest extends BaseRequest
             'id',
             'name',
             'sport',
-            'location'
+            'location',
+            'phone'
         ];
     }
 }

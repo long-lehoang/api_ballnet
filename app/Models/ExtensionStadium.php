@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ImageStadium extends Model
+class ExtensionStadium extends Model
 {
     use HasFactory;
 
@@ -14,5 +14,5 @@ class ImageStadium extends Model
      *
      * @var string
      */
-    protected $table = 'image_stadium';
+     protected $table = 'extension_stadium';
 }

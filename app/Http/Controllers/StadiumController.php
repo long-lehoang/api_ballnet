@@ -43,6 +43,7 @@ class StadiumController extends Controller
             'name' => $request->name,
             'sport' => $request->sport ,
             'location' => $request->location,
+            'phone' => $request->phone,
             'user_id' => Auth::id()
         ]);
 
@@ -59,7 +60,7 @@ class StadiumController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        $stadium = $this->stdRepo->find($id);
+        $stadium = $this->stdRepo->show($id);
         return $this->sendResponse($stadium);
     }
 
@@ -82,6 +83,7 @@ class StadiumController extends Controller
             'name' => $request->name,
             'sport' => $request->sport ,
             'location' => $request->location,
+            'phone' => $request->phone,
         ]);
         $stadium->fresh();
 

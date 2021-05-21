@@ -16,7 +16,8 @@ class CreateRequest extends BaseRequest
         return [
             'name',
             'sport',
-            'location'
+            'location',
+            'phone'
         ];
     }
 }

@@ -17,11 +17,20 @@ class StadiumRepo extends BaseRepository
 
     public function active()
     {
-        return $this->_model::where('status', 'active')->get();
+        return $this->_model::where('status', 1)->get();
     }
 
-    public function waiting()
+    public function inactive()
     {
-        return $this->_model::where('status', 'waiting')->get();
+        return $this->_model::where('status', 0)->get();
+    }
+
+    public function show($id)
+    {
+        $stadium = $this->find($id);
+        $stadium->extensions;
+        $stadium->images;
+        $stadium->booking;
+        return $stadium;
     }
 }

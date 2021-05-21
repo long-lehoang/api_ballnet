@@ -26,6 +26,8 @@ class Stadium extends Model
         'status',
         'sport',
         'location',
+        'phone',
+        'avatar',
         'rating',
         'user_id'
     ];
@@ -48,5 +50,10 @@ class Stadium extends Model
     public function images()
     {
         return $this->hasMany(ImageStadium::class);
+    }
+
+    public function extensions()
+    {
+        return $this->hasMany(ExtensionStadium::class);
     }
 }
