@@ -32,6 +32,10 @@ class Stadium extends Model
         'user_id'
     ];
 
+    protected $appends = [
+        'reviews',
+    ];
+
     public function prices()
     {
         return $this->hasMany(PriceStadium::class);
@@ -55,5 +59,24 @@ class Stadium extends Model
     public function extensions()
     {
         return $this->hasMany(ExtensionStadium::class);
+    }
+
+    public function getReviewsAttribute()
+    {
+        $reviews = $this->booking->map(function($book){
+            if($book->rating == 0){
+                return null;
+            }
+            $obj = new \stdClass;
+            $obj->id = $book->id;
+            $obj->name = $book->id;
+            $obj->username = $book->user->username;
+            $obj->feedback = $book->feedback;
+            $obj->rating = $book->rating;
+            $obj->time = $book->feedback;
+            return $obj;
+        });
+
+        return array_values(array_filter($reviews->toArray()));
     }
 }

@@ -14,10 +14,10 @@ class CreateRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name',
-            'sport',
-            'location',
-            'phone'
+            'name' => 'string|required',
+            'sport' => 'string|required',
+            'location' => 'string|required',
+            'phone' => 'string|required'
         ];
     }
 }

@@ -181,6 +181,8 @@ return [
         App\Providers\FriendServiceProvider::class,
         App\Providers\TeamServiceProvider::class,
         App\Providers\MatchServiceProvider::class,
+        App\Providers\StadiumServiceProvider::class,
+
     ],
 
     /*

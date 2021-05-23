@@ -4,17 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repository\StadiumRepo;
+use App\Repository\UserRepo;
 use App\Http\Requests\Stadium\CreateRequest;
 use App\Http\Requests\Stadium\UpdateRequest;
+use App\Http\Requests\Stadium\ExtensionRequest;
+use App\Http\Requests\ImageRequest;
+use App\Contracts\Image;
+use App\Services\StadiumService as Stadium;
+
 use Log;
 use Auth;
 
 class StadiumController extends Controller
 {
     protected $stdRepo;
-    function __construct(StadiumRepo $stdRepo)
+    protected $userRepo;
+    protected $imageService;
+    protected $stadiumService;
+    function __construct(UserRepo $userRepo, StadiumRepo $stdRepo,Stadium $stadiumService, Image $imageService)
     {
         $this->stdRepo = $stdRepo;
+        $this->userRepo = $userRepo;
+        $this->imageService = $imageService;
+        $this->stadiumService = $stadiumService;
     }
     /**
      * Display a listing of the resource.
@@ -104,7 +116,83 @@ class StadiumController extends Controller
         //authorize
         $this->authorize('delete', $stadium);
 
+        //remove avatar
+        if(!is_null($stadium->avatar)){
+            if(!$this->imageService->delete($stadium->avatar)){
+                Log::error("Can't Delete Images at $stadium->avatar");
+            }
+        }
+        //remove image
+        foreach ($stadium->images as $img) {
+            if(!$this->imageService->delete($img->image)){
+                Log::error("Can't Delete Images at $img->image");
+            }
+        }
+        
         $stadium->delete();
         return $this->sendResponse();
+    }
+    
+    /**
+     * setAvatar
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
+    public function setAvatar(ImageRequest $request, $id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $stadium = $this->stdRepo->find($id);
+        $this->authorize('update', $stadium);
+        if($request->hasFile('image')){
+            //upload image
+            $img = $request->file('image');
+            $result = $this->imageService->upload($img);
+            if(!$result['success']){
+                return $this->sendError(null, "Can't upload image");
+            }
+            //delete image
+            $url = $stadium->avatar;
+            if(!is_null($url)){
+                $this->imageService->delete($url);
+            }
+            //update DB
+            $stadium->avatar = $result['url'];
+            $stadium->save();
+            return $this->sendResponse();
+        }
+        return $this->sendError(null, "Image Not Found");
+    }
+    
+    /**
+     * setExtension
+     *
+     * @param  mixed $request
+     * @param  mixed $id
+     * @return void
+     */
+    public function setExtension(ExtensionRequest $request, $id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $stadium = $this->stdRepo->find($id);
+        $this->authorize('update', $stadium);
+
+        $this->stadiumService->setExtension($id, $request->extensions);
+        return $this->sendResponse();
+    }
+
+    public function myStadium($id)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        //authorize
+        $user = $this->userRepo->find($id);
+        $this->authorize('friend', $user);
+        
+        return $this->sendResponse($user->stadiums);
+
     }
 }

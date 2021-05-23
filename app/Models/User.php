@@ -156,4 +156,8 @@ class User extends Authenticatable
     public function matchs(){
         return $this->hasMany(MatchJoining::class, 'player_id');
     }
+
+    public function stadiums(){
+        return $this->hasMany(Stadium::class);
+    }
 }

@@ -14,5 +14,10 @@ class ExtensionStadium extends Model
      *
      * @var string
      */
-     protected $table = 'extension_stadium';
+    protected $table = 'extension_stadium';
+
+    protected $fillable = [
+        'stadium_id',
+        'extension'
+    ];
 }

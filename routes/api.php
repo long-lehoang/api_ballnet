@@ -140,6 +140,11 @@ Route::group(['middleware' => 'auth:api'], function() {
     });
     
     Route::apiResource('stadiums', StadiumController::class);
+    Route::group(['prefix' => '/stadiums/{id}'], function(){
+        Route::post('/avatar', [StadiumController::class, 'setAvatar']);
+        Route::post('/extension', [StadiumController::class, 'setExtension']);
+    });
+    Route::get('stadiums/owner/{id}', [StadiumController::class, 'myStadium']);
 
     Route::apiResource('matchs', MatchController::class);
     Route::group(['prefix' => '/matchs'], function(){

@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Http\Requests\BaseRequest;
+
+class ImageRequest extends BaseRequest
+{
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'image' => [
+                'required',
+                'image',
+                'mimes:jpeg,png,jpg',
+                'mimetypes:image/jpeg,image/png,image/jpg',
+            ],
+        ];
+    }
+}
