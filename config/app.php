@@ -161,7 +161,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Illuminate\View\BookingServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -182,6 +181,7 @@ return [
         App\Providers\TeamServiceProvider::class,
         App\Providers\MatchServiceProvider::class,
         App\Providers\StadiumServiceProvider::class,
+        App\Providers\BookingServiceProvider::class,
 
     ],
 

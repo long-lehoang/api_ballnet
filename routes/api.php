@@ -184,6 +184,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/sport_category', [SportCategoryController::class, 'index']);
     Route::get('/sport_category/{name}', [SportCategoryController::class, 'show']);
     Route::get('/type_sport', [TypeSportController::class, 'index']);
+
+    //suggestion
+    Route::group(['prefix' => '/suggestion'], function(){
+        Route::get('/friend', [SuggestionController::class, 'friend']);
+        Route::get('/stadium', [SuggestionController::class, 'stadium']);
+        Route::get('/match', [SuggestionController::class, 'match']);
+    });
 }); 
 
 Route::get('/username/{username}', [AuthController::class, 'checkUsername']);
