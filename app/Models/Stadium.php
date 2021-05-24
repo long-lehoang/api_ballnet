@@ -69,8 +69,9 @@ class Stadium extends Model
             }
             $obj = new \stdClass;
             $obj->id = $book->id;
-            $obj->name = $book->id;
+            $obj->name = $book->user->name;
             $obj->username = $book->user->username;
+            $obj->avatar = $book->user->info->avatar;
             $obj->feedback = $book->feedback;
             $obj->rating = $book->rating;
             $obj->time = $book->feedback;

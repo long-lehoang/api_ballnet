@@ -16,4 +16,8 @@ class BookingRepo extends BaseRepository
         return \App\Models\Booking::class;
     }
     
+    public function deleteByMatch($id)
+    {
+        return $this->_model::where('match_id', $id)->delete();
+    }
 }

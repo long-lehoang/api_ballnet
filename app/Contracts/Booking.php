@@ -21,5 +21,13 @@ interface Booking{
      * @return void
      */
     public function review($book_id, $rating, $feedback);
-
+    
+    /**
+     * book
+     *
+     * @param  mixed $matchId
+     * @param  mixed $stadiumId
+     * @return void
+     */
+    public function book($matchId, $stadiumId);
 }

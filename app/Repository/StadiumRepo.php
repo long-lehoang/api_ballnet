@@ -33,4 +33,9 @@ class StadiumRepo extends BaseRepository
         $stadium->booking;
         return $stadium;
     }
+
+    public function filterBySport($sport)
+    {
+        return $this->_model::where('sport', $sport)->get();
+    }
 }

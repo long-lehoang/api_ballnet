@@ -34,6 +34,8 @@ use App\Models\Booking;
 use App\Observers\BookingObserver;
 use App\Models\AttendanceMatchJoining;
 use App\Observers\AttendanceMatchJoiningObserver;
+use App\Models\Stadium;
+use App\Observers\StadiumObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -69,5 +71,6 @@ class EventServiceProvider extends ServiceProvider
         MatchResult::observe(MatchResultObserver::class);
         Booking::observe(BookingObserver::class);
         AttendanceMatchJoining::observe(AttendanceMatchJoiningObserver::class);
+        Stadium::observe(StadiumObserver::class);
     }
 }

@@ -10,7 +10,7 @@ use App\Http\Requests\Stadium\UpdateRequest;
 use App\Http\Requests\Stadium\ExtensionRequest;
 use App\Http\Requests\ImageRequest;
 use App\Contracts\Image;
-use App\Services\StadiumService as Stadium;
+use App\Contracts\Stadium;
 
 use Log;
 use Auth;
@@ -183,7 +183,13 @@ class StadiumController extends Controller
         $this->stadiumService->setExtension($id, $request->extensions);
         return $this->sendResponse();
     }
-
+    
+    /**
+     * myStadium
+     *
+     * @param  mixed $id
+     * @return void
+     */
     public function myStadium($id)
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
@@ -194,5 +200,19 @@ class StadiumController extends Controller
         
         return $this->sendResponse($user->stadiums);
 
+    }
+    
+    /**
+     * getStadiumBySport
+     *
+     * @param  mixed $sport
+     * @return void
+     */
+    public function getStadiumBySport($sport)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $stadiums = $this->stdRepo->filterBySport($sport);
+        return $this->sendResponse($stadiums);
     }
 }

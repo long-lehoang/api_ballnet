@@ -20,6 +20,7 @@ use App\Http\Controllers\TypeSportController;
 use App\Http\Controllers\MatchInvitationController;
 use App\Http\Controllers\MatchJoiningController;
 use App\Http\Controllers\StadiumController;
+use App\Http\Controllers\BookingController;
 
 
 /*
@@ -139,12 +140,13 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/{id}/approve', [TeamRequestController::class, 'approve']);
     });
     
-    Route::apiResource('stadiums', StadiumController::class);
+    Route::apiResource('/stadiums', StadiumController::class);
     Route::group(['prefix' => '/stadiums/{id}'], function(){
         Route::post('/avatar', [StadiumController::class, 'setAvatar']);
         Route::post('/extension', [StadiumController::class, 'setExtension']);
     });
-    Route::get('stadiums/owner/{id}', [StadiumController::class, 'myStadium']);
+    Route::get('/stadiums/owner/{id}', [StadiumController::class, 'myStadium']);
+    Route::get('/stadiums/sport/{sport}', [StadiumController::class, 'getStadiumBySport']);
 
     Route::apiResource('matchs', MatchController::class);
     Route::group(['prefix' => '/matchs'], function(){
@@ -178,6 +180,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::group(['prefix' => '/booking'], function(){
         Route::post('/{id}/review', [BookingController::class, 'review']);
         Route::get('/{id}/review', [BookingController::class, 'getToReview']);
+        Route::post('/', [BookingController::class, 'store']);
     });
 
     //sport category

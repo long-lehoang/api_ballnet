@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Booking\ReviewStadium;
 use App\Contracts\Booking;
 use App\Repository\BookingRepo;
+use App\Http\Requests\Booking\CreateRequest;
+
 use Auth;
 use Log;
 
@@ -37,9 +39,13 @@ class BookingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        //
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $this->bookingService->book($request->match_id, $request->stadium_id);
+
+        return $this->sendResponse();
     }
 
     /**
