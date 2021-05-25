@@ -182,6 +182,7 @@ return [
         App\Providers\MatchServiceProvider::class,
         App\Providers\StadiumServiceProvider::class,
         App\Providers\BookingServiceProvider::class,
+        App\Providers\SuggestionServiceProvider::class,
 
     ],
 
