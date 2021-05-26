@@ -69,17 +69,24 @@ class SuggestionService implements Suggestion{
             }
             
         }
-        return $people;
+        return array_values(array_slice($people->toArray(),0,10));
     }
     
     /**
      * match
+     * Get match which have location in same with user 
      *
      * @return void
      */
     public function match()
-    {
-        return [];
+    {        
+        $list = $this->matchRepo->all();
+        $matchs = $list->filter(function($match){
+            $user = Auth::guard('api')->user();
+            $addrUser = $user->info->address;
+            return $match->status === 'new' && $addrUser === $match->location;
+        });
+        return array_values(array_slice($matchs->toArray(),0,5));
 
     }
     
@@ -90,7 +97,14 @@ class SuggestionService implements Suggestion{
      */
     public function stadium()
     {
-        return [];
+        $list = $this->stdRepo->all();
+        $stadiums = $list->filter(function($stadium){
+            $user = Auth::guard('api')->user();
+            $addrUser = $user->info->address;
+            $location = explode(", ",$stadium->location);
+            return $stadium->status == 1 && $addrUser === $location[2].", ".$location[3];
+        });
+        return array_values(array_slice($stadiums->toArray(),0,5));
         
     }
 }
