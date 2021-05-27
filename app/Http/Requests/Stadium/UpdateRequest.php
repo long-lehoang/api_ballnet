@@ -16,7 +16,9 @@ class UpdateRequest extends BaseRequest
         return [
             'name' => 'string|required',
             'sport' => 'string|required',
-            'location' => 'string|required',
+            'location' => 'string|required',            
+            'latitude' => 'float|required',
+            'longtitude' => 'float|required',
             'phone' => 'string|required'
         ];
     }
