@@ -27,7 +27,7 @@ class Stadium extends Model
         'sport',
         'location',
         'latitude',
-        'longtitude',
+        'longitude',
         'phone',
         'avatar',
         'rating',

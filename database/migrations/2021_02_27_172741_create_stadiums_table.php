@@ -22,7 +22,7 @@ class CreateStadiumsTable extends Migration
             $table->string('sport');
             $table->string('location');
             $table->float('latitude');
-            $table->float('longtitude');
+            $table->float('longitude');
             $table->string('phone');
             $table->float('rating')->default(0);
             $table->unsignedBigInteger('id_owner');

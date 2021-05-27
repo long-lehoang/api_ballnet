@@ -56,7 +56,7 @@ class StadiumController extends Controller
             'sport' => $request->sport ,
             'location' => $request->location,
             'latitude' => $request->latitude,
-            'longtitude' => $request->longtitude,
+            'longitude' => $request->longitude,
             'phone' => $request->phone,
             'user_id' => Auth::id()
         ]);
@@ -98,7 +98,7 @@ class StadiumController extends Controller
             'sport' => $request->sport ,
             'location' => $request->location,
             'latitude' => $request->latitude,
-            'longtitude' => $request->longtitude,
+            'longitude' => $request->longitude,
             'phone' => $request->phone,
         ]);
         $stadium->fresh();

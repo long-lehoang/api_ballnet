@@ -18,7 +18,7 @@ class CreateRequest extends BaseRequest
             'sport' => 'string|required',
             'location' => 'string|required',
             'latitude' => 'float|required',
-            'longtitude' => 'float|required',
+            'longitude' => 'float|required',
             'phone' => 'string|required'
         ];
     }
