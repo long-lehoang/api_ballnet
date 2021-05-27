@@ -20,6 +20,6 @@ Todo:
 * Bảo vệ:                           (21/6/2021)
 
 Todo:
-- Edit language
-- Edit Match Item
 - Edit DB (thêm status cho user)
+- Edit lat long when add stadium (frontend)
+- add location in create poster
