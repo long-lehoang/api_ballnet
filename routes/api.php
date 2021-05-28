@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     //friend_request
     Route::group(['prefix' => '/friend_requests'], function(){
         Route::get('/', [FriendRequestController::class, 'index']);
+        Route::get('/top', [FriendRequestController::class, 'nearRequest']);
         Route::post('/', [FriendRequestController::class, 'store']);
         Route::post('/{id}/accept', [FriendRequestController::class, 'acceptRequest']);
         Route::post('/{id}/deny', [FriendRequestController::class, 'delete']);

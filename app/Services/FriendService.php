@@ -294,7 +294,7 @@ class FriendService implements Friend{
             $obj->name = $user->name;
             $obj->username = $user->username;
             $obj->avatar = $info->avatar;
-
+            $obj->address = $info->address;
             return $obj;
         });
         return $friendRequests;

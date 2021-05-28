@@ -21,5 +21,10 @@ Todo:
 
 Todo:
 - Edit DB (thêm status cho user)
-- Edit lat long when edit profile stadium (frontend)
-- complete suggestion friend request
+- Edit lat long when edit profile stadium (frontend) (uncheck)
+- complete suggestion friend request (uncheck)
+- edit create post, create comment (uncheck)
+- Convert address from mapbox search
+- Add loading (state redux)
+- Consider login with google
+- Consider forget password?

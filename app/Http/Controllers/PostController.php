@@ -96,7 +96,7 @@ class PostController extends Controller
                 return $this->sendError();
             }
 
-            return $this->sendResponse();
+            return $this->sendResponse($post->fresh());
         }catch(Exception $e){
             Log::error($e->getMessage());
             return $this->sendError();
