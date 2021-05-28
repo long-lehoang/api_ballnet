@@ -24,7 +24,6 @@ Todo:
 - Edit lat long when edit profile stadium (frontend) (uncheck)
 - complete suggestion friend request (uncheck)
 - edit create post, create comment (uncheck)
-- Convert address from mapbox search
-- Add loading (state redux)
+- Add loading (state redux) (uncheck)
 - Consider login with google
 - Consider forget password?
