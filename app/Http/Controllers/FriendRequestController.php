@@ -36,7 +36,20 @@ class FriendRequestController extends Controller
         $request = $this->friendService->getFriendRequests();
         return $this->sendResponse($request);
     }
+            
+    /**
+     * nearRequest
+     *
+     * @return void
+     */
+    public function nearRequest()
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
         
+        $request = $this->friendService->getNearlyRequest();
+        return $this->sendResponse($request);
+    }
+
     /**
      * store
      *

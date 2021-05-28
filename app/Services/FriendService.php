@@ -272,4 +272,31 @@ class FriendService implements Friend{
         });
         return $friendRequests;
     }
+
+    
+    /**
+     * getNearlyRequest
+     *
+     * @return void
+     */
+    public function getNearlyRequest()
+    {
+        $user = Auth::guard('api')->user();
+        //TODO
+        $friendRequests = $user->friendRequests;
+        $friendRequests = $friendRequests->map(function($fR){
+            $obj = new \stdClass;
+            
+            $user = $fR->request;
+            $info = $user->info;
+            
+            $obj->idRequest = $fR->id;
+            $obj->name = $user->name;
+            $obj->username = $user->username;
+            $obj->avatar = $info->avatar;
+
+            return $obj;
+        });
+        return $friendRequests;
+    }
 }

@@ -42,4 +42,11 @@ interface Friend{
      * @return void
      */
     public function getFriendRequests();
+    
+    /**
+     * getNearlyRequest
+     *
+     * @return void
+     */
+    public function getNearlyRequest();
 }
