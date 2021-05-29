@@ -51,6 +51,20 @@ class AuthServiceProvider extends ServiceProvider
         if (! $this->app->routesAreCached()) {
             Passport::routes();
         }
-        //
+        Gate::define('lock-post', function(User $user){
+            return $user->info->status !== 'lock-post';
+        });
+        Gate::define('lock-stadium', function(User $user){
+            return $user->info->status !== 'lock-stadium';
+        });
+        Gate::define('lock-account', function(User $user){
+            return $user->info->status !== 'lock-account';
+        });
+        Gate::define('lock-team', function(User $user){
+            return $user->info->status !== 'lock-team';
+        });
+        Gate::define('lock-match', function(User $user){
+            return $user->info->status !== 'lock-match';
+        });
     }
 }

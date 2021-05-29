@@ -17,6 +17,7 @@ use App\Contracts\Team;
 use App\Contracts\Image;
 use App\Models\MemberTeam;
 use Log;
+use Gate;
 
 class TeamController extends Controller
 {
@@ -60,6 +61,9 @@ class TeamController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
+        //authorize
+        Gate::authorize('lock-team');
+        
         //get current user
         $user = Auth::guard('api')->user();
 

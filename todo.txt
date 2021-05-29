@@ -20,10 +20,5 @@ Todo:
 * Bảo vệ:                           (21/6/2021)
 
 Todo:
-- Edit DB (thêm status cho user)
-- Edit lat long when edit profile stadium (frontend) (uncheck)
-- complete suggestion friend request (uncheck)
-- edit create post, create comment (uncheck)
-- Add loading (state redux) (uncheck)
 - Consider login with google
 - Consider forget password?

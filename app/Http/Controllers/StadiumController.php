@@ -14,6 +14,7 @@ use App\Contracts\Stadium;
 
 use Log;
 use Auth;
+use Gate;
 
 class StadiumController extends Controller
 {
@@ -51,6 +52,9 @@ class StadiumController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
         
+        //authorize
+        Gate::authorize('lock-team');
+
         $stadium = $this->stdRepo->create([
             'name' => $request->name,
             'sport' => $request->sport ,

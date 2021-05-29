@@ -47,14 +47,10 @@ class LikeRepo extends BaseRepository{
      * @return int
      */
     public function isLike($id){
-        $user_id = Auth::guard('api')->user()->id;
-        try{
-            $this->_model::where('user_id',$user_id)
-                        ->where('post_id',$id)->firstOrFail();
-            return $this->sendSuccess();
-        }catch(Exception $e){
-            return $this->sendFailed($e);
-        }
+
+        $like = $this->_model::where('user_id',Auth::id())
+                    ->where('post_id',$id)->first();
+        return !is_null($like);
     }
 
     public function updateOrCreate($data)

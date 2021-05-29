@@ -40,6 +40,7 @@ class SuggestionService implements Suggestion{
         $people = [];
         if(is_null($addrUser)){
             $people = User::whereNotIn('id', $friends)->offset(0)->limit(10)->get(); 
+            $people->map->info;
         }else{
             $list = User::whereNotIn('id', $friends)->get();
             //get same location

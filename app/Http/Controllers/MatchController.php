@@ -13,6 +13,7 @@ use App\Repository\MatchJoiningRepo;
 use App\Repository\TeamRepo;
 use App\Contracts\Match;
 use Log;
+use Gate;
 
 class MatchController extends Controller
 {
@@ -53,6 +54,8 @@ class MatchController extends Controller
     public function store(CreateMatchRequest $request)
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        Gate::authorize('lock-match');
 
         //get input
         $input = $request->all();

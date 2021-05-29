@@ -4,43 +4,32 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repository\PostRepo;
-use App\Repository\ImagePostRepo;
-use App\Repository\TagRepo;
 use App\Repository\LikeRepo;
 use App\Repository\CommentRepo;
 use App\Repository\ShareRepo;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Post;
 use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\EditPostRequest;
 use App\Http\Requests\Post\CommentRequest;
 use Illuminate\Support\Facades\Log;
 use App\Contracts\Post as PostService;
-
-use Image;
-use Exception;
+use Gate;
 
 class PostController extends Controller
 {
     protected $postRepo;
-    protected $tagRepo;
-    protected $imageRepo;
     protected $likeRepo;
     protected $commentRepo;
     protected $shareRepo;
     protected $postService;
 
-    public function __construct(PostService $post, PostRepo $postRepo, TagRepo $tagRepo, ImagePostRepo $imageRepo, LikeRepo $likeRepo, CommentRepo $commentRepo, ShareRepo $shareRepo)
+    public function __construct(PostService $post, PostRepo $postRepo, LikeRepo $likeRepo, CommentRepo $commentRepo, ShareRepo $shareRepo)
     {
         $this->postRepo = $postRepo;
-        $this->tagRepo = $tagRepo;
-        $this->imageRepo = $imageRepo;
         $this->likeRepo = $likeRepo;
         $this->commentRepo = $commentRepo;
         $this->shareRepo = $shareRepo;
         $this->postService = $post;
-        // $this->authorizeResource(Post::class,'post');
 
     }
     /**
@@ -70,37 +59,12 @@ class PostController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        try{
-            // create post
-            $postInput = $request->only('content','location','private','team_id');
-            $postInput['user_id'] = Auth::guard('api')->user()->id;
-            $post = $this->postRepo->create($postInput);
-            $post_id = $post->id;
+        Gate::authorize('lock-post');
+        
+        $post = $this->postService->create($request);
 
-            //create tags
-            $tagInputs = $request->tags;
-            $tags = explode(",",$tagInputs);
-            foreach($tags as $tag){
-                if($tag=="")
-                continue;
-                $tagInput['tag_id'] = $tag;
-                $tagInput['post_id'] = $post_id;
-                $this->tagRepo->create($tagInput);
-            }
+        return $this->sendResponse($post->fresh());
 
-            //create image
-            if($request->hasFile('images')){
-                $fileInputs = $request->file('images');
-                $image = $this->imageRepo->upload($post_id, $fileInputs);
-                if(!$image['success'])
-                return $this->sendError();
-            }
-
-            return $this->sendResponse($post->fresh());
-        }catch(Exception $e){
-            Log::error($e->getMessage());
-            return $this->sendError();
-        }
     }
 
     /**
@@ -113,57 +77,10 @@ class PostController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        //get post
-        try{
-            $post = $this->postRepo->find($id);
-        }catch(Exception $e){
-            return $this->response404();
-        }
-        //get info author
-        $author = $this->postRepo->getAuthor($id);
-        if(!$author['success'])
-            return $this->sendError($author['message']);
-        //count like
-        $like = $this->postRepo->countLike($id);
-        if(!$like['success'])
-            return $this->sendError($like['message']);
-        //count comment
-        $comment = $this->postRepo->countComment($id);
-        if(!$comment['success'])
-            return $this->sendError($comment['message']);
-        //count share
-        
-        $share = $this->postRepo->countShare($id);
-        if(!$share['success'])
-        return $this->sendError($share['message']);
+        $post = $this->postRepo->find($id);
+        $this->authorize('view', $post);
 
-        //get image
-        $image = $this->postRepo->getImage($id);
-        if(!$image['success'])
-        return $this->sendError($image['message']);
-
-        //get tag
-        $tag = $this->postRepo->getTag($id);
-        if(!$tag['success'])
-        return $this->sendError($tag['message']);
-
-        $isLike = $this->likeRepo->isLike($id);
-        $isComment = $this->commentRepo->isComment($id);
-        $isShare = $this->shareRepo->isShare($id);
-
-        //return result
-        $result = [
-            'post' => $post,
-            'author' => $author['data'], 
-            'like' => $like['data'], 
-            'comment' => $comment['data'], 
-            'share' => $share['data'], 
-            'images' => $image['data'],
-            'tags' => $tag['data'],
-            'isLike' => $isLike['success'],
-            'isComment' => $isComment['success'],
-            'isShare' => $isShare['success']
-        ];
+        $result = $this->postService->show($id);
         
         return $this->sendResponse($result);
     }
@@ -179,47 +96,14 @@ class PostController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        $data = $request->all();
-        //update
-        $update = $this->postRepo->update($id,[
-            "private" => $request->private,
-            "content" => $request->content,
-            "location" => $request->location
-        ]);
-        if(!$update){
-            return $this->sendError();
-        }
+        //authorize
+        $post = $this->postRepo->find($id);
 
-        //update tags
-        try{
-            $post = $this->postRepo->find($id)->tags()->delete();
-            $tagInputs = $request->tags;
-            $tags = explode(",",$tagInputs);
-            foreach($tags as $tag){
-                if($tag == "")
-                continue;
-                $result = $this->tagRepo->create([
-                    "post_id" => $id,
-                    "tag_id" => $tag
-                ]);
-            }
-        }catch(Exception $e){
-            return $this->sendError();
-        }
-        //update image
-        try{
-            $this->postRepo->find($id)->images()->delete();
-            if($request->hasFile('images')){
-                $fileInputs = $request->file('images');
-                $image = $this->imageRepo->upload($fileInputs);
-                if(!$image)
-                return $this->sendError();
-            }
-        }catch(Exception $e){
-            return $this->sendError();
-        }
+        $this->authorize('update', $post);
+        Log::debug($request);
+        $post = $this->postService->update($id,$request);
 
-        return $this->sendResponse();
+        return $this->sendResponse($post->images->map->image);
     }
 
     /**
@@ -232,11 +116,13 @@ class PostController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        $result = $this->postRepo->delete($id);
-        if($result)
-            return $this->sendResponse();
-        else
-            return $this->sendError();
+        $post = $this->postRepo->find($id);
+        $this->authorize('delete', $post);
+
+        $result = $post->delete();
+       
+        return $this->sendResponse();
+
     }
 
     /**
@@ -249,17 +135,14 @@ class PostController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        try{
-            $user = Auth::guard('api')->user();
-            $this->likeRepo->updateOrCreate([
-                "post_id" => $id,
-                "user_id" => $user->id
-            ]);
+        $user = Auth::guard('api')->user();
+        $this->likeRepo->updateOrCreate([
+            "post_id" => $id,
+            "user_id" => $user->id
+        ]);
 
-            return $this->sendResponse();
-        }catch(Exception $e){
-            return $this->sendError();
-        }
+        return $this->sendResponse();
+
     }
 
     /**
@@ -293,16 +176,13 @@ class PostController extends Controller
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         $user = Auth::guard('api')->user();
-        try{
-            $this->commentRepo->forceCreate([
-                "post_id" => $id,
-                "user_id" => $user->id,                
-                "comment" => $request->comment
-            ]);
-            return $this->sendResponse();
-        }catch(Exception $e){
-            return $this->sendError();
-        }
+        $this->commentRepo->forceCreate([
+            "post_id" => $id,
+            "user_id" => $user->id,                
+            "comment" => $request->comment
+        ]);
+        return $this->sendResponse();
+
     }
 
     /**
@@ -350,17 +230,14 @@ class PostController extends Controller
     {
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
-        try{
-            $user = Auth::guard('api')->user();
-            $this->shareRepo->updateOrCreate([
-                "post_id" => $id,
-                "user_id" => $user->id
-            ]);
+        $user = Auth::guard('api')->user();
+        $this->shareRepo->updateOrCreate([
+            "post_id" => $id,
+            "user_id" => $user->id
+        ]);
 
-            return $this->sendResponse();
-        }catch(Exception $e){
-            return $this->sendError();
-        }
+        return $this->sendResponse();
+
     }
 
     /**

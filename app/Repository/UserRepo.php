@@ -39,6 +39,11 @@ class UserRepo extends BaseRepository{
     public function isValidUser($credentials){
         if(Auth::guard('web')->attempt($credentials)){
             $user = Auth::guard('web')->user();
+            //check lock user
+            if($user->info->status === 'lock-account'){
+                return $this->sendFailed();
+            }
+            
             $tokenResult = $user->createToken('Personal Access Token');
             $token = $tokenResult->token;
             $token->save();
