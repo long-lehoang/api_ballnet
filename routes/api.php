@@ -22,6 +22,7 @@ use App\Http\Controllers\MatchJoiningController;
 use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\SuggestionController;
+use App\Http\Controllers\ResetPasswordController;
 
 
 /*
@@ -36,6 +37,8 @@ use App\Http\Controllers\SuggestionController;
 */
 Route::get('email/verify/{id}', [VerificationController::class, 'verify'])->name('verification.verify');
 Route::get('email/resend', [VerificationController::class, 'resend'])->name('verification.resend');
+Route::post('reset-password/', [ResetPasswordController::class, 'sendMail']);
+Route::put('reset-password/{token}', [ResetPasswordController::class, 'reset']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);

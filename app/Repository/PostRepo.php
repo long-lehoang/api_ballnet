@@ -161,6 +161,7 @@ class PostRepo extends BaseRepository{
                 $cmt_tmp->name = $cmt->user->name;
                 $cmt_tmp->avatar = $cmt->user->info == null ? null : $cmt->user->info->avatar;
                 $cmt_tmp->comment = $cmt->comment;
+                $cmt_tmp->time = $cmt->created_at;
                 array_push($result,$cmt_tmp);
             }
 

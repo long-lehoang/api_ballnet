@@ -22,7 +22,7 @@ class MatchRepo extends BaseRepository
      */
     public function getNewMatch()
     {
-        return $this->_model::where('status', 'active')->get();
+        return $this->_model::where('status', 'new')->get();
     }
     
     /**

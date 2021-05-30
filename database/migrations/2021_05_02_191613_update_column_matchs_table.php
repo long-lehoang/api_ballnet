@@ -14,7 +14,7 @@ class UpdateColumnMatchsTable extends Migration
     public function up()
     {
         Schema::table('matchs', function (Blueprint $table) {
-            $table->string('status')->default('active')->change();
+            $table->string('status')->default('new')->change();
         });
     }
 
