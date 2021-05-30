@@ -18,7 +18,7 @@ class VerificationController extends Controller
             $user->markEmailAsVerified();
         }
     
-        return redirect()->to('http://localhost:3000/');
+        return redirect()->to('http://18.222.173.14/');
     }
     
     public function resend() {
