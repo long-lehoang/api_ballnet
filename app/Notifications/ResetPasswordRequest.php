@@ -40,7 +40,7 @@ class ResetPasswordRequest extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-        $url = url('http://18.222.173.14/reset-password/' . $this->token);
+        $url = url('https://ballnet.vercel.app/reset-password/' . $this->token);
 
         return (new MailMessage)
             ->line('You are receiving this email because we received a password reset request for your account.')

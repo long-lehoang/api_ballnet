@@ -18,7 +18,7 @@ class VerificationController extends Controller
             $user->markEmailAsVerified();
         }
     
-        return redirect()->to('http://18.222.173.14/');
+        return redirect()->to('https://ballnet.vercel.app/');
     }
     
     public function resend() {
