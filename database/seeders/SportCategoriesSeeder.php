@@ -16,22 +16,22 @@ class SportCategoriesSeeder extends Seeder
     {
         DB::table('sport_categories')->insert([
             [
-                'name' => 'Football',
+                'name' => 'Bóng đá',
             ],
             [
-                'name' => 'Tennis',
+                'name' => 'Quần vợt',
             ],
             [
-                'name' => 'Volleyball',
+                'name' => 'Bóng chuyền',
             ],
             [
-                'name' => 'Badminton',
+                'name' => 'Bóng bàn',
             ],
             [
-                'name' => 'Snooker' 
+                'name' => 'Bóng rổ' 
             ],
             [
-                'name' => 'League of Legends'
+                'name' => 'Bóng chày'
             ]
         ]);
     }
