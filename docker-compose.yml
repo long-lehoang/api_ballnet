@@ -4,13 +4,15 @@ services:
     image: nginx:1.17.4-alpine
     ports:
       - 8989:80
+      - 443:443
     depends_on:
       - php
     volumes:
       - .:/application
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-
+      - ./docker/nginx/cert/ballnet.key:/etc/nginx/ballnet.key
+      - ./docker/nginx/cert/ballnet.crt:/etc/nginx/ballnet.crt
 
   php:
     build: ./docker/php/
