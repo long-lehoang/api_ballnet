@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(api-ballnet.net www.api-ballnet.net)
+domains=(www.api-ballnet.net)
 rsa_key_size=4096
 data_path="./docker/certbot"
 email="ballnet.service@gmail.com" # Adding a valid address is strongly recommended
