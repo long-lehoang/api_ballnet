@@ -43,7 +43,7 @@ class PostPolicy
             }
             return false;
         }else{
-            if($post->user === $user){
+            if($post->user_id === $user->id){
                 return true;
             }else{
                 return false;
