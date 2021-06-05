@@ -70,14 +70,8 @@ class PostService implements Post{
         array_push($posts, $tagPost);
 
         //get share post
-        $sharePost = [];
-        $shares = $user->shares;
-        foreach ($shares as $key => $share) {
-            # code...
-            $post = $share->post()->whereIn('private',['Public', 'Friend'])->get();
-            array_push($sharePost, $post);
-        }
-        array_push($posts, $sharePost);
+        $shares = $user->shares->map->post;
+        array_push($posts, $shares);
 
         return $posts;
 
@@ -178,7 +172,7 @@ class PostService implements Post{
         // create post
         $postInput = $request->only('content','location','private','team_id');
         $postInput['user_id'] = Auth::id();
-        $post = $this->postRepo->create($postInput);
+        $post = $this->postRepo->forceCreate($postInput);
         $post_id = $post->id;
 
         //create tags
