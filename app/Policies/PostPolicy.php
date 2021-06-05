@@ -35,15 +35,15 @@ class PostPolicy
         if($private == 'Public'){
             return true;
         }else if($private == 'Friend'){
-            $friends = $user->friends();
-            $owner = $post->user();
+            $friends = $user->friends;
+            $owner = $post->user;
             foreach($friends as $friend){
                 if($friend->id_friend == $owner->id)
                 return true;
             }
             return false;
         }else{
-            if($post->user() === $user){
+            if($post->user === $user){
                 return true;
             }else{
                 return false;
