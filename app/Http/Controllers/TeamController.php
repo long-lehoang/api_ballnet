@@ -158,6 +158,18 @@ class TeamController extends Controller
         
         return $this->sendResponse($teams);
     }
+
+    public function myTeamWithCaptainBySport($sport)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+
+        $teams = Auth::guard('api')->user()->captainTeams;
+        $teams = $teams->filter(function($team){
+            return $team->sport == $sport;
+        });
+        
+        return $this->sendResponse($teams);
+    }
     /**
      * leave
      *

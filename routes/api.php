@@ -117,6 +117,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/team_sport/{sport}',[TeamController::class, 'teamWithSport']);
     Route::get('/myteam', [TeamController::class, 'myTeams']);
     Route::get('/myteam_captain', [TeamController::class, 'myTeamWithCaptain']);
+    Route::get('/myteam_captain/{sport}', [TeamController::class, 'myTeamWithCaptainBySport']);
     Route::group(['prefix' => '/teams/{id}'], function(){
         Route::delete('/leave', [TeamController::class, 'leave']);
         Route::get('/feed', [TeamController::class, 'getPosts']);
