@@ -164,11 +164,13 @@ class TeamController extends Controller
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         $teams = Auth::guard('api')->user()->captainTeams;
-        $teams = $teams->filter(function($team){
-            return $team->sport == $sport;
-        });
+        $result = [];
+        foreach ($teams as $key => $value) {
+            if($team->sport == $sport)
+            array_push($result, $team);
+        }
         
-        return $this->sendResponse($teams);
+        return $this->sendResponse($result);
     }
     /**
      * leave
