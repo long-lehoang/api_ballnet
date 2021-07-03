@@ -166,8 +166,8 @@ class TeamController extends Controller
         $teams = Auth::guard('api')->user()->captainTeams;
         $result = [];
         foreach ($teams as $key => $value) {
-            if($team->sport == $sport)
-            array_push($result, $team);
+            if($value->sport == $sport)
+            array_push($result, $value);
         }
         
         return $this->sendResponse($result);
