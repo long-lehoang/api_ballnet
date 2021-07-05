@@ -60,7 +60,7 @@ class PostService implements Post{
         $posts = PostOB::whereIn("id", $postIds)
         ->orWhere("user_id", $user->id)
         ->orderBy("updated_at","desc")
-        ->paginate();
+        ->paginate(10);
         return $posts;
 
     }
