@@ -27,13 +27,12 @@ class PostRepo extends BaseRepository{
         $posts = [] ;
 
         try{
-            $friends = $user->friends;
-            foreach($friends as $friend){
-                $post = $friend->friend->posts()->whereIn('private', ['Public', 'Friend'])->get();                
-                array_push($posts, $post);
-            }
-            $post = $user->posts()->whereNotIn('private', ['Team'])->get();
-            array_push($posts, $post);
+            $ids = $user->friends->map->id_friend->toArray();
+            array_push($ids, $user->id);
+            $posts = $this->_model::whereIn('user_id',$ids)
+            ->whereIn('private', ['Public', 'Friend'])
+            ->orWhere([['private', 'Only me'],['user_id', $user->id]])
+            ->orderBy('updated_at','desc')->paginate(3);
             return $this->sendSuccess($posts);
         }catch(Exception $e){
             return $this->sendFailed();

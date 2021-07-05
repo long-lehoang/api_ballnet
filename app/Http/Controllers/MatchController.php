@@ -39,10 +39,10 @@ class MatchController extends Controller
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         //get data
-        $data = $this->matchRepo->all();
+        $data = $this->matchRepo->paginate(8, 'desc');
         
         //response
-        return $this->sendResponse(array_reverse($data->toArray()));
+        return $this->sendResponse($data));
     }
 
     /**

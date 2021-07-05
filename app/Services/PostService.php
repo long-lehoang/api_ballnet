@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Post as PostOB;
 use App\Contracts\Post;
 use App\Repository\UserRepo;
 use App\Repository\PostRepo;
@@ -51,28 +52,15 @@ class PostService implements Post{
     public function getPostOfUser($id)
     {
         $user = $this->user->find($id);
-        $posts = [];
 
-        //my post
-        $myPost = $user->posts()->whereNotIn('private', ['Team'])->get();
-        array_push($posts, $myPost);
+        $postIds = [];
+        $postIds = $user->tags->map->post_id->toArray();
+        $postIds = array_merge($postIds, $user->shares->map->post_id->toArray());
 
-        //get tags post
-        $tagPost = [];
-        $tags = $user->tags;
-
-        foreach ($tags as $key => $tag) {
-            # code...
-            $post = $tag->post()->whereIn('private',['Public', 'Friend'])->get();
-
-            array_push($tagPost, $post);
-        }
-        array_push($posts, $tagPost);
-
-        //get share post
-        $shares = $user->shares->map->post;
-        array_push($posts, $shares);
-
+        $posts = PostOB::whereIn("id", $postIds)
+        ->orWhere("user_id", $user->id)
+        ->orderBy("updated_at","desc")
+        ->paginate();
         return $posts;
 
     }

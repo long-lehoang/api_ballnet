@@ -33,6 +33,9 @@ abstract class BaseRepository
         return $this->_model->all();
     }
 
+    public function paginate($limit = 15, $order = 'asc'){
+        return $this->_model->orderBy('updated_at', $order)->paginate($limit);
+    }
     /**
      * Create
      * @param array $attributes
