@@ -42,7 +42,7 @@ class MatchController extends Controller
         $data = $this->matchRepo->all();
         
         //response
-        return $this->sendResponse(array_reverse($data));
+        return $this->sendResponse(array_reverse($data->toArray()));
     }
 
     /**
