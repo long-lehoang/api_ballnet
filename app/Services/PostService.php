@@ -59,6 +59,7 @@ class PostService implements Post{
 
         $posts = PostOB::whereIn("id", $postIds)
         ->orWhere("user_id", $user->id)
+        ->whereNotIn("private",["Team"])
         ->orderBy("updated_at","desc")
         ->paginate(10);
         return $posts;

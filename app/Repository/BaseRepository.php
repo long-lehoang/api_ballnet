@@ -33,7 +33,7 @@ abstract class BaseRepository
         return $this->_model->all();
     }
 
-    public function paginate($limit = 15, $order = 'asc'){
+    public function paginate($limit = 10, $order = 'asc'){
         return $this->_model->orderBy('updated_at', $order)->paginate($limit);
     }
     /**
