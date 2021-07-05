@@ -320,7 +320,7 @@ class TeamController extends Controller
 
         $team = $this->team->find($id);
         $this->authorize('member', $team);
-        $posts = $team->posts;
+        $posts = $team->posts()->orderBy("updated_at", "desc")->paginate(10);
         return $this->sendResponse($posts);
     }
     
