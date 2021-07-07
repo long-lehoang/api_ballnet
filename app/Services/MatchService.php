@@ -397,5 +397,18 @@ class MatchService implements Match{
 
         return array_values($invitations->map->match->sortByDesc('created_at')->toArray());
     }
-
+    
+    /**
+     * search
+     *
+     * @param  mixed $key
+     * @param  mixed $location
+     * @param  mixed $sport
+     * @return void
+     */
+    public function search($key='', $location='', $sport='')
+    {
+        $ids = $this->teamRepo->findByName($key)->pluck('id')->toArray();
+        return $this->matchRepo->search($ids, $location, $sport);
+    }
 }

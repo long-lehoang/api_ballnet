@@ -32,7 +32,7 @@ class PostRepo extends BaseRepository{
             $posts = $this->_model::whereIn('user_id',$ids)
             ->whereIn('private', ['Public', 'Friend'])
             ->orWhere([['private', 'Only me'],['user_id', $user->id]])
-            ->orderBy('updated_at','desc')->paginate(10);
+            ->orderBy('updated_at','desc')->paginate(config("constant.PAGINATION.POST.LIMIT"));
             return $this->sendSuccess($posts);
         }catch(Exception $e){
             return $this->sendFailed();

@@ -339,4 +339,30 @@ class TeamRepo extends BaseRepository{
     {
         return $this->_model::where('sport', $sport)->get();
     }
+    
+    /**
+     * findByName
+     *
+     * @param  mixed $name
+     * @return void
+     */
+    public function findByName($name='')
+    {
+        return $this->_model::where('name', 'LIKE', "%$name%")->get();
+    }
+
+    public function search($name, $location, $sport)
+    {
+        $params = [];
+        if(!empty($name))
+        $params[] = ["name","LIKE", "%$name%"];
+
+        if(!empty($location))
+        $params[] = ["location","LIKE", "%$location%"];
+
+        if(!empty($sport))
+        $params[] = ["sport","LIKE", "%$sport%"];
+
+        return $this->_model::where($params)->paginate(config("constant.PAGINATION.TEAM.LIMIT"));
+    }
 }

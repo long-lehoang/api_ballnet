@@ -75,5 +75,22 @@ interface Team{
      * @param  mixed $id
      * @return void
      */
-    public function getMatchInvitation($id);
+    public function getMatchInvitation($id);    
+
+    /**
+     * getTeams
+     *
+     * @return void
+     */
+    public function getTeams();
+    
+    /**
+     * search
+     *
+     * @param  mixed $key
+     * @param  mixed $location
+     * @param  mixed $sport
+     * @return void
+     */
+    public function search($key='', $location='', $sport='');
 }

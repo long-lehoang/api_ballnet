@@ -61,7 +61,7 @@ class PostService implements Post{
         ->orWhere("user_id", $user->id)
         ->whereNotIn("private",["Team"])
         ->orderBy("updated_at","desc")
-        ->paginate(10);
+        ->paginate(config("constant.PAGINATION.POST.LIMIT"));
         return $posts;
 
     }
