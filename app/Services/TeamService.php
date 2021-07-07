@@ -51,9 +51,10 @@ class TeamService implements Team{
         });
         return array_values(array_filter($team->toArray()));
     }
+
     public function getTeams()
     {
-        $teams = $this->teamRepo->all();
+        $teams = $this->teamRepo->paginate(config("constant.PAGINATION.TEAM.LIMIT"));
         $teams = $teams->map(function($team){
             $obj = new \stdClass;
             $obj = clone $team;
@@ -231,6 +232,39 @@ class TeamService implements Team{
             return $match;
         });
         $data = array_values($invitations->sortByDesc('created_at')->toArray());
+        return $data;
+    }
+    
+    /**
+     * search
+     *
+     * @param  mixed $key
+     * @param  mixed $location
+     * @param  mixed $sport
+     * @return void
+     */
+    public function search($key='', $location='', $sport='')
+    {
+        $teams = $this->teamRepo->search($key, $location, $sport);
+
+        $data = $teams->map(function($team){
+            $obj = new \stdClass;
+            $obj = clone $team;
+            $user = Auth::guard('api')->user();
+            $obj->isMember = $this->teamRepo->isMember($user->id, $team->id)['success'];
+            $obj->isWaitingForApprove = $this->teamRepo->isWaitingForApprove($user->id, $team->id)['success'];
+            $obj->isInvitedBy = $this->teamRepo->isInvitedBy($user->id, $team->id)['success'];
+            $obj->member = $this->teamRepo->countMember($team->id)['data'];
+            if($obj->isInvitedBy || $obj->isWaitingForApprove){
+                $obj->idRequest = $this->mbTeamRepo->findRequest($user->id, $team->id)->id;
+            }
+            $obj->avatarMembers = $team->members
+            ->filter(function($member){return $member->status === 'active';})
+            ->map->member
+            ->map->info->map->only(['avatar'])->map->avatar->values();
+            return $obj;
+        });
+
         return $data;
     }
 }

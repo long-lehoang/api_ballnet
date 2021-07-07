@@ -320,7 +320,7 @@ class TeamController extends Controller
 
         $team = $this->team->find($id);
         $this->authorize('member', $team);
-        $posts = $team->posts()->orderBy("updated_at", "desc")->paginate(10);
+        $posts = $team->posts()->orderBy("updated_at", "desc")->paginate(config("constant.PAGINATION.TEAM.LIMIT"));
         return $this->sendResponse($posts);
     }
     
@@ -500,6 +500,23 @@ class TeamController extends Controller
         $this->authorize('captain', $team);
 
         $data = $this->teamService->getMatchInvitation($id);
+        return $this->sendResponse($data);
+    }
+
+    public function search(Request $request)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        $key = $request->search;
+        $city = $request->city;
+        $district = $request->district;
+        $sport = $request->sport;
+        Log::debug("Query: key=$key, city=$city, district=$district, sport=$sport");
+        
+        $location = '';
+        if(!empty($district)||!empty($city))
+        $location = "$district, $city";
+        
+        $data = $this->teamService->search($key, $location, $sport);
         return $this->sendResponse($data);
     }
 }

@@ -107,4 +107,14 @@ interface Match{
      * @return void
      */
     public function getInvitationOfJoining();
+    
+    /**
+     * search
+     *
+     * @param  mixed $key
+     * @param  mixed $location
+     * @param  mixed $sport
+     * @return void
+     */
+    public function search($key='', $location='', $sport='');
 }

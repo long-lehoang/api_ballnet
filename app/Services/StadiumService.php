@@ -33,4 +33,17 @@ class StadiumService implements Stadium{
         }
     }
     
+    /**
+     * search
+     *
+     * @param  mixed $key
+     * @param  mixed $location
+     * @param  mixed $sport
+     * @return void
+     */
+    public function search($key='', $location='', $sport='')
+    {
+        $data = $this->stdRepo->search($key, $location, $sport);
+        return $data;
+    }
 }

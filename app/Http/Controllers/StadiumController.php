@@ -223,4 +223,27 @@ class StadiumController extends Controller
         $stadiums = $this->stdRepo->filterBySport($sport);
         return $this->sendResponse($stadiums);
     }
+    
+    /**
+     * search
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function search(Request $request)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        $key = $request->search;
+        $city = $request->city;
+        $district = $request->district;
+        $sport = $request->sport;
+        Log::debug("Query: key=$key, city=$city, district=$district, sport=$sport");
+        
+        $location = '';
+        if(!empty($district)||!empty($city))
+        $location = "$district, $city";
+        
+        $data = $this->stadiumService->search($key, $location, $sport);
+        return $this->sendResponse($data);
+    }
 }

@@ -82,6 +82,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/{id}/deny', [FriendRequestController::class, 'delete']);
     });
 
+    Route::get('/search_people', [PeopleController::class, 'search']);
     Route::get('/people', [PeopleController::class, 'index']);
     
     //follow
@@ -113,6 +114,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::delete('/notifications/{id}', [NotificationController::class, 'delete']);
 
     //team
+    Route::get('/search_team', [TeamController::class, 'search']);
     Route::apiResource('teams', TeamController::class);
     Route::get('/team_sport/{sport}',[TeamController::class, 'teamWithSport']);
     Route::get('/myteam', [TeamController::class, 'myTeams']);
@@ -146,6 +148,7 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::post('/{id}/approve', [TeamRequestController::class, 'approve']);
     });
     
+    Route::get('/search_stadium', [StadiumController::class, 'search']);
     Route::apiResource('/stadiums', StadiumController::class);
     Route::group(['prefix' => '/stadiums/{id}'], function(){
         Route::post('/avatar', [StadiumController::class, 'setAvatar']);
@@ -155,6 +158,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('/stadiums/sport/{sport}', [StadiumController::class, 'getStadiumBySport']);
 
     Route::apiResource('matchs', MatchController::class);
+    Route::get('/search_match', [MatchController::class, 'search']);
     Route::group(['prefix' => '/matchs'], function(){
         Route::put('/{id}/leave', [MatchController::class, 'leave']); //team leave from match
         Route::post('/{id}/invite', [MatchController::class, 'invite']);

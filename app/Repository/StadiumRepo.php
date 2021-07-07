@@ -17,7 +17,7 @@ class StadiumRepo extends BaseRepository
 
     public function active()
     {
-        return $this->_model::where('status', 1)->get();
+        return $this->_model::where('status', 1)->paginate(config("constant.PAGINATION.STADIUM.LIMIT"));
     }
 
     public function inactive()
@@ -37,5 +37,20 @@ class StadiumRepo extends BaseRepository
     public function filterBySport($sport)
     {
         return $this->_model::where('sport', $sport)->get();
+    }
+
+    public function search($name, $location, $sport)
+    {
+        $params = [];
+        if(!empty($name))
+        $params[] = ["name","LIKE", "%$name%"];
+
+        if(!empty($location))
+        $params[] = ["location","LIKE", "%$location%"];
+
+        if(!empty($sport))
+        $params[] = ["sport","LIKE", "%$sport%"];
+
+        return $this->_model::where($params)->paginate(config("constant.PAGINATION.STADIUM.LIMIT"));
     }
 }

@@ -39,10 +39,10 @@ class MatchController extends Controller
         Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
 
         //get data
-        $data = $this->matchRepo->paginate(8, 'desc');
+        $data = $this->matchRepo->paginate(config("constant.PAGINATION.MATCH.LIMIT"), 'desc');
         
         //response
-        return $this->sendResponse($data));
+        return $this->sendResponse($data);
     }
 
     /**
@@ -87,7 +87,29 @@ class MatchController extends Controller
         $this->authorize('view', $match);
         return $this->sendResponse($match);
     }
-
+    
+    /**
+     * search
+     *
+     * @param  mixed $request
+     * @return void
+     */
+    public function search(Request $request)
+    {
+        Log::info("[".Auth::id()."]"." ".__CLASS__."::".__FUNCTION__." [ENTRY]");
+        $key = $request->search;
+        $city = $request->city;
+        $district = $request->district;
+        $sport = $request->sport;
+        Log::debug("Query: key=$key, city=$city, district=$district, sport=$sport");
+        
+        $location = '';
+        if(!empty($district)||!empty($city))
+        $location = "$district, $city";
+        
+        $data = $this->matchService->search($key, $location, $sport);
+        return $this->sendResponse($data);
+    }
     /**
      * Update the specified resource in storage.
      *
