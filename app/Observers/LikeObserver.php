@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Like;
 use App\Notifications\LikePost;
+use App\Events\LikePost as LikeEvent;
 
 class LikeObserver
 {
@@ -17,9 +18,12 @@ class LikeObserver
     {
         $user = $like->user;
         $post = $like->post;
+        broadcast(new LikeEvent($post))->toOthers();
+
         $author = $post->user;
         if($author != $user)
         $author->notify(new LikePost($user, $post));
+
     }
 
     /**
@@ -31,6 +35,8 @@ class LikeObserver
     public function updated(Like $like)
     {
         //
+        broadcast(new LikeEvent($like->post))->toOthers();
+
     }
 
     /**
@@ -41,7 +47,7 @@ class LikeObserver
      */
     public function deleted(Like $like)
     {
-        
+        broadcast(new LikeEvent($like->post))->toOthers();
     }
 
     /**

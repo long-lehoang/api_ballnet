@@ -156,6 +156,7 @@ class PostRepo extends BaseRepository{
                 if($cmt == null)
                 continue;
                 $cmt_tmp = new \stdClass();
+                $cmt_tmp->cmt_id = $cmt->id;
                 $cmt_tmp->username = $cmt->user->username;
                 $cmt_tmp->name = $cmt->user->name;
                 $cmt_tmp->avatar = $cmt->user->info == null ? null : $cmt->user->info->avatar;

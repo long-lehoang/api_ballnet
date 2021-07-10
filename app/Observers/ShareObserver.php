@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Share;
 use App\Notifications\SharePost;
+use App\Events\SharePost as ShareEvent;
 
 class ShareObserver
 {
@@ -20,6 +21,8 @@ class ShareObserver
         $author = $post->user;
         if($author != $user)
         $author->notify(new SharePost($user, $post));
+        broadcast(new ShareEvent($post))->toOthers();
+
     }
 
     /**
@@ -31,6 +34,8 @@ class ShareObserver
     public function updated(Share $share)
     {
         //
+        broadcast(new ShareEvent($share->post))->toOthers();
+
     }
 
     /**
@@ -42,6 +47,8 @@ class ShareObserver
     public function deleted(Share $share)
     {
         //
+        broadcast(new ShareEvent($share->post))->toOthers();
+
     }
 
     /**

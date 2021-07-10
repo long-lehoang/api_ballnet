@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Models\Comment;
 use App\Notifications\CommentPost;
+use App\Events\CommentPost as CommentEvent;
+use App\Events\UnCommentPost as UnCommentEvent;
 
 class CommentObserver
 {
@@ -20,6 +22,7 @@ class CommentObserver
         $author = $post->user;
         if($author != $user)
         $author->notify(new CommentPost($user, $post));
+        broadcast(new CommentEvent($user, $comment))->toOthers();
     }
 
     /**
@@ -41,7 +44,7 @@ class CommentObserver
      */
     public function deleted(Comment $comment)
     {
-        //
+        broadcast(new UnCommentEvent($comment))->toOthers();
     }
 
     /**
