@@ -8,6 +8,7 @@ use app\Models\User;
 use Illuminate\Http\Request;
 use App\Models\PasswordReset;
 use App\Notifications\ResetPasswordRequest;
+use Illuminate\Support\Facades\Hash;
 
 class ResetPasswordController extends Controller
 {
