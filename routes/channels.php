@@ -26,3 +26,7 @@ Broadcast::channel('App.Models.Room.{id}', function ($user, $id) {
     $users = Room::find($id)->users->pluck('user_id')->all();
     return in_array($user->id, $users);
 });
+
+Broadcast::channel('chat', function($user){
+    return ['id' => $user->id, 'name' => $user->name];
+});
