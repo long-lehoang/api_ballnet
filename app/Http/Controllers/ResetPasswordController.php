@@ -46,7 +46,9 @@ class ResetPasswordController extends Controller
         }
 
         $user = User::where('email', $passwordReset->email)->firstOrFail();
-        $updatePasswordUser = $user->update($request->only('password'));
+        $updatePasswordUser = $user->update([
+            "password" => Hash::make($request->password);
+        ]);
         $passwordReset->delete();
 
         return response()->json([
