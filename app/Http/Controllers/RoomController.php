@@ -18,7 +18,8 @@ class RoomController extends Controller
 
     public function index()
     {
-        $rooms = $this->roomRepo->all()->toQuery()->orderBy('updated_at', 'desc')->get();
+        $rooms = $this->roomRepo->all();
+        $rooms = empty($rooms->toArray()) ? [] : $rooms->toQuery()->orderBy('updated_at', 'desc')->get();
         return $this->sendResponse($rooms);
     }
 
