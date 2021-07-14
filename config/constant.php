@@ -19,6 +19,12 @@ return [
         "COMMENT"  => [
             "LIMIT" => 10
         ],
+        "MESSAGE" => [
+            "LIMIT" => 14
+        ],
+        "ROOM" => [
+            "LIMIT" => 20
+        ],
         "OTHER"  => [
             "LIMIT" => 15
         ]

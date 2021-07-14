@@ -30,11 +30,12 @@ class FriendRepo extends BaseRepository
         try{
             $friends = $user->friends;
             foreach($friends as $friend){
-
                 array_push($result,[
                     "id" => $friend->id_friend,
                     "name" => $friend->friend->name,
-                    "avatar" => $friend->friend->info->avatar
+                    "username" => $friend->friend->username,
+                    "avatar" => $friend->friend->info->avatar,
+                    "status" => 0,
                 ]);
             }
             return $this->sendSuccess($result);

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Models\Room;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +20,9 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('App.Models.Post.{id}', function ($user, $id) {
     return true;
+});
+
+Broadcast::channel('App.Models.Room.{id}', function ($user, $id) {
+    $users = Room::find($id)->users->pluck('user_id')->all();
+    return in_array($user->id, $users);
 });

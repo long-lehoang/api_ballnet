@@ -160,4 +160,12 @@ class User extends Authenticatable
     public function stadiums(){
         return $this->hasMany(Stadium::class);
     }
+
+    public function messages(){
+        return $this->hasMany(Message::class);
+    }
+
+    public function rooms(){
+        return $this->hasMany(UserRoom::class);
+    }
 }

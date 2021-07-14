@@ -23,6 +23,8 @@ use App\Http\Controllers\StadiumController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\RoomController;
 
 
 /*
@@ -203,6 +205,27 @@ Route::group(['middleware' => 'auth:api'], function() {
         Route::get('/friend', [SuggestionController::class, 'friend']);
         Route::get('/stadium', [SuggestionController::class, 'stadium']);
         Route::get('/match', [SuggestionController::class, 'match']);
+    });
+
+    
+
+    //room
+    Route::group(['prefix' => '/rooms'], function(){
+        Route::get('/', [RoomController::class, 'index']);
+        Route::post('/', [RoomController::class, 'store']);
+        
+        //in room
+        Route::group(['prefix' => '/{id}'], function(){
+            Route::get('/', [RoomController::class, 'show']);
+            //message
+            Route::group(['prefix' => '/messages'], function(){
+                Route::get('/', [MessageController::class, 'index']);
+                Route::post('/', [MessageController::class, 'store']);
+            });
+            //party
+            Route::get('/party', [RoomController::class, 'getParty']);
+        });
+
     });
 }); 
 
