@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Booking;
+use Log;
 
 class BookingObserver
 {
@@ -26,6 +27,14 @@ class BookingObserver
     public function updated(Booking $booking)
     {
         //
+        if($booking->isDirty('rating')){
+            $rating = Booking::selectRaw('AVG(rating) as rating')->where('stadium_id',$booking->stadium_id)->whereNotNull('rating')->first();
+
+            $stadium = $booking->stadium;
+
+            $stadium->rating = $rating->rating;
+            $stadium->save();
+        }
     }
 
     /**

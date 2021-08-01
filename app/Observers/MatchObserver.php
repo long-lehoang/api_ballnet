@@ -106,7 +106,7 @@ class MatchObserver
             }
 
             //notify before match
-            if($match->status === 'old'){
+            if($match->status === 'old' && $match->team_2 != null){
                 $delay = now()->addMinutes(30);
 
                 foreach ($match->joinings as $join) {

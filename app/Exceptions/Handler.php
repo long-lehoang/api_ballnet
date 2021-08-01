@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Exception;
+use Log;
 
 class Handler extends ExceptionHandler
 {
@@ -102,6 +103,7 @@ class Handler extends ExceptionHandler
         });
         
         $this->renderable(function (Exception $e, $request){
+            Log::error($e->getMessage());
             return response()->json([
                 'success' => false,
                 'code' => 500,

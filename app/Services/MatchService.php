@@ -287,7 +287,7 @@ class MatchService implements Match{
         foreach ($upcoming as $match) {
             $time = explode(', ', $match->time);
             $startTime = new Carbon($time[0]);
-            if($startTime->diffInMinutes() == 0){
+            if($startTime->diffInMinutes() < 5){
                 $match->status = 'happening';
             }
 
@@ -298,7 +298,7 @@ class MatchService implements Match{
             $time = explode(', ', $match->time);
             $endTime = new Carbon($time[1]);
             
-            if($endTime->diffInMinutes() == 0){
+            if($endTime->diffInMinutes() < 5){
                 $match->status = 'old';
             }
 
