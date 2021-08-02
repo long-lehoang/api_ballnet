@@ -114,7 +114,7 @@ class MatchObserver
                 }
 
                 if(!is_null($match->booking))
-                $match->createBy->notify((new ReviewStadium($match->booking, $match->booking->stadium))->delay($delay));
+                $match->createdBy->notify((new ReviewStadium($match->booking, $match->booking->stadium))->delay($delay));
             }
         }
     }
