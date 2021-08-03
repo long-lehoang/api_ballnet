@@ -30,7 +30,7 @@ class MatchJoiningObserver
                 }
             }
         }else if($matchJoining->status === 'requested'){
-            $matchJoining->team->admins->map->admin->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
+            $matchJoining->team->admins->map->admin->map->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
             $matchJoining->team->captain->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
             
         }else if($matchJoining->status === 'invited'){
@@ -50,7 +50,7 @@ class MatchJoiningObserver
     {
         //delete other invitation
         if($matchJoining->status == 'requested'){
-            $matchJoining->team->admins->map->admin->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
+            $matchJoining->team->admins->map->admin->map->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
             $matchJoining->team->captain->notify(new RequestJoiningMatch($matchJoining->match, $matchJoining, $matchJoining->user));
         }else{
             $joins = $matchJoining->match->joinings;
