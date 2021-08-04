@@ -315,7 +315,7 @@ class TeamRepo extends BaseRepository{
     {
         $user = Auth::guard('api')->user();
         $team = $this->find($teamId);
-        $members = $team->members()->whereNotIn('member_id', [$user->id])->get();
+        $members = $team->members()->whereNotIn('member_id', [$user->id])->where('status','active')->get();
         
         $members = $members->map(function($member){
             $user = $member->member;
