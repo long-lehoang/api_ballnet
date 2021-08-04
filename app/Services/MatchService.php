@@ -201,7 +201,7 @@ class MatchService implements Match{
     public function memberOfTeam($id, $team_id)
     {
         $match = $this->matchRepo->find($id);
-        $joins = $match->joinings()->where('team_id', $team_id)->get();
+        $joins = $match->joinings()->where([['team_id', $team_id],['status','active']])->get();
 
         $members = $joins->map(function($join){
             $obj = new \stdClass;
