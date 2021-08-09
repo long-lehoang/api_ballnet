@@ -327,9 +327,16 @@ class MatchService implements Match{
         //get opponent team
         $team = $match->team_1 == $join->team_id ? $match->team2 : $match->team1;
         
-        $data->team_id = $team->id;
-        $data->team_name = $team->name;
-        $data->team_avatar = $team->avatar;
+        if(is_null($team)){
+            $data->team_id = '';
+            $data->team_name = '';
+            $data->team_avatar = '';
+        }else{
+            $data->team_id = $team->id;
+            $data->team_name = $team->name;
+            $data->team_avatar = $team->avatar;
+        }
+
 
         $joinings = $match->joinings()->where('team_id', $join->team_id)->get();
         //get member
