@@ -288,7 +288,8 @@ class TeamRepo extends BaseRepository{
                 if($request->status === 'waiting' && $request->invited_by !== null){
                     $team = $request->team;
                     $team->requestId = $request->id;
-                    $team->member = $this->countMember($team->id);
+                    $team->member = $this->countMember($team->id)['data'];
+                    $team->isInvitedBy = true;
                     $requests[$key] = $team;
                 }else{
                     unset($requests[$key]);
