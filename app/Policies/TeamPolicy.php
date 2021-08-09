@@ -42,30 +42,23 @@ class TeamPolicy
      */
     public function cancel(User $user, MemberTeam $member)
     {
-        if($member->invited_by !== null){
-            $team = $member->team;
-            if($user->id === $member->member_id){
-                return true;
-            }
-            
-            if($team->id_captain === $user->id){
-                return true;
-            }
-
-            $admins = $team->admins;
-            foreach ($admins as $key => $admin) {
-                if($admin->admin_id === $user->id)
-                {
-                    return true;
-                }
-            }
+        if($member->status == 'active'){
             return false;
-        }else{
-            if($user->id === $member->member_id){
+        }
+        $team = $member->team;
+        if($user->id === $member->member_id){
+            return true;
+        }
+        
+        if($team->id_captain === $user->id){
+            return true;
+        }
+
+        $admins = $team->admins;
+        foreach ($admins as $key => $admin) {
+            if($admin->admin_id === $user->id)
+            {
                 return true;
-            }
-            else {
-                return false;
             }
         }
         return false;
@@ -80,6 +73,10 @@ class TeamPolicy
      */
     public function approve(User $user, MemberTeam $member)
     {
+        if($member->status == 'active'){
+            return false;
+        }
+        
         if($member->invited_by !== null){
             if($user->id === $member->member_id){
                 return true;
