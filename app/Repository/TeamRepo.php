@@ -128,7 +128,7 @@ class TeamRepo extends BaseRepository{
             $members = $team->members;
 
             foreach ($members as $key => $member) {
-                if($member->member_id === $memberId && $member->status === 'waiting' && $member->invited_by !== null) 
+                if($member->member_id === $userId && $member->status === 'waiting' && $member->invited_by !== null) 
                     return $this->sendSuccess();
             }
 
