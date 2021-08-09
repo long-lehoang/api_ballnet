@@ -289,8 +289,10 @@ class TeamRepo extends BaseRepository{
                     $team = $request->team;
                     $team->requestId = $request->id;
                     $team->member = $this->countMember($team->id);
+                    $requests[$key] = $team;
+                }else{
+                    unset($requests[$key]);
                 }
-                unset($requests[$key]);
             }
     
             return $this->sendSuccess($requests);
