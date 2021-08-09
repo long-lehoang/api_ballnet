@@ -22,7 +22,8 @@ class CreateMatchsTable extends Migration
             $table->string('result')->nullable();
             $table->tinyInteger('status');
             $table->foreignId('stadium_id')->constrained('stadiums')->nullable();
-            $table->foreignId('created_by')->constrained('users');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
         });
     }
