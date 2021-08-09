@@ -187,7 +187,7 @@ class TeamController extends Controller
         $result = $this->teamService->leave($id);
 
         if($result['success']){
-            return $this->sendResponse(null, $result['message']);
+            return $this->sendResponse(null, 'success');
         }else{
             return $this->sendError(null, $result['message']);
         }
