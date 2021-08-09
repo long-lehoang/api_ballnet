@@ -128,7 +128,8 @@ class UserRepo extends BaseRepository{
             $user = Auth::guard('api')->user();
 
             $user->token()->revoke();
-            $user->info()->status = 'lock-account';
+            $user->info()->delete();
+            $user->delete();
             return $this->sendSuccess();
         }catch(Exception $e){
             Log::error($e->getMessage());
