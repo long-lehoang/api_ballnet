@@ -44,7 +44,10 @@ class TeamPolicy
     {
         if($member->invited_by !== null){
             $team = $member->team;
-
+            if($user->id === $member->member_id){
+                return true;
+            }
+            
             if($team->id_captain === $user->id){
                 return true;
             }
