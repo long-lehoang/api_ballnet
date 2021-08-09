@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cookie;
+use Log;
 
 class UserRepo extends BaseRepository{
     /**
@@ -127,10 +128,10 @@ class UserRepo extends BaseRepository{
             $user = Auth::guard('api')->user();
 
             $user->token()->revoke();
-            $user->info()->delete();
-            $user->delete();
+            $user->info()->status = 'lock-account';
             return $this->sendSuccess();
         }catch(Exception $e){
+            Log::error($e->getMessage());
             return $this->sendFailed();
         }
     }

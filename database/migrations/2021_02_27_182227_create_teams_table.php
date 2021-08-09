@@ -23,7 +23,7 @@ class CreateTeamsTable extends Migration
             $table->string('avatar')->nullable();
             $table->string('cover')->nullable();
             $table->text('overview')->nullable();
-            $table->foreignId('id_captain')->constrained('users');
+            $table->foreignId('id_captain')->constrained('users')->onDelete('cascade');;
             $table->timestamps();
         });
     }
