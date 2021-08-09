@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\MemberTeam;
 use App\Notifications\RequestJoinTeam;
-use App\Notifications\IniviteJoinTeam;
+use App\Notifications\InviteJoinTeam;
 use App\Notifications\NewMember;
 use Log;
 
@@ -36,7 +36,7 @@ class MemberTeamObserver
             $requestId = $memberTeam->id;
             
             $member = $memberTeam->member;
-            $member->notify(new IniviteJoinTeam($user, $team, $requestId));
+            $member->notify(new InviteJoinTeam($user, $team, $requestId));
         }
     }
 

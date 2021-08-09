@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notification;
 use App\Models\User;
 use App\Models\Team;
 
-class IniviteJoinTeam extends Notification implements ShouldQueue
+class InviteJoinTeam extends Notification implements ShouldQueue
 {
     use Queueable;
 
