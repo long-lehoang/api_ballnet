@@ -35,7 +35,7 @@ class Message extends Model
     public function getAvatarAttribute()
     {
         $user = User::where("id", $this->user_id)->first();
-        return is_null($user) ? '' : $user->avatar;
+        return is_null($user) ? null : $user->avatar;
     }
 
     public function setMessageAttribute($message)
