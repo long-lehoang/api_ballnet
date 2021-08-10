@@ -28,12 +28,14 @@ class Message extends Model
 
     public function getUsernameAttribute()
     {
-        return User::where("id", $this->user_id)->first()->username;
+        $user = User::where("id", $this->user_id)->first();
+        return is_null($user) ? '' : $user->username;
     }
 
     public function getAvatarAttribute()
     {
-        return Info::where("user_id", $this->user_id)->first()->avatar;
+        $user = User::where("id", $this->user_id)->first();
+        return is_null($user) ? '' : $user->avatar;
     }
 
     public function setMessageAttribute($message)
