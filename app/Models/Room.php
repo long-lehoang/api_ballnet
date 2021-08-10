@@ -32,7 +32,11 @@ class Room extends Model
         if($name == 'Friend Chat')
         {
             $friend = UserRoom::where([['room_id',$this->id],['user_id', '<>', Auth::id()]])->first();
-            return $friend->user->name;
+            if(is_null($friend)){
+                return 'No Name';
+            }else{
+                return $friend->user->name;
+            }
         }else{
             return $name;
         }
