@@ -43,15 +43,25 @@ class RoomController extends Controller
         $party = $room->users;
         if($party[0]->user_id != Auth::id()){
             $party = $party[0];
-        }else{
+        }else if(count($party)>1){
             $party = $party[1];
+        }else{
+            $party = null;
         }
         $result = new \stdClass;
-        $result->id = $party->user_id;
-        $result->name = $party->user->name;
-        $result->avatar = $party->user->info->avatar;
-        $result->username = $party->user->username;
-        $result->status = 0;
+        if(is_null($party)){
+            $result->id = '';
+            $result->name = 'No Name';
+            $result->avatar = null;
+            $result->username = '';
+            $result->status = 0;
+        }else{
+            $result->id = $party->user_id;
+            $result->name = $party->user->name;
+            $result->avatar = $party->user->info->avatar;
+            $result->username = $party->user->username;
+            $result->status = 0;
+        }
         return $this->sendResponse($result);
         //TODO: not support for group
     }
