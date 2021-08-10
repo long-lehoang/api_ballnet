@@ -46,7 +46,11 @@ class Room extends Model
     {
         //TODO: not support for group
         $friend = UserRoom::where([['room_id',$this->id],['user_id', '<>', Auth::id()]])->first();
-        return $friend->user->username;
+        if(is_null($friend)){
+            return '';
+        }else{
+            return $friend->user->username;
+        }
     }
 
     public function getLastMessageAttribute()
