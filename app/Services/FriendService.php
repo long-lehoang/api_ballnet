@@ -183,9 +183,9 @@ class FriendService implements Friend{
         }
         $user = $user['data'];
         //get current user
-        $curUser = Auth::guard('api')->user();
         try{
             $friends = $user->friends->filter(function($friend){
+                $curUser = Auth::guard('api')->user();
                 return $friend->id_friend != $curUser->id;
             });
             $friends = $friends->map(function ($friend){
