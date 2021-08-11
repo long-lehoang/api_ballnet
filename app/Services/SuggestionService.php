@@ -36,6 +36,8 @@ class SuggestionService implements Suggestion{
         //get friend id
         $friends = $user->friends->map->id_friend->toArray();
         array_push($friends,Auth::id());
+        $friendRequests = $user->friendRequests->map->from_id->toArray();
+        $friends = array_merge($friends, $friendRequests);
 
         $people = [];
         if(is_null($addrUser)){
