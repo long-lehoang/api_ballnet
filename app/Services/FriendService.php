@@ -210,6 +210,7 @@ class FriendService implements Friend{
             });
             //case success
 
+            $friends = array_values($friends->toArray());
             return [
                 "success" => true,
                 "data" => $friends
